@@ -56,7 +56,7 @@ namespace NWORKFLOW_WEB.MVC_4_BS.Controllers
             Mensagem.AppendLine(emailRodape);
             String destino = emailDestino + copiarEmails;
             DebugEmail email = new DebugEmail();
-            email.Email("email destino", destino);
+            
             var Email = new Email();
             Email.EnviarEmail(emailDestino, copiarEmails, Assunto, Mensagem.ToString());
         }

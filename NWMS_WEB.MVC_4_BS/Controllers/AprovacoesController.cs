@@ -46,7 +46,7 @@ namespace NWORKFLOW_WEB.MVC_4_BS.Controllers
             var Email = new Email();
             String destino = EmailDestino + CopiarEmails;
             DebugEmail email = new DebugEmail();
-            email.Email("email destino", destino);
+            
             Email.EnviarEmail(EmailDestino, CopiarEmails, Assunto, Mensagem.ToString());
         }
         protected void MontarEmailProtocoloAprovado(string numeroProtocolo, string observacao, Enums.TipoAtendimento tipoAtendimento, string emailDestino)
@@ -81,7 +81,7 @@ namespace NWORKFLOW_WEB.MVC_4_BS.Controllers
             Mensagem.AppendLine(emailRodape);
             String destino = EmailDestino + CopiarEmails;
             DebugEmail email = new DebugEmail();
-            email.Email("email destino", destino);
+            
             var Email = new Email();
             Email.EnviarEmail(EmailDestino, CopiarEmails, Assunto, Mensagem.ToString());
         }
@@ -113,8 +113,7 @@ namespace NWORKFLOW_WEB.MVC_4_BS.Controllers
 
             String destino = EmailDestino + CopiarEmails;
             DebugEmail email = new DebugEmail();
-            email.Email("email destino", destino);
-
+            
             var Email = new Email();
             Email.EnviarEmail(EmailDestino, CopiarEmails, Assunto, Mensagem.ToString());
         }
@@ -447,8 +446,7 @@ namespace NWORKFLOW_WEB.MVC_4_BS.Controllers
 
             String destino = EmailDestino + CopiarEmails;
             DebugEmail email = new DebugEmail();
-            email.Email("email destino", destino);
-
+            
             var Email = new Email();
             Email.EnviarEmail(EmailDestino, CopiarEmails, Assunto, Mensagem.ToString());
         }
@@ -723,7 +721,6 @@ namespace NWORKFLOW_WEB.MVC_4_BS.Controllers
                 bool Motivo = N0203REGBusiness.ConsultarOrigem(Convert.ToInt32(codigoRegistro));
 
                 DebugEmail email = new DebugEmail();
-                email.Email("Operação", operacao);
                 
                 if (Motivo == true && operacao.Contains("1"))
                 {
