@@ -27,5 +27,10 @@ namespace NWORKFLOW_WEB.MVC_4_BS.Models
         [Range(1, 99999, ErrorMessage = "O Prazo de Troca não pode ser zero.<br/>")]
         [Display(Name = "Prazo de Troca")]
         public long PrazoDeTrocaPop { get; set; }
+
+        [Display(Name = "Aprovador")]
+        public long UsuAprovador { get; set; }
+
+        public List<ListaN0204PPU> ListaN0204PPU { get; set; }
     }
 }

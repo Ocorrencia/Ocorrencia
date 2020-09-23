@@ -27,7 +27,7 @@ namespace NWORKFLOW_WEB.MVC_4_BS.Controllers
             {
                 N0203REGBusiness N0203REGBusines = new N0203REGBusiness();
                 List<Agrupamento> AGP = new List<Agrupamento>();
-                AGP = N0203REGBusines.pesquisarOcorrenciaAGP();
+                AGP = N0203REGBusines.PesquisarOcorrenciaAGP();
 
                 return this.Json(new { AGP, sucesso = true }, JsonRequestBehavior.AllowGet);
             }
@@ -49,7 +49,7 @@ namespace NWORKFLOW_WEB.MVC_4_BS.Controllers
             {
                 N0203REGBusiness N0203REGBusines = new N0203REGBusiness();
                 List<Agrupamento> AGP = new List<Agrupamento>();
-                AGP = N0203REGBusines.pesquisarPorOcorrenciaAGP(numreg);
+                AGP = N0203REGBusines.PesquisarPorOcorrenciaAGP(numreg);
 
                 return this.Json(new { AGP, sucesso = true }, JsonRequestBehavior.AllowGet);
             }
@@ -60,7 +60,7 @@ namespace NWORKFLOW_WEB.MVC_4_BS.Controllers
             }
         }
 
-        public JsonResult pesquisarAgrupamento(long codigoCliente, int filtro)
+        public JsonResult PesquisarAgrupamento(long codigoCliente, int filtro)
         {
 
             if (this.Logado != ((char)Enums.Logado.Sim).ToString())
@@ -71,7 +71,7 @@ namespace NWORKFLOW_WEB.MVC_4_BS.Controllers
             {
                 N0203REGBusiness N0203REGBusines = new N0203REGBusiness();
                 List<Agrupamento> AGP = new List<Agrupamento>();
-                AGP = N0203REGBusines.pesquisarAgrupamento(codigoCliente, filtro);
+                AGP = N0203REGBusines.PesquisarAgrupamento(codigoCliente, filtro);
 
                 return this.Json(new { AGP, sucesso = true }, JsonRequestBehavior.AllowGet);
             }
@@ -82,7 +82,7 @@ namespace NWORKFLOW_WEB.MVC_4_BS.Controllers
             }
         }
 
-        public JsonResult excluirAgrupamento(string agrupamento)
+        public JsonResult ExcluirAgrupamento(string agrupamento)
         {
 
             if (this.Logado != ((char)Enums.Logado.Sim).ToString())
@@ -93,7 +93,7 @@ namespace NWORKFLOW_WEB.MVC_4_BS.Controllers
             {
                 N0203REGBusiness N0203REGBusines = new N0203REGBusiness();
 
-                bool resposta = N0203REGBusines.excluirAgrupamento(agrupamento);
+                bool resposta = N0203REGBusines.ExcluirAgrupamento(agrupamento);
                 string dados = resposta ? "" : "Não é possível excluir agrupamento já integrado!";
                 return this.Json(new { resposta, dados }, JsonRequestBehavior.AllowGet);
             }
@@ -105,7 +105,7 @@ namespace NWORKFLOW_WEB.MVC_4_BS.Controllers
         }
 
 
-        public JsonResult gravarAgrupamento(string ocorrencias, string dataGeracao)
+        public JsonResult GravarAgrupamento(string ocorrencias, string dataGeracao)
         {
 
             if (this.Logado != ((char)Enums.Logado.Sim).ToString())
@@ -115,7 +115,7 @@ namespace NWORKFLOW_WEB.MVC_4_BS.Controllers
             try
             {
                 N0203REGBusiness N0203REGBusines = new N0203REGBusiness();
-                var retorno = N0203REGBusines.GravarAgrupamento(ocorrencias, dataGeracao, this.CodigoUsuarioLogado);
+                var retorno = N0203REGBusines.GravarAgrupamento(ocorrencias, this.CodigoUsuarioLogado);
 
                 return this.Json(new { retorno, sucesso = true }, JsonRequestBehavior.AllowGet);
 

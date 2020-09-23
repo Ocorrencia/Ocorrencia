@@ -14,15 +14,14 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.Business
     /// </summary>
     public class N0203REGBusiness
     {
-        private List<N0203REG> listaRegistros;
+        //private List<N0203REG> listaRegistros;
         /// <summary>
         /// Emitir lançamento de notas 
         /// </summary>
-        /// <param name="codRegistro">Código da ocorrência</param>
         /// <param name="dadosProtocolo">Tabela de ocorrência</param>
         /// <param name="mensagemRetorno">Mensagem de retorno</param>
         /// <returns></returns>
-        public bool EmitirLancamentoNfe(long codRegistro, N0203REG dadosProtocolo, out string mensagemRetorno)
+        public bool EmitirLancamentoNfe( N0203REG dadosProtocolo, out string mensagemRetorno)
         {
             try
             {
@@ -50,16 +49,16 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.Business
             return n0203REGDataAccess.InserirTransporteIndenizado(Numreg, Codtra);
         }
 
-        public listaTransportadora ConsultaTransportadora(int ocorrencia, string Tipo)
+        public ListaTransportadora ConsultaTransportadora(int ocorrencia, string Tipo)
         {
             var N0203GDataAccess = new N0203REGDataAccess();
             return N0203GDataAccess.ConsultaTransportadora(ocorrencia, Tipo);
         }
 
-        public bool verificaAprovador(long CodOri, long CodAtendimento)
+        public bool VerificaAprovador(long CodOri, long CodAtendimento)
         {
             var N0203GDataAccess = new N0203REGDataAccess();
-            return N0203GDataAccess.verificaAprovador(CodOri, CodAtendimento);
+            return N0203GDataAccess.VerificaAprovador(CodOri, CodAtendimento);
         }
 
         public string OrigemOcorrencia(int NumReg)
@@ -88,12 +87,12 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.Business
         /// <param name="codRegistro">Código da ocorrência</param>
         /// <param name="sitRegistro">Situação da ocorrência</param>
         /// <returns>Lista de Ocorrências</returns>
-        public N0203REG PesquisaRegistroOcorrencia(long codRegistro, int sitRegistro)
+        public N0203REG PesquisaRegistroOcorrencia(long codRegistro)
         {
             try
             {
                 var N0203REGDataAccess = new N0203REGDataAccess();
-                return N0203REGDataAccess.PesquisaRegistroOcorrencia(codRegistro, sitRegistro);
+                return N0203REGDataAccess.PesquisaRegistroOcorrencia(codRegistro);
             }
             catch (Exception ex)
             {
@@ -104,12 +103,12 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.Business
         /// Volta a situação do Registro de Ocorrência
         /// </summary>
         /// <param name="codigoRegistro">Código da ocorrência</param>
-        public void rollbackAprovacao(string codigoRegistro)
+        public void RollbackAprovacao(string codigoRegistro)
         {
             try
             {
                 N0203REGDataAccess N0203REGDataAccess = new N0203REGDataAccess();
-                N0203REGDataAccess.rollbackAprovacao(codigoRegistro);
+                N0203REGDataAccess.RollbackAprovacao(codigoRegistro);
             }
             catch (Exception ex)
             {
@@ -121,12 +120,12 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.Business
         /// </summary>
         /// <param name="excluirAgrupamentoSelecionado">String de exclusão do agrupamento</param>
         /// <returns></returns>
-        public bool excluirAgrupamento(string excluirAgrupamentoSelecionado)
+        public bool ExcluirAgrupamento(string ExcluirAgrupamentoSelecionado)
         {
             try
             {
                 N0203REGDataAccess N0203REGDataAccess = new N0203REGDataAccess();
-                return N0203REGDataAccess.excluirAgrupamento(excluirAgrupamentoSelecionado);
+                return N0203REGDataAccess.ExcluirAgrupamento(ExcluirAgrupamentoSelecionado);
             }
             catch (Exception ex)
             {
@@ -140,12 +139,12 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.Business
         /// <param name="codigoCliente">Código do Cliente</param>
         /// <param name="filtro">Filtro</param>
         /// <returns></returns>
-        public List<Agrupamento> pesquisarAgrupamento(long codigoCliente, int filtro)
+        public List<Agrupamento> PesquisarAgrupamento(long codigoCliente, int filtro)
         {
             try
             {
                 N0203REGDataAccess N0203REGDataAccess = new N0203REGDataAccess();
-                return N0203REGDataAccess.pesquisarAgrupamento(codigoCliente, filtro);
+                return N0203REGDataAccess.PesquisarAgrupamento(codigoCliente, filtro);
             }
             catch (Exception ex)
             {
@@ -158,12 +157,12 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.Business
         /// </summary>
         /// <param name="numreg">Número da ocorrência</param>
         /// <returns></returns>
-        public string pesquisarObservacaoSAC(long numreg)
+        public string PesquisarObservacaoSAC(long numreg)
         {
             try
             {
                 N0203REGDataAccess N0203REGDataAccess = new N0203REGDataAccess();
-                return N0203REGDataAccess.pesquisarObservacaoSAC(numreg);
+                return N0203REGDataAccess.PesquisarObservacaoSAC(numreg);
             }
             catch (Exception ex)
             {
@@ -177,21 +176,21 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.Business
         /// <param name="dataGeracao">Data de geração da ocorrência</param>
         /// <param name="usuarioGeracao">Usuário de Geração da ocorrência</param>
         /// <returns></returns>
-        public string GravarAgrupamento(string ocorrencias, string dataGeracao, string usuarioGeracao)
+        public string GravarAgrupamento(string ocorrencias, string usuarioGeracao)
         {
             var N0203REGDataAccess = new N0203REGDataAccess();
-            return N0203REGDataAccess.GravarAgrupamento(ocorrencias, dataGeracao, usuarioGeracao);
+            return N0203REGDataAccess.GravarAgrupamento(ocorrencias, usuarioGeracao);
         }
         /// <summary>
         /// Chama a classe para pesquisar todas ocorrências agrupadas
         /// </summary>
         /// <returns></returns>
-        public List<Agrupamento> pesquisarOcorrenciaAGP()
+        public List<Agrupamento> PesquisarOcorrenciaAGP()
         {
             try
             {
                 N0203REGDataAccess N0203REGDataAccess = new N0203REGDataAccess();
-                return N0203REGDataAccess.pesquisarOcorrenciaAGP();
+                return N0203REGDataAccess.PesquisarOcorrenciaAGP();
             }
             catch (Exception ex)
             {
@@ -203,12 +202,12 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.Business
         /// </summary>
         /// <param name="numreg">Número do agrupamento da ocorrência</param>
         /// <returns></returns>
-        public List<Agrupamento> pesquisarPorOcorrenciaAGP(long numreg)
+        public List<Agrupamento> PesquisarPorOcorrenciaAGP(long numreg)
         {
             try
             {
                 N0203REGDataAccess N0203REGDataAccess = new N0203REGDataAccess();
-                return N0203REGDataAccess.pesquisarPorOcorrenciaAGP(numreg);
+                return N0203REGDataAccess.PesquisarPorOcorrenciaAGP(numreg);
             }
             catch (Exception ex)
             {
@@ -233,11 +232,11 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.Business
             }
         }
 
-        public string consultarPlacaPOC(string NUMREG)
+        public string ConsultarPlacaPOC(string NUMREG)
         {
             string Placa;
             N0203REGDataAccess N0203REGDataAccess = new N0203REGDataAccess();
-            Placa = N0203REGDataAccess.consultarPlacaPOC(NUMREG);
+            Placa = N0203REGDataAccess.ConsultarPlacaPOC(NUMREG);
             return Placa;
         }
         /// <summary>
@@ -247,12 +246,12 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.Business
         /// <param name="PLACA">Placa</param>
         /// <param name="codigoUsuario">Código do Usuário</param>
         /// <returns></returns>
-        public bool confirmarRecebimento(string NUMREG, string PLACA, long codigoUsuario)
+        public bool ConfirmarRecebimento(string NUMREG, string PLACA, long codigoUsuario)
         {
             try
             {
                 N0203REGDataAccess N0203REGDataAccess = new N0203REGDataAccess();
-                return N0203REGDataAccess.confirmarRecebimento(NUMREG, PLACA, codigoUsuario);
+                return N0203REGDataAccess.ConfirmarRecebimento(NUMREG, PLACA, codigoUsuario);
             }
             catch (Exception ex)
             {
@@ -356,10 +355,10 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.Business
             }
         }
 
-        public string descTransportadoraIndenizacao(long CodTra)
+        public string DescTransportadoraIndenizacao(long CodTra)
         {
             N0203REGDataAccess n0203REGDataAccess = new N0203REGDataAccess();
-            return n0203REGDataAccess.descTransportadoraIndenizacao(CodTra);
+            return n0203REGDataAccess.DescTransportadoraIndenizacao(CodTra);
         }
         /// <summary>
         /// Chama a classe para pesquisar todos os registros de ocorrência 
@@ -383,12 +382,12 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.Business
         /// Chama a classe para listar todas as ocorrências da coleta
         /// </summary>
         /// <returns></returns>
-        public List<N0204POC> ocorrenciasColeta()
+        public List<N0204POC> OcorrenciasColeta()
         {
             try
             {
                 N0203REGDataAccess N0203REGDataAccess = new N0203REGDataAccess();
-                return N0203REGDataAccess.ocorrenciasColeta();
+                return N0203REGDataAccess.OcorrenciasColeta();
             }
             catch (Exception ex)
             {
@@ -523,12 +522,12 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.Business
         /// </summary>
         /// <param name="codPlaca">Placa</param>
         /// <returns></returns>
-        public bool validarPlaca(string codPlaca)
+        public bool ValidarPlaca(string codPlaca)
         {
             try
             {
                 N0203REGDataAccess N0203REGDataAccess = new N0203REGDataAccess();
-                return N0203REGDataAccess.validarPlaca(codPlaca);
+                return N0203REGDataAccess.ValidarPlaca(codPlaca);
             }
             catch (Exception ex)
             {
@@ -595,12 +594,12 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.Business
         /// <param name="codPlaca">Placa</param>
         /// <param name="dataFaturamento">Data de Faturamento</param>
         /// <returns></returns>
-        public List<ItensSinteticoColeta> ItensColetaConferencia(string codPlaca, string dataFaturamento)
+        public List<ItensSinteticoColeta> ItensColetaConferencia(string codPlaca)
         {
             try
             {
                 N0203REGDataAccess N0203REGDataAccess = new N0203REGDataAccess();
-                return N0203REGDataAccess.ItensColetaConferencia(codPlaca, dataFaturamento);
+                return N0203REGDataAccess.ItensColetaConferencia(codPlaca);
             }
             catch (Exception ex)
             {
@@ -625,12 +624,12 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.Business
         /// <param name="codPlaca">Placa</param>
         /// <param name="transportadora">Transportadora</param>
         /// <returns></returns>
-        public List<RelatorioTempoCarga> RelatorioTempoCarga(string filial, string embarque, string numeroNotaFiscal, string codCliente, string dataInicial, string dataFinal, string motivo, string situacao, string origem, string tipo, string dataInicialOCR, string dataFinalOCR, string codPlaca, string transportadora)
+        public List<RelatorioTempoCarga> RelatorioTempoCarga(string filial, string embarque, string codCliente, string dataInicial, string dataFinal, string motivo, string situacao, string origem, string tipo, string dataInicialOCR, string dataFinalOCR, string codPlaca, string transportadora)
         {
             try
             {
                 N0203REGDataAccess N0203REGDataAccess = new N0203REGDataAccess();
-                return N0203REGDataAccess.RelatorioTempoCarga(filial, embarque, numeroNotaFiscal, codCliente, dataInicial, dataFinal, motivo, situacao, origem, tipo, dataInicialOCR, dataFinalOCR, codPlaca, transportadora);
+                return N0203REGDataAccess.RelatorioTempoCarga(filial, embarque, codCliente, dataInicial, dataFinal, motivo, situacao, origem, tipo, dataInicialOCR, dataFinalOCR, codPlaca, transportadora);
             }
             catch (Exception ex)
             {
@@ -732,18 +731,20 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.Business
                     var loginUsuario = string.Empty;
                     foreach (var item in listaRegistros)
                     {
-                        itemAprovacao = new ProtocolosAprovacaoModel();
-                        itemAprovacao.CodigoRegistro = item.NUMREG;
-                        itemAprovacao.CodTipoAtendimento = item.TIPATE;
-                        itemAprovacao.DescTipoAtendimento = N0204ATDDataAccess.PesquisaTipoAtendimento().Where(c => c.CODATD == item.TIPATE).FirstOrDefault().DESCATD;
-                        itemAprovacao.CodOrigemOcorrencia = item.ORIOCO;
-                        itemAprovacao.DescOrigemOcorrencia = N0204ORIDataAccess.PesquisaOrigemOcorrencia().Where(c => c.CODORI == item.ORIOCO).FirstOrDefault().DESCORI;
-                        itemAprovacao.CodCliente = item.CODCLI;
-                        itemAprovacao.NomeCliente = E085CLIDataAccess.PesquisasClientes(item.CODCLI).FirstOrDefault().NomeFantasia;
-                        itemAprovacao.CodMotorista = item.CODMOT;
-                        itemAprovacao.NomeMotorista = "TRANSPORTADORA";
-                        itemAprovacao.DataHrGeracao = item.DATGER.ToString();
-                        itemAprovacao.UsuarioGeracao = item.USUGER;
+                        itemAprovacao = new ProtocolosAprovacaoModel
+                        {
+                            CodigoRegistro = item.NUMREG,
+                            CodTipoAtendimento = item.TIPATE,
+                            DescTipoAtendimento = N0204ATDDataAccess.PesquisaTipoAtendimento().Where(c => c.CODATD == item.TIPATE).FirstOrDefault().DESCATD,
+                            CodOrigemOcorrencia = item.ORIOCO,
+                            DescOrigemOcorrencia = N0204ORIDataAccess.PesquisaOrigemOcorrencia().Where(c => c.CODORI == item.ORIOCO).FirstOrDefault().DESCORI,
+                            CodCliente = item.CODCLI,
+                            NomeCliente = E085CLIDataAccess.PesquisasClientes(item.CODCLI).FirstOrDefault().NomeFantasia,
+                            CodMotorista = item.CODMOT,
+                            NomeMotorista = "TRANSPORTADORA",
+                            DataHrGeracao = item.DATGER.ToString(),
+                            UsuarioGeracao = item.USUGER
+                        };
                         loginUsuario = N9999USUDataAccess.ListaDadosUsuarioPorCodigo(itemAprovacao.UsuarioGeracao).LOGIN;
                         itemAprovacao.NomeUsuarioGeracao = ActiveDirectoryDataAccess.ListaDadosUsuarioAD(loginUsuario).Nome;
 
@@ -790,7 +791,7 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.Business
             {
                 var N0203REGDataAccess = new N0203REGDataAccess();
                 var listaRegistros = new List<Ocorrencia>();
-                listaRegistros = N0203REGDataAccess.pesquisaOcorrencia(campoNumeroRegistro, campoFilial, campoEmbarque, campoPlaca, campoPeriodoInicial, campoPeriodoFinal, campoCliente, campoSituacao, campoDataFaturamento, codigoUsuario, "D", "U");
+                listaRegistros = N0203REGDataAccess.PesquisaOcorrencia(campoNumeroRegistro, campoFilial, campoEmbarque, campoPlaca, campoPeriodoInicial, campoPeriodoFinal, campoCliente, campoSituacao, campoDataFaturamento, codigoUsuario, "D", "U");
 
                 return listaRegistros;
             }
@@ -800,12 +801,12 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.Business
             }
         }
 
-        public int pedidosFaturarIndenizacao()
+        public int PedidosFaturarIndenizacao()
         {
             try
             {
                 var N0203REGDataAccess = new N0203REGDataAccess();
-                return N0203REGDataAccess.pedidosFaturarIndenizacao();
+                return N0203REGDataAccess.PedidosFaturarIndenizacao();
             }
             catch(Exception ex)
             {
@@ -813,12 +814,12 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.Business
             }
         }
 
-        public List<RelatorioGraficoOcorrencia> relatorioGraficoOcorrencias(string mes, string ano, string indicador)
+        public List<RelatorioGraficoOcorrencia> RelatorioGraficoOcorrencias(string mes, string ano, string indicador)
         {
             try { 
                 var N0203REGDataAccess = new N0203REGDataAccess();
                 var listaRegistros = new List<RelatorioGraficoOcorrencia>();
-                listaRegistros = N0203REGDataAccess.relatorioGraficoOcorrencias(mes, ano, indicador);
+                listaRegistros = N0203REGDataAccess.RelatorioGraficoOcorrencias(mes, ano, indicador);
                 return listaRegistros;
             }
             catch (Exception ex)
@@ -835,13 +836,13 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.Business
         /// <param name="indicador">Indicador</param>
         /// <param name="ano">Ano</param>
         /// <returns></returns>
-        public List<Ocorrencia> CarregarIndicadoresTabela(string status, string mes, string filtroAgrup, string indicador, string ano)
+        public List<Ocorrencia> CarregarIndicadoresTabela( string mes, string filtroAgrup, string indicador, string ano)
         {
             try
             {
                 var N0203REGDataAccess = new N0203REGDataAccess();
                 var listaRegistros = new List<Ocorrencia>();
-                listaRegistros = N0203REGDataAccess.CarregarIndicadorIndustria(status, mes, filtroAgrup, indicador, ano);
+                listaRegistros = N0203REGDataAccess.CarregarIndicadorIndustria(mes, filtroAgrup, indicador, ano);
 
                 return listaRegistros;
             }
@@ -851,13 +852,13 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.Business
             }
         }
 
-        public List<RelatorioGraficoItens> RelatorioGraficoItens(string status, string mes, string filtroAgrup, string indicador, string ano)
+        public List<RelatorioGraficoItens> RelatorioGraficoItens(string mes, string filtroAgrup, string indicador, string ano)
         {
             try
             {
                 var N0203REGDataAccess = new N0203REGDataAccess();
                 var listaRegristros = new List<RelatorioGraficoItens>();
-                listaRegristros = N0203REGDataAccess.RelatorioGraficoItens(status, mes, filtroAgrup, indicador, ano);
+                listaRegristros = N0203REGDataAccess.RelatorioGraficoItens( mes, filtroAgrup, indicador, ano);
 
                 return listaRegristros;
             }
@@ -872,13 +873,13 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.Business
         /// </summary>
         /// <param name="numreg">Código da ocorrência</param>
         /// <returns></returns>
-        public List<String> listarObservacoes(string numreg)
+        public List<String> ListarObservacoes(string numreg)
         {
             try
             {
                 var N0203REGDataAccess = new N0203REGDataAccess();
                 var listarObservacoes = new List<String>();
-                listarObservacoes = N0203REGDataAccess.listarObservacoes(numreg);
+                listarObservacoes = N0203REGDataAccess.ListarObservacoes(numreg);
 
                 return listarObservacoes;
             }
@@ -895,7 +896,7 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.Business
         /// <param name="indicador">Indicador</param>
         /// <param name="ano">Ano</param>
         /// <returns></returns>
-        public List<Ocorrencia> carregarIndicadorSetores(string status, string mes, string indicador, string ano)
+        public List<Ocorrencia> CarregarIndicadorSetores(string status, string mes, string indicador, string ano)
         {
             try
             {
@@ -924,13 +925,13 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.Business
         /// <param name="campoDataFaturamento">Data de Faturamento</param>
         /// <param name="codigoUsuario">Código do Usuário</param>
         /// <returns></returns>
-        public List<Ocorrencia> carregarProtocolosForamAprovadosEsperandoFaturamento(string campoNumeroRegistro, string campoFilial, string campoEmbarque, string campoPlaca, string campoPeriodoInicial, string campoPeriodoFinal, string campoCliente, string campoSituacao, string campoDataFaturamento, long codigoUsuario)
+        public List<Ocorrencia> CarregarProtocolosForamAprovadosEsperandoFaturamento(string campoNumeroRegistro, string campoFilial, string campoEmbarque, string campoPlaca, string campoPeriodoInicial, string campoPeriodoFinal, string campoCliente, string campoSituacao, string campoDataFaturamento, long codigoUsuario)
         {
             try
             {
                 var N0203REGDataAccess = new N0203REGDataAccess();
                 var listaRegistros = new List<Ocorrencia>();
-                listaRegistros = N0203REGDataAccess.pesquisaOcorrencia(campoNumeroRegistro, campoFilial, campoEmbarque, campoPlaca, campoPeriodoInicial, campoPeriodoFinal, campoCliente, campoSituacao, campoDataFaturamento, codigoUsuario, "D", "");
+                listaRegistros = N0203REGDataAccess.PesquisaOcorrencia(campoNumeroRegistro, campoFilial, campoEmbarque, campoPlaca, campoPeriodoInicial, campoPeriodoFinal, campoCliente, campoSituacao, campoDataFaturamento, codigoUsuario, "D", "");
                 return listaRegistros;
             }
             catch (Exception ex)
@@ -959,7 +960,7 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.Business
             {
                 var N0203REGDataAccess = new N0203REGDataAccess();
                 var listaRegistros = new List<Ocorrencia>();
-                listaRegistros = N0203REGDataAccess.pesquisaOcorrencia(campoNumeroRegistro, campoFilial, campoEmbarque, campoPlaca, campoPeriodoInicial, campoPeriodoFinal, campoCliente, campoSituacao, campoDataFaturamento, codigoUsuario, "D", "");
+                listaRegistros = N0203REGDataAccess.PesquisaOcorrencia(campoNumeroRegistro, campoFilial, campoEmbarque, campoPlaca, campoPeriodoInicial, campoPeriodoFinal, campoCliente, campoSituacao, campoDataFaturamento, codigoUsuario, "D", "");
 
                 return listaRegistros;
             }
@@ -975,7 +976,7 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.Business
             {
                 var N0203REGDataAccess = new N0203REGDataAccess();
                 var listaRegistros = new List<Ocorrencia>();
-                listaRegistros = N0203REGDataAccess.pesquisaOcorrencia(campoNumeroRegistro, campoFilial, campoEmbarque, campoPlaca, campoPeriodoInicial, campoPeriodoFinal, campoCliente, campoSituacao, campoDataFaturamento, codigoUsuario, "D", "");
+                listaRegistros = N0203REGDataAccess.PesquisaOcorrencia(campoNumeroRegistro, campoFilial, campoEmbarque, campoPlaca, campoPeriodoInicial, campoPeriodoFinal, campoCliente, campoSituacao, campoDataFaturamento, codigoUsuario, "D", "");
 
                 return listaRegistros;
             }
@@ -994,13 +995,13 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.Business
         /// <param name="indicador">Indicador</param>
         /// <param name="ano">Ano</param>
         /// <returns></returns>
-        public List<Ocorrencia> ocorrenciaDrill(string status, string mes, string filtroAgrup, string indicador, string ano)
+        public List<Ocorrencia> OcorrenciaDrill( string mes, string indicador, string ano)
         {
             try
             {
                 var N0203REGDataAccess = new N0203REGDataAccess();
                 var listaRegistros = new List<Ocorrencia>();
-                listaRegistros = N0203REGDataAccess.ocorrenciaDrill(status, mes, filtroAgrup, indicador, ano);
+                listaRegistros = N0203REGDataAccess.OcorrenciaDrill( mes, indicador, ano);
 
                 return listaRegistros;
             }
@@ -1013,13 +1014,13 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.Business
         /// Retorna uma lista de ocorrências com faturamento em dia
         /// </summary>
         /// <returns>listaRegistros</returns>
-        public List<Ocorrencia> carregarOcorrenciasFaturamentoEmDia()
+        public List<Ocorrencia> CarregarOcorrenciasFaturamentoEmDia()
         {
             try
             {
                 var N0203REGDataAccess = new N0203REGDataAccess();
                 var listaRegistros = new List<Ocorrencia>();
-                listaRegistros = N0203REGDataAccess.carregarOcorrenciaFaturamentoEmDia();
+                listaRegistros = N0203REGDataAccess.CarregarOcorrenciaFaturamentoEmDia();
 
                 return listaRegistros;
             }
@@ -1032,13 +1033,13 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.Business
         /// Retorna uma lista de ocorrrências com faturamento em atraso
         /// </summary>
         /// <returns>listaRegistros</returns>
-        public List<Ocorrencia> carregarOcorrenciasFaturamentoAtraso()
+        public List<Ocorrencia> CarregarOcorrenciasFaturamentoAtraso()
         {
             try
             {
                 var N0203REGDataAccess = new N0203REGDataAccess();
                 var listaRegistros = new List<Ocorrencia>();
-                listaRegistros = N0203REGDataAccess.carregarOcorrenciaFaturamentoAtrasado();
+                listaRegistros = N0203REGDataAccess.CarregarOcorrenciaFaturamentoAtrasado();
 
                 return listaRegistros;
             }
@@ -1067,7 +1068,7 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.Business
             {
                 var N0203REGDataAccess = new N0203REGDataAccess();
                 var listaRegistros = new List<Ocorrencia>();
-                listaRegistros = N0203REGDataAccess.pesquisaOcorrencia(campoNumeroRegistro, campoFilial, campoEmbarque, campoPlaca, campoPeriodoInicial, campoPeriodoFinal, campoCliente, campoSituacao, campoDataFaturamento, codigoUsuario, "D", "U");
+                listaRegistros = N0203REGDataAccess.PesquisaOcorrencia(campoNumeroRegistro, campoFilial, campoEmbarque, campoPlaca, campoPeriodoInicial, campoPeriodoFinal, campoCliente, campoSituacao, campoDataFaturamento, codigoUsuario, "D", "U");
 
                 return listaRegistros;
             }
@@ -1081,13 +1082,13 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.Business
         /// </summary>
         /// <param name="numeroOcorrencia">Código da ocorrência</param>
         /// <returns>listaRegistros</returns>
-        public List<TimeLine> timeLine(long numeroOcorrencia)
+        public List<TimeLine> TimeLine(long numeroOcorrencia)
         {
             try
             {
                 var N0203REGDataAccess = new N0203REGDataAccess();
                 var listaRegistros = new List<TimeLine>();
-                listaRegistros = N0203REGDataAccess.timeLine(numeroOcorrencia);
+                listaRegistros = N0203REGDataAccess.TimeLine(numeroOcorrencia);
 
                 return listaRegistros;
             }
@@ -1120,13 +1121,13 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.Business
         /// Retorna a quantidade de ocorrências com faturamento em atraso
         /// </summary>
         /// <returns>quantidade</returns>
-        public ArrayList carregarAtrasoFaturamento()
+        public ArrayList CarregarAtrasoFaturamento()
         {
             try
             {
                 var N0203REGDataAccess = new N0203REGDataAccess();
                 var listaRegistros = new List<ProtocolosAprovacaoModel>();
-                ArrayList quantidade = N0203REGDataAccess.ocorrenciasAtrasoFaturamento();
+                ArrayList quantidade = N0203REGDataAccess.OcorrenciasAtrasoFaturamento();
 
                 return quantidade;
             }
@@ -1165,15 +1166,17 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.Business
                     var loginUsuario = string.Empty;
                     foreach (var item in listaRegistros)
                     {
-                        itemAprovacao = new ProtocolosAprovacaoModel();
-                        itemAprovacao.CodigoRegistro = item.NUMREG;
-                        itemAprovacao.CodTipoAtendimento = item.TIPATE;
-                        itemAprovacao.DescTipoAtendimento = N0204ATDDataAccess.PesquisaTipoAtendimento().Where(c => c.CODATD == item.TIPATE).FirstOrDefault().DESCATD;
-                        itemAprovacao.CodOrigemOcorrencia = item.ORIOCO;
-                        itemAprovacao.DescOrigemOcorrencia = N0204ORIDataAccess.PesquisaOrigemOcorrencia().Where(c => c.CODORI == item.ORIOCO).FirstOrDefault().DESCORI;
-                        itemAprovacao.CodCliente = item.CODCLI;
-                        
-                        itemAprovacao.NomeCliente = E085CLIDataAccess.PesquisasClientes(item.CODCLI).FirstOrDefault().NomeFantasia;
+                        itemAprovacao = new ProtocolosAprovacaoModel
+                        {
+                            CodigoRegistro = item.NUMREG,
+                            CodTipoAtendimento = item.TIPATE,
+                            DescTipoAtendimento = N0204ATDDataAccess.PesquisaTipoAtendimento().Where(c => c.CODATD == item.TIPATE).FirstOrDefault().DESCATD,
+                            CodOrigemOcorrencia = item.ORIOCO,
+                            DescOrigemOcorrencia = N0204ORIDataAccess.PesquisaOrigemOcorrencia().Where(c => c.CODORI == item.ORIOCO).FirstOrDefault().DESCORI,
+                            CodCliente = item.CODCLI,
+
+                            NomeCliente = E085CLIDataAccess.PesquisasClientes(item.CODCLI).FirstOrDefault().NomeFantasia
+                        };
 
                         if (itemAprovacao.NomeCliente == null)
                         {
@@ -1200,6 +1203,10 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.Business
                         else if (itemAprovacao.CodSituacaoRegistro == (int)Enums.SituacaoRegistroOcorrencia.PreAprovado)
                         {
                             itemAprovacao.DescSituacaoRegistro = Attributes.KeyValueAttribute.GetFirst("Descricao", Enums.SituacaoRegistroOcorrencia.PreAprovado).GetValue<string>();
+                        }
+                        else if (itemAprovacao.CodSituacaoRegistro == (int)Enums.SituacaoRegistroOcorrencia.Aprovar)
+                        {
+                            itemAprovacao.DescSituacaoRegistro = Attributes.KeyValueAttribute.GetFirst("Descricao", Enums.SituacaoRegistroOcorrencia.Aprovar).GetValue<string>();
                         }
                         itemAprovacao.UltimaAlteracao = item.DATULT.ToString();
                         itemAprovacao.UsuarioUltimaAlteracao = item.USUULT;
@@ -1284,12 +1291,12 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.Business
         /// </summary>
         /// <param name="loginUsuario">Login Usuário</param>
         /// <returns></returns>
-        public bool consultarParametroJustificativaColeta(string loginUsuario)
+        public bool ConsultarParametroJustificativaColeta(string loginUsuario)
         {
             try
             {
                 N0203REGDataAccess N0203REGDataAccess = new N0203REGDataAccess();
-                return N0203REGDataAccess.consultarParametroJustificativaColeta(loginUsuario);
+                return N0203REGDataAccess.ConsultarParametroJustificativaColeta(loginUsuario);
             }
             catch (Exception ex)
             {
@@ -1301,12 +1308,12 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.Business
         /// </summary>
         /// <param name="loginUsuario">Login do Usuário</param>
         /// <returns></returns>
-        public string consultarParametroJustificativa(string loginUsuario)
+        public string ConsultarParametroJustificativa(string loginUsuario)
         {
             try
             {
                 N0203REGDataAccess N0203REGDataAccess = new N0203REGDataAccess();
-                return N0203REGDataAccess.consultarParametroJustificativa(loginUsuario);
+                return N0203REGDataAccess.ConsultarParametroJustificativa(loginUsuario);
             }
             catch (Exception ex)
             {
@@ -1319,12 +1326,12 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.Business
         /// <param name="loginUsuario">Login do Usuário</param>
         /// <param name="operacao">Operação</param>
         /// <returns></returns>
-        public bool inserirVinculo(string loginUsuario, string operacao)
+        public bool InserirVinculo(string loginUsuario, string operacao)
         {
             try
             {
                 N0203REGDataAccess N0203REGDataAccess = new N0203REGDataAccess();
-                return N0203REGDataAccess.inserirVinculo(loginUsuario, operacao);
+                return N0203REGDataAccess.InserirVinculo(loginUsuario, operacao);
             }
             catch (Exception ex)
             {
@@ -1357,13 +1364,13 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.Business
         /// <param name="dias">Dias </param>
         /// <param name="situacao">Situação</param>
         /// <returns></returns>
-        public List<N0204ORI> quantidadeProtocolosPorArea(int dias, int situacao)
+        public List<N0204ORI> QuantidadeProtocolosPorArea(int dias, int situacao)
         {
             try
             {
                 var N0203REGDataAccess = new N0203REGDataAccess();
                 var quantidadeItensPorArea = new List<N0204ORI>();
-                quantidadeItensPorArea = N0203REGDataAccess.quantidadeProtocolosPorArea(dias, situacao);
+                quantidadeItensPorArea = N0203REGDataAccess.QuantidadeProtocolosPorArea(dias, situacao);
 
                 return quantidadeItensPorArea;
             }
@@ -1378,13 +1385,13 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.Business
         /// <param name="dias">Dias</param>
         /// <param name="situacao">Situação</param>
         /// <returns></returns>
-        public List<N0204ORI> quantidadeProtocolosPorAreaMeses(int dias, int situacao)
+        public List<N0204ORI> QuantidadeProtocolosPorAreaMeses(int dias, int situacao)
         {
             try
             {
                 var N0203REGDataAccess = new N0203REGDataAccess();
                 var quantidadeItensPorArea = new List<N0204ORI>();
-                quantidadeItensPorArea = N0203REGDataAccess.quantidadeProtocolosPorAreaMeses(dias, situacao);
+                quantidadeItensPorArea = N0203REGDataAccess.QuantidadeProtocolosPorAreaMeses(dias, situacao);
 
                 return quantidadeItensPorArea;
             }
@@ -1415,13 +1422,13 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.Business
         /// Chama a classe para pegar as informações do mes por ocorrência
         /// </summary>
         /// <returns></returns>
-        public List<MesXOcorrencia> mesXOcorrencia()
+        public List<MesXOcorrencia> MesXOcorrencia()
         {
             try
             {
                 var N0203REGDataAccess = new N0203REGDataAccess();
                 var mesOcorrencia = new List<MesXOcorrencia>();
-                mesOcorrencia = N0203REGDataAccess.mesXOcorrencia();
+                mesOcorrencia = N0203REGDataAccess.MesXOcorrencia();
 
                 return mesOcorrencia;
             }
@@ -1434,13 +1441,13 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.Business
         /// Chama a classe para pegar as informações mes x origem 
         /// </summary>
         /// <returns></returns>
-        public List<MesXOrigem> mesXOrigem()
+        public List<MesXOrigem> MesXOrigem()
         {
             try
             {
                 var N0203REGDataAccess = new N0203REGDataAccess();
                 var mesOrigem = new List<MesXOrigem>();
-                mesOrigem = N0203REGDataAccess.mesXOrigem();
+                mesOrigem = N0203REGDataAccess.MesXOrigem();
 
                 return mesOrigem;
             }
@@ -1453,12 +1460,12 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.Business
         /// Chama a classe para pegar a media por protocolo pre aprovado
         /// </summary>
         /// <returns></returns>
-        public int mediaPreAprovado()
+        public int MediaPreAprovado()
         {
             try
             {
                 var N0203REGDataAccess = new N0203REGDataAccess();
-                return N0203REGDataAccess.mediaPreAprovado();
+                return N0203REGDataAccess.MediaPreAprovado();
             }
             catch (Exception ex)
             {
@@ -1469,12 +1476,12 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.Business
         /// Chama a classe para verificar a média dos protocolos aprovados
         /// </summary>
         /// <returns></returns>
-        public int mediaAprovado()
+        public int MediaAprovado()
         {
             try
             {
                 var N0203REGDataAccess = new N0203REGDataAccess();
-                return N0203REGDataAccess.mediaAprovado();
+                return N0203REGDataAccess.MediaAprovado();
             }
             catch (Exception ex)
             {
@@ -1494,12 +1501,12 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.Business
         /// <param name="campoSituacao">Situação</param>
         /// <param name="campoDataFaturamento">Data de Faturamento</param>
         /// <returns></returns>
-        public List<RelatorioAnalitico> imprimirRelatorioAnaliticoRegistroOcorrencia(string campoNumeroRegistro, string campoFilial, string campoEmbarque, string campoPlaca, string campoPeriodoInicial, string campoPeriodoFinal, string campoCliente, string campoSituacao, string campoDataFaturamento)
+        public List<RelatorioAnalitico> ImprimirRelatorioAnaliticoRegistroOcorrencia(string campoNumeroRegistro, string campoFilial, string campoEmbarque, string campoPlaca, string campoPeriodoInicial, string campoPeriodoFinal, string campoCliente, string campoSituacao, string campoDataFaturamento)
         {
             try
             {
                 var N0203REGDataAccess = new N0203REGDataAccess();
-                return N0203REGDataAccess.imprimirRelatorioAnaliticoRegistroOcorrencia(campoNumeroRegistro, campoFilial, campoEmbarque, campoPlaca, campoPeriodoInicial, campoPeriodoFinal, campoCliente, campoSituacao, campoDataFaturamento);
+                return N0203REGDataAccess.ImprimirRelatorioAnaliticoRegistroOcorrencia(campoNumeroRegistro, campoFilial, campoEmbarque, campoPlaca, campoPeriodoInicial, campoPeriodoFinal, campoCliente, campoSituacao, campoDataFaturamento);
             }
             catch (Exception ex)
             {
@@ -1519,12 +1526,12 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.Business
         /// <param name="campoSituacao">Situação</param>
         /// <param name="campoDataFaturamento">Data de Faturamento</param>
         /// <returns></returns>
-        public List<RelatorioAnalitico> imprimirRelatorioSinteticoRegistroOcorrencia(string campoNumeroRegistro, string campoFilial, string campoEmbarque, string campoPlaca, string campoPeriodoInicial, string campoPeriodoFinal, string campoCliente, string campoSituacao, string campoDataFaturamento)
+        public List<RelatorioAnalitico> ImprimirRelatorioSinteticoRegistroOcorrencia(string campoNumeroRegistro, string campoFilial, string campoEmbarque, string campoPlaca, string campoPeriodoInicial, string campoPeriodoFinal, string campoCliente, string campoSituacao, string campoDataFaturamento)
         {
             try
             {
                 var N0203REGDataAccess = new N0203REGDataAccess();
-                return N0203REGDataAccess.imprimirRelatorioSinteticoRegistroOcorrencia(campoNumeroRegistro, campoFilial, campoEmbarque, campoPlaca, campoPeriodoInicial, campoPeriodoFinal, campoCliente, campoSituacao, campoDataFaturamento);
+                return N0203REGDataAccess.ImprimirRelatorioSinteticoRegistroOcorrencia(campoNumeroRegistro, campoFilial, campoEmbarque, campoPlaca, campoPeriodoInicial, campoPeriodoFinal, campoCliente, campoSituacao, campoDataFaturamento);
             }
             catch (Exception ex)
             {
@@ -1533,6 +1540,6 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.Business
         }
 
 
-        public long codUsuarioLogado { get; set; }
+        public long CodUsuarioLogado { get; set; }
     }
 }

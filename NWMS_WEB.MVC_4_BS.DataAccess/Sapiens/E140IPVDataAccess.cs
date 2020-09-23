@@ -43,7 +43,7 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
                                 "       TO_CHAR(A.VLRDZF + A.VLRPIT + A.VLRCRT, '999999990D99') as DescontoSuframa,   " +
                                 "       B.CodFam as CodigoFamilia,                              " +
                                 "       A.VLRFRE                             AS ValorFrete,     " +
-                                "       COALESCE((SELECT SUM(QTDDEV)                                 " +
+                                "       COALESCE((SELECT SUM(QTDDEV)                            " +
                                 "                   FROM NWMS_PRODUCAO.N0203IPV SUBIPV          " +
                                 "                    INNER JOIN NWMS_PRODUCAO.N0203REG SUBREG   " +
                                 "                       ON SUBIPV.NUMREG = SUBREG.NUMREG        " +

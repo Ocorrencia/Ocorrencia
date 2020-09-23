@@ -27,11 +27,16 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess.Mapping
             this.Property(t => t.QTDDEV).HasColumnName("QTDDEV");
             this.Property(t => t.QTDTRC).HasColumnName("QTDTRC");
             this.Property(t => t.IDROW).HasColumnName("IDROW");
+            this.Property(t => t.USUDEP).HasColumnName("USUDEP");
 
             // Relationships
             this.HasRequired(t => t.N9999USU)
                 .WithMany(t => t.N0204PPU)
                 .HasForeignKey(d => d.CODUSU);
+           // this.HasRequired(t => t.N9999USU)
+           //     .WithMany(t => t.N0204PPU)
+           //     .HasForeignKey(d => d.USUDEP);
+
 
         }
     }

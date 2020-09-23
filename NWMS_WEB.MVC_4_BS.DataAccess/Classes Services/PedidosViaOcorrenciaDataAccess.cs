@@ -19,22 +19,23 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
 
                     N0203REGDataAccess reg = new N0203REGDataAccess();
 
-                    int codTra = reg.pegaTransportadoraOcorrencia(ocorrencia);
+                    int codTra = reg.PegaTransportadoraOcorrencia(ocorrencia);
 
                     this.PedidosClient.InnerChannel.OperationTimeout = new TimeSpan(0, 10, 0);
-                    var dadosPedido = new pedidosPedidoViaOcorrenciaIn();
+                    var dadosPedido = new pedidosPedidoViaOcorrenciaIn
+                    {
+                        codTra = codTra,
 
-                    dadosPedido.codTra = codTra;
+                        codTraSpecified = true,
 
-                    dadosPedido.codTraSpecified = true;
+                        flowInstanceID = "1",
 
-                    dadosPedido.flowInstanceID = "1";
+                        flowName = "1",
 
-                    dadosPedido.flowName = "1";
+                        numReg = ocorrencia,
 
-                    dadosPedido.numReg = ocorrencia;
-
-                    dadosPedido.numRegSpecified = true;
+                        numRegSpecified = true
+                    };
 
                     var retorno = PedidosClient.PedidoViaOcorrencia("nworkflow.web", "!nfr@t1n", 0, dadosPedido);
 

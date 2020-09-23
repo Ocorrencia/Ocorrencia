@@ -14,14 +14,22 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
         /// Pesquisa prazo de devolução para troca
         /// </summary>
         /// <returns>Lista</returns>
-        public List<N0204PPU> PesquisaPrazoDevolucaoTroca()
+        public List<N0204PPU> PesquisaPrazoDevolucaoTroca(long usudep)
         {
             try
             {
                 using (Context contexto = new Context())
                 {
-                    var lista = contexto.N0204PPU.OrderBy(c => c.IDROW).ToList();
-                    return lista;
+                    if (usudep == 0) { 
+                        var lista = contexto.N0204PPU.Where(c=> c.USUDEP == null || c.USUDEP == 0).OrderBy(c => c.IDROW).ToList();
+                        return lista;
+                    }
+                    else
+                    {
+                        var lista = contexto.N0204PPU.Where(c=> c.USUDEP != null && c.USUDEP != 0).OrderBy(c => c.IDROW).ToList();
+                        return lista;
+                    }
+                    
                 }
             }
             catch (Exception ex)
@@ -94,7 +102,9 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
                 {
                     var original = contexto.N0204PPU.Where(c => c.CODUSU == idUsuario).FirstOrDefault();
 
-                    if (original != null)
+                    var usuariodependente = contexto.N0204PPU.Where(c => c.USUDEP == idUsuario).FirstOrDefault();
+
+                    if (original != null && usuariodependente == null)
                     {
                         contexto.N0204PPU.Remove(original);
                         contexto.SaveChanges();

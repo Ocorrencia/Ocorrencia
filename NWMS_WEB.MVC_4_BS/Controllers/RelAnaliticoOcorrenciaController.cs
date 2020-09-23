@@ -46,7 +46,7 @@ namespace NWORKFLOW_WEB.MVC_4_BS.Controllers
             try
             {
                 var N0203REGBusiness = new N0203REGBusiness();
-                var listaRegistros = N0203REGBusiness.imprimirRelatorioAnaliticoRegistroOcorrencia(campoNumeroRegistro, campoFilial, campoEmbarque, campoPlaca, campoPeriodoInicial, campoPeriodoFinal, campoCliente, campoSituacao, campoDataFaturamento);
+                var listaRegistros = N0203REGBusiness.ImprimirRelatorioAnaliticoRegistroOcorrencia(campoNumeroRegistro, campoFilial, campoEmbarque, campoPlaca, campoPeriodoInicial, campoPeriodoFinal, campoCliente, campoSituacao, campoDataFaturamento);
 
 
                 if (listaRegistros.Count == 0)
@@ -58,21 +58,17 @@ namespace NWORKFLOW_WEB.MVC_4_BS.Controllers
                 listaRegistros[0].DATAEMISSAO = dataEmissao.ToString();
                 listaRegistros[0].USUIMPR = this.NomeUsuarioLogado;
 
-                LocalReport report = new LocalReport();
-
-                report.ReportPath = Server.MapPath("~/Reports/RelatorioAnalitico.rdlc");
+                LocalReport report = new LocalReport
+                {
+                    ReportPath = Server.MapPath("~/Reports/RelatorioAnalitico.rdlc")
+                };
 
                 var reportRelatorio = new ReportDataSource("RelatorioAnaliticoDataSet", listaRegistros);
                 report.Refresh();
                 report.DataSources.Add(reportRelatorio);
 
                 string reportType = "PDF";
-                string mineType;
                 byte[] reportBytes;
-                string encoding;
-                string fileNameExtension;
-                Warning[] warnings;
-                string[] streams;
 
                 string deviceInfo =
                 "<DeviceInfo>" +
@@ -88,11 +84,11 @@ namespace NWORKFLOW_WEB.MVC_4_BS.Controllers
                 reportBytes = report.Render(
                     reportType,
                     deviceInfo,
-                    out mineType,
-                    out encoding,
-                    out fileNameExtension,
-                    out streams,
-                    out warnings);
+                    out string mineType,
+                    out string encoding,
+                    out string fileNameExtension,
+                    out string[] streams,
+                    out Warning[] warnings);
 
                 var base64EncodedPDF = System.Convert.ToBase64String(reportBytes);
             //    return this.Json("data:application/pdf;base64, " + base64EncodedPDF);

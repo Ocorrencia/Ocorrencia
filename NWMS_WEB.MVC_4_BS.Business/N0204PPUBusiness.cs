@@ -15,12 +15,12 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.Business
         /// Chama o método de classe para presquisar o prazo de devolução da ocorrência
         /// </summary>
         /// <returns>PesquisaPrazoDevolucaoTroca</returns>
-        public List<N0204PPU> PesquisaPrazoDevolucaoTroca()
+        public List<N0204PPU> PesquisaPrazoDevolucaoTroca(long usudep)
         {
             try
             {
                 var N0204PPUDataAccess = new N0204PPUDataAccess();
-                return N0204PPUDataAccess.PesquisaPrazoDevolucaoTroca();
+                return N0204PPUDataAccess.PesquisaPrazoDevolucaoTroca(usudep);
             }
             catch (Exception ex)
             {

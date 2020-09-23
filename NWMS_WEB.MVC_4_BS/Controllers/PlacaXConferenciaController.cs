@@ -30,7 +30,7 @@ namespace NWORKFLOW_WEB.MVC_4_BS.Controllers
             N0203REGBusiness N0203REGBusiness = new N0203REGBusiness();
             DateTime localDate = DateTime.Now;
 
-            if (N0203REGBusiness.validarPlaca(codPlaca.ToUpper()))
+            if (N0203REGBusiness.ValidarPlaca(codPlaca.ToUpper()))
             {
                 return this.Json(new { placa = false }, JsonRequestBehavior.AllowGet);
             }
@@ -67,7 +67,7 @@ namespace NWORKFLOW_WEB.MVC_4_BS.Controllers
             try
             {
                 N0203REGBusiness N0203REG = new N0203REGBusiness();
-                return N0203REG.consultarParametroJustificativaColeta(this.LoginUsuario);
+                return N0203REG.ConsultarParametroJustificativaColeta(this.LoginUsuario);
             }
             catch (Exception ex)
             {

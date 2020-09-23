@@ -4,9 +4,14 @@
     ViewBag.Title = "Prazo de Devolução e Troca X Usuário";
 }
 
-@section scripts{
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" />
+    <script src="http://code.jquery.com/jquery-1.9.1.js"></script>
+    <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
 
-    <script type="text/javascript">
+    @section scripts{
+
+        <script type="text/javascript">
 
         var espaco = "&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp"
         $('#TableUsuario').dataTable({
@@ -41,7 +46,74 @@
                     "sLast": "Último"
                 }
             },
-            //"scrollY": 380,
+            "scrollX": true,
+        });
+
+        $('#TablePrazosDep').dataTable({
+            "jQueryUI": true,
+            "sPaginationType": "full_numbers",
+            "iDisplayLength": 10,
+            "iDisplayStart": 1,
+            "paging": false,
+            "bSort": true,
+            "bFilter": true,
+            "Info": true,
+            "bLengthChange": true,
+            "aoColumns": [
+                { "sWidth": "30%", "sClass": "left", "title": "Nome&nbsp;Completo&nbsp;Usuário" },
+                { "sWidth": "15%", "sClass": "left", "title": "Login&nbspdo&nbspUsuário" },
+                { "sWidth": "05%", "sClass": "center", "title": "Prazo&nbspDev." },
+                { "sWidth": "05%", "sClass": "center", "title": "Prazo&nbspTroca" },
+                { "sWidth": "20%", "sClass": "center", "title": "Usuário&nbspAprovador" },
+                { "sWidth": "05%", "sClass": "center", "title": "Excluir", "bSortable": false, "bSearchable": false }],
+            "oLanguage": {
+                "sLengthMenu": "Mostrando _MENU_ registros por página&nbsp&nbsp",
+                "sSearch": "Pesquisar:",
+                "sZeroRecords": "Nenhum registro encontrado",
+                "sInfo": "Mostrando _START_ até _END_ de _TOTAL_ registros",
+                "sInfoEmpty": "Mostrando 0 até 0 de 0 registros",
+                "sInfoFiltered": "(Pesquisados no total de _MAX_ registros)",
+                "oPaginate": {
+                    "sFirst": "Primeiro",
+                    "sPrevious": "«&nbspAnterior",
+                    "sNext": "Próximo&nbsp»",
+                    "sLast": "Último"
+                }
+            },
+            "scrollX": true,
+        });
+
+        $('#TablePrazos').dataTable({
+            "jQueryUI": true,
+            "sPaginationType": "full_numbers",
+            "iDisplayLength": 10,
+            "iDisplayStart": 1,
+            "paging": true,
+            "bSort": true,
+            "bFilter": true,
+            "Info": true,
+            "bLengthChange": true,
+            "aoColumns": [
+                { "sWidth": "40%", "sClass": "left", "title": "Nome&nbsp;Completo&nbsp;Usuário" },
+                { "sWidth": "20%", "sClass": "left", "title": "Login&nbspdo&nbspUsuário" },
+                { "sWidth": "05%", "sClass": "center", "title": "Prazo&nbspDev." },
+                { "sWidth": "05%", "sClass": "center", "title": "Prazo&nbspTroca" },
+                { "sWidth": "05%", "sClass": "center", "title": "Excluir", "bSortable": false, "bSearchable": false }],
+
+            "oLanguage": {
+                "sLengthMenu": "Mostrando _MENU_ registros por página&nbsp&nbsp",
+                "sSearch": "Pesquisar:",
+                "sZeroRecords": "Nenhum registro encontrado",
+                "sInfo": "Mostrando _START_ até _END_ de _TOTAL_ registros",
+                "sInfoEmpty": "Mostrando 0 até 0 de 0 registros",
+                "sInfoFiltered": "(Pesquisados no total de _MAX_ registros)",
+                "oPaginate": {
+                    "sFirst": "Primeiro",
+                    "sPrevious": "«&nbspAnterior",
+                    "sNext": "Próximo&nbsp»",
+                    "sLast": "Último"
+                }
+            },
             "scrollX": true,
         });
 
@@ -55,7 +127,6 @@
 
             // Coluna Selecionar
             if (idColuna == 1) {
-
                 var table = $('#TableUsuario').DataTable();
 
                 // Recupera os dados da linha clicada para carregar os campos abaixo
@@ -112,53 +183,18 @@
             });
         }
 
-        $('#TablePrazos').dataTable({
-            "jQueryUI": true,
-            "sPaginationType": "full_numbers",
-            "iDisplayLength": 10,
-            "iDisplayStart": 1,
-            //"ordering": false,
-            //"info": false,
-            "paging": true,
-            "bSort": true,
-            "bFilter": true,
-            "Info": true,
-            "bLengthChange": true,
-            "aoColumns": [
-                        { "sWidth": "40%", "sClass": "left", "title": "Nome&nbsp;Completo&nbsp;Usuário" },
-                        { "sWidth": "20%", "sClass": "left", "title": "Login&nbspdo&nbspUsuário" },
-                        { "sWidth": "05%", "sClass": "center", "title": "Prazo&nbspDev." },
-                        { "sWidth": "05%", "sClass": "center", "title": "Prazo&nbspTroca" },
-                        { "sWidth": "05%", "sClass": "center", "title": "Excluir", "bSortable": false, "bSearchable": false }],
-            "oLanguage": {
-                "sLengthMenu": "Mostrando _MENU_ registros por página&nbsp&nbsp",
-                "sSearch": "Pesquisar:",
-                "sZeroRecords": "Nenhum registro encontrado",
-                "sInfo": "Mostrando _START_ até _END_ de _TOTAL_ registros",
-                "sInfoEmpty": "Mostrando 0 até 0 de 0 registros",
-                "sInfoFiltered": "(Pesquisados no total de _MAX_ registros)",
-                "oPaginate": {
-                    "sFirst": "Primeiro",
-                    "sPrevious": "«&nbspAnterior",
-                    "sNext": "Próximo&nbsp»",
-                    "sLast": "Último"
-                }
-            },
-            //"scrollY": 380,
-            "scrollX": true,
-        });
-
         PesquisaPrazoDevolucaoTroca();
+
+        PesquisaPrazoDevolucaoTrocaDep();
 
         MostraBotaoCadastrar();
 
         function MostraBotaoCadastrar() {
 
-            
-            $('<button id="CadastrarButtonBtn" class="btn btn-primary btn-sm" type="button" aria-disabled="false"><span class="ui-button-text">Cadastrar</span></button>').appendTo('div.dataTables_length');
-            // Botão Salvar
-            $('#CadastrarButtonBtn').click(function () {
 
+        $('<button id="CadastrarButtonBtn" class="btn btn-primary btn-sm" type="button" aria-disabled="false"><span class="ui-button-text">Cadastrar</span></button>').appendTo('div.dataTables_length');
+            $('#CadastrarButtonBtn').click(function () {
+                
                 $('#PrazoDevolucaoPopTextBox').val('');
                 $('#PrazoDeTrocaPopTextBox').val('');
 
@@ -174,7 +210,7 @@
 
         $('#SalvarButtonPop').click(function () {
 
-            if ($("#PrazoDevolucaoPopTextBox").valid() && $("#PrazoDeTrocaPopTextBox").valid())
+         if ($("#PrazoDevolucaoPopTextBox").valid() && $("#PrazoDeTrocaPopTextBox").valid())
                 UsuariosSelecionados();
         });
 
@@ -196,14 +232,15 @@
             }
 
             listaUsuarios = listaUsuarios.substring(1, listaUsuarios.length);
-            SalvarPrazoDevolucaoTroca($('#PrazoDevolucaoPopTextBox').val(), $('#PrazoDeTrocaPopTextBox').val(), listaUsuarios);
+            SalvarPrazoDevolucaoTroca($('#PrazoDevolucaoPopTextBox').val(), $('#PrazoDeTrocaPopTextBox').val(), listaUsuarios, $('#UsuAprovadorPopTextBox').val());
         }
 
-        function SalvarPrazoDevolucaoTroca(prazoDev, prazoTroca, listaUsuarios) {
+        function SalvarPrazoDevolucaoTroca(prazoDev, prazoTroca, listaUsuarios, usudep) {
 
             $('#progressBar').show();
+            var usudep = $("#UsuarioDependenteDropdowlist").val();
             $.ajaxSetup({ cache: false });
-            $.getJSON("@Url.Action("SalvarPrazoDevolucaoTroca")", { prazoDev: prazoDev, prazoTroca: prazoTroca, listaUsuarios: listaUsuarios }, function (data) {
+            $.getJSON("@Url.Action("SalvarPrazoDevolucaoTroca")", { prazoDev: prazoDev, prazoTroca: prazoTroca, listaUsuarios: listaUsuarios, usudep: usudep }, function (data) {
 
                 if (data.Logado || data.ErroExcecao) {
                     window.location.href = data.redirectUrl;
@@ -212,6 +249,7 @@
                 else if (data.GravadoSucesso) {
                     DialogPadrao("success", "Sucesso!", "success", data.msgRetorno, "btnOkPrazoDevGravadoSucesso", "OK", true);
                     PesquisaPrazoDevolucaoTroca();
+                    PesquisaPrazoDevolucaoTrocaDep();
                 }
                 else {
                     DialogPadrao("danger", "Aviso!", "danger", data.msgRetorno, "btnOkPrazoDevGravadoErro", "OK", true);
@@ -221,12 +259,57 @@
             });
         }
 
+        function PesquisaPrazoDevolucaoTrocaDep() {
+
+            $('#progressBar').show();
+            $("#gridTablePrazosDep").hide();
+            var usudep = 21;
+            $.ajaxSetup({ cache: false });
+            $.getJSON("@Url.Action("PesquisaPrazoDevolucaoTroca")", { usudep: usudep}, function (data) {
+
+                if (data.Logado || data.ErroExcecao) {
+                    window.location.href = data.redirectUrl;
+                    return;
+                }
+
+                $('#TablePrazosDep').dataTable().fnClearTable();
+
+                if (data.ListaN0204PPUPesquisa.length > 0) {
+
+                    var arrayRow = new Array();
+
+                    for (var i = 0; i < data.ListaN0204PPUPesquisa.length; i++) {
+
+                        var nome = data.ListaN0204PPUPesquisa[i].nomeUsuario;
+                        var login = data.ListaN0204PPUPesquisa[i].loginUsuario;
+                        var prazoDev = data.ListaN0204PPUPesquisa[i].prazoDev;
+                        var prazoTroca = data.ListaN0204PPUPesquisa[i].prazoTroca;
+                        var UsuAprovador = data.ListaN0204PPUPesquisa[i].usuaprovador;
+                        var excluir = "<a style='color:#333333' href=\"#\" onClick=\"ExcluirPrazo('" + nome + "','" + login + "')\"><span class='glyphicon glyphicon-trash' title='Excluir Prazo'></span></a>";
+
+                        arrayRow[i] = new Array(nome, login, prazoDev, prazoTroca, UsuAprovador, excluir);
+
+                    }
+
+                    $('#TablePrazosDep').dataTable().fnAddData(arrayRow);
+                    $('#TablePrazosDep').dataTable().fnPageChange('first');
+                    $("#gridTablePrazosDep").slideToggle('fast');
+                }
+
+                $("#gridTablePrazosDep").show();
+                $('#progressBar').hide();
+            });
+            $('dataTables_scrollHead ui-state-default').removeAttr('style');
+            $('dataTables_scrollHead ui-state-default').attr('style', 'overflow: hidden', 'width: : 100%;');
+        }
+
         function PesquisaPrazoDevolucaoTroca() {
 
             $('#progressBar').show();
             $("#gridTablePrazos").hide();
+           // var usudep = 0;
             $.ajaxSetup({ cache: false });
-            $.getJSON("@Url.Action("PesquisaPrazoDevolucaoTroca")", {}, function (data) {
+            $.getJSON("@Url.Action("PesquisaPrazoDevolucaoTroca")", { usudep: 0}, function (data) {
 
                 if (data.Logado || data.ErroExcecao) {
                     window.location.href = data.redirectUrl;
@@ -240,13 +323,11 @@
                     var arrayRow = new Array();
 
                     for (var i = 0; i < data.ListaN0204PPUPesquisa.length; i++) {
-
                         var nome = data.ListaN0204PPUPesquisa[i].nomeUsuario;
                         var login = data.ListaN0204PPUPesquisa[i].loginUsuario;
                         var prazoDev = data.ListaN0204PPUPesquisa[i].prazoDev;
                         var prazoTroca = data.ListaN0204PPUPesquisa[i].prazoTroca;
                         var excluir = "<a style='color:#333333' href=\"#\" onClick=\"ExcluirPrazo('" + nome + "','" + login + "')\"><span class='glyphicon glyphicon-trash' title='Excluir Prazo'></span></a>";
-
                         arrayRow[i] = new Array(nome, login, prazoDev, prazoTroca, excluir);
                     }
 
@@ -318,7 +399,12 @@
                 }
                 else if (data.ExcluidoSucesso) {
                     PesquisaPrazoDevolucaoTroca();
+                    PesquisaPrazoDevolucaoTrocaDep();
                     DialogPadrao("success", "Sucesso!", "success", data.msgRetorno, "btnOkPrazoDevExcluidoSucesso", "OK", true);
+                } else {
+                    PesquisaPrazoDevolucaoTroca();
+                    PesquisaPrazoDevolucaoTrocaDep();
+                    DialogPadrao("danger", "Aviso!", "danger", data.msgRetorno, "btnOkPrazoDevExcluidoSucesso", "OK", true);
                 }
                 $('#progressBar').hide();
             });
@@ -331,114 +417,155 @@
         $('.dataTables_scrollHead').removeAttr('style');
         $('.dataTables_scrollHead').attr('style', 'overflow: hidden', 'width: 100%;');
 
-    </script>
-}
+        </script>
+    }
 
-<h4>
-    <ul class="breadcrumb" style="margin-bottom: 5px;">
-        <li><a href="@Url.Content("~/PaginaInicial/Index")">Solicitações</a></li>
-        <li><a href="@Url.Content("~/PaginaInicial/Index")">Cadastros</a></li>
-        <li class="active">@ViewBag.Title</li>
-    </ul>
-</h4>
-<div class="progress progress-striped active" style="display: none;" id="progressBar">
-    <div class="progress-bar" style="width: 100%">
-    </div>
-</div>
-<div class="modal" id="ExcluirPrazoDialog" style="display: none;">
-    <div class="modal-dialog">
-        <div class="panel panel-primary">
-            <div class="panel-heading">
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                <h3 class="panel-title">Remover Vínculo Prazo de Devolução e Troca X Usuário</h3>
-            </div>
-            <div class="panel-body">
-                <strong></strong>
-                <div class="row">
-                    <br />
-                    <div style="text-align:center">
-                        <button type="button" class="btn btn-default" data-dismiss="modal">Não</button>
-                        <button type="button" id="ExcluirPrazoBtn" class="btn btn-primary" style="margin-top:0px">Sim</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-<div class="modal" id="DialogPadrao" data-backdrop="static"></div>
-@using (Html.BeginForm("CadPrazoDevTrocaXUsuario", "Solicitacoes", FormMethod.Post, new { @class = "form-horizontal", id = "CadPrazoDevTrocaXUsuarioForm", role = "form" }))
-{
-    @Html.AntiForgeryToken()
-    <hr />
-    @Html.ValidationSummary(true)
-    <div class="modal fade bs-example-modal-lg" id="UsuarioDialog" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+    <h4>
+        <ul class="breadcrumb" style="margin-bottom: 5px;">
+            <li><a href="@Url.Content("~/PaginaInicial/Index")">Solicitações</a></li>
+            <li><a href="@Url.Content("~/PaginaInicial/Index")">Cadastros</a></li>
+            <li class="active">@ViewBag.Title</li>
+        </ul>
+    </h4>
+
+    <div class="modal fade bs-example-modal-lg" id="TramitesDialog" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="panel panel-primary">
                     <div class="panel-heading">
                         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                        <h3 class="panel-title">Usuários</h3>
+                        <h3 class="panel-title">Pesquisar Tramites</h3>
                     </div>
                     <div class="panel-body">
-                        <div class="row">
-                            @Html.LabelFor(m => m.PrazoDevolucaoPop, new { @class = "col-md-3 control-label" })
-                            <div class="col-md-2">
-                                @Html.TextBoxFor(m => m.PrazoDevolucaoPop, new { @class = "form-control input-sm", @id = "PrazoDevolucaoPopTextBox" })
-                            </div>
-                            @Html.LabelFor(m => m.PrazoDeTrocaPop, new { @class = "col-md-3 control-label" })
-                            <div class="col-md-2">
-                                @Html.TextBoxFor(m => m.PrazoDeTrocaPop, new { @class = "form-control input-sm", @id = "PrazoDeTrocaPopTextBox" })
-                            </div>
-                            <div class="col-md-1" id="DivSalvarPopButton">
-                                <input type="button" value="Cadastrar" id="SalvarButtonPop" style="margin-top:0px" class="btn btn-primary btn-sm" />
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-3 control-label">
-                            </div>
-                            <div class="col-md-4">
-                                @Html.ValidationMessageFor(m => m.PrazoDevolucaoPop)
-                                @Html.ValidationMessageFor(m => m.PrazoDeTrocaPop)
-                            </div>
-                        </div>
-                        <br />
-                        <div id="gridTableUsuario" style="display: none;">
-                            <table id="TableUsuario" class="display compact" cellspacing="0" width="99.9%"></table>
+                        <div id="gridTableTramites" style="display: none;">
+                            <table id="TableTramites" class="display compact" cellspacing="0"></table>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    <div class="panel panel-default">
-        <legend>&nbsp;&nbsp;Prazo Padrão de Devolução e Troca </legend>
-        <div class="row">
-            @Html.LabelFor(m => m.PrazoDevolucao, new { @class = "col-md-2 control-label" })
-            <div class="col-md-1">
-                @Html.TextBoxFor(m => m.PrazoDevolucao, new { @class = "form-control input-sm", @id = "PrazoDevolucaoTextBox" })
-            </div>
-            @Html.LabelFor(m => m.PrazoDeTroca, new { @class = "col-md-2 control-label" })
-            <div class="col-md-1">
-                @Html.TextBoxFor(m => m.PrazoDeTroca, new { @class = "form-control input-sm", @id = "PrazoDeTrocaTextBox" })
-            </div>
-            <div class="col-md-1" id="DivSalvarButton">
-                <input type="button" value="Alterar" id="SalvarButton" style="margin-top:0px" class="btn btn-primary btn-sm" />
-            </div>
+
+    <div class="progress progress-striped active" style="display: none;" id="progressBar">
+        <div class="progress-bar" style="width: 100%">
         </div>
-        <div class="row">
-            <div class="col-md-2 control-label">
-            </div>
-            <div class="col-md-4">
-                @Html.ValidationMessageFor(m => m.PrazoDevolucao)
-                @Html.ValidationMessageFor(m => m.PrazoDeTroca)
+    </div>
+    <div class="modal" id="ExcluirPrazoDialog" style="display: none;">
+        <div class="modal-dialog">
+            <div class="panel panel-primary">
+                <div class="panel-heading">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                    <h3 class="panel-title">Remover Vínculo Prazo de Devolução e Troca X Usuário</h3>
+                </div>
+                <div class="panel-body">
+                    <strong></strong>
+                    <div class="row">
+                        <br />
+                        <div style="text-align:center">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Não</button>
+                            <button type="button" id="ExcluirPrazoBtn" class="btn btn-primary" style="margin-top:0px">Sim</button>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
-    <div class="panel panel-default" id="PanelPrazos">
-        <legend>&nbsp;&nbsp;Prazo de Devolução e Troca X Usuário(s)</legend>
-        <div id="gridTablePrazos">
-            <table id="TablePrazos" class="display compact" cellspacing="0" width="99.9%"></table>
+    <div class="modal" id="DialogPadrao" data-backdrop="static"></div>
+    @using (Html.BeginForm("CadPrazoDevTrocaXUsuario", "Solicitacoes", FormMethod.Post, new { @class = "form-horizontal", id = "CadPrazoDevTrocaXUsuarioForm", role = "form" }))
+    {
+        @Html.AntiForgeryToken()
+        <hr />
+        @Html.ValidationSummary(true)
+        <div class="modal fade bs-example-modal-lg" id="UsuarioDialog" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="false">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="panel panel-primary">
+                        <div class="panel-heading">
+                            <button type="button" class="close" data-dismiss="modal" aria-hidden="false">×</button>
+                            <h3 class="panel-title">Usuários</h3>
+                        </div>
+                        <div class="panel-body">
+                            <div class="row">
+                                @Html.LabelFor(m => m.PrazoDevolucaoPop, new { @class = "col-md-3 control-label" })
+                                <div class="col-md-2">
+                                    @Html.TextBoxFor(m => m.PrazoDevolucaoPop, new { @class = "form-control input-sm", @id = "PrazoDevolucaoPopTextBox" })
+                                </div>
+                                @Html.LabelFor(m => m.PrazoDeTrocaPop, new { @class = "col-md-3 control-label" })
+                                <div class="col-md-2">
+                                    @Html.TextBoxFor(m => m.PrazoDeTrocaPop, new { @class = "form-control input-sm", @id = "PrazoDeTrocaPopTextBox" })
+                                </div>
+
+                                
+                            </div>
+                            <p></p>
+                            <div class="row">
+                                @Html.LabelFor(m => m.UsuAprovador, new { @class = "col-md-3 control-label" })
+                                <div class="col-md-4">
+                                    @Html.DropDownListFor(m => m.UsuAprovador, new SelectList(Model.ListaN0204PPU.Select(x => new { Codigo = x.codigo, Descricao = x.descricao }), "Codigo", "Descricao"), new { @class = "form-control input-sm", @id = "UsuarioDependenteDropdowlist" })
+                                    <p></p>
+                                </div>
+                                <div class="col-md-5" id="DivSalvarPopButton">
+                                    <input type="button" value="Cadastrar" id="SalvarButtonPop" style="margin-top:0px" class="btn btn-primary btn-sm" />
+                                </div>
+                            </div>
+                            <p></p>
+
+                            <div class="row">
+                                <div class="col-md-3 control-label">
+                                </div>
+                                <div class="col-md-4">
+                                    @Html.ValidationMessageFor(m => m.PrazoDevolucaoPop)
+                                    @Html.ValidationMessageFor(m => m.PrazoDeTrocaPop)
+                                </div>
+                            </div>
+
+                            <br />
+                            <div id="gridTableUsuario" style="display: none;">
+                                <table id="TableUsuario" class="display compact" cellspacing="0" width="99.9%"></table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-        <br />
-    </div>
+        <div class="panel panel-default">
+            <legend>&nbsp;&nbsp;Prazo Padrão de Devolução e Troca </legend>
+            <div class="row">
+                @Html.LabelFor(m => m.PrazoDevolucao, new { @class = "col-md-2 control-label" })
+                <div class="col-md-1">
+                    @Html.TextBoxFor(m => m.PrazoDevolucao, new { @class = "form-control input-sm", @id = "PrazoDevolucaoTextBox" })
+                </div>
+                @Html.LabelFor(m => m.PrazoDeTroca, new { @class = "col-md-2 control-label" })
+                <div class="col-md-1">
+                    @Html.TextBoxFor(m => m.PrazoDeTroca, new { @class = "form-control input-sm", @id = "PrazoDeTrocaTextBox" })
+                </div>
+
+                <div class="col-md-1" id="DivSalvarButton">
+                    <input type="button" value="Alterar" id="SalvarButton" style="margin-top:0px" class="btn btn-primary btn-sm" />
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-2 control-label">
+                </div>
+                <div class="col-md-4">
+                    @Html.ValidationMessageFor(m => m.PrazoDevolucao)
+                    @Html.ValidationMessageFor(m => m.PrazoDeTroca)
+                </div>
+            </div>
+        </div>
+        <div class="panel panel-default" id="PanelPrazos">
+            <legend>&nbsp;&nbsp;Prazo de Devolução e Troca X Usuário(s) Primeiro Nível </legend>
+            <div id="gridTablePrazos">
+                <table id="TablePrazos" class="display compact" cellspacing="0" width="99.9%"></table>
+            </div>
+            <br />
+        </div>
+
+        <div class="panel panel-default" id="PanelPrazosDep">
+            <legend>&nbsp;&nbsp;Prazo de Devolução e Troca X Usuário(s) Segundo Nível</legend>
+            <div id="gridTablePrazosDep">
+                <table id="TablePrazosDep" class="display compact" cellspacing="0" width="99.9%"></table>
+            </div>
+            <br />
+        </div>
 }

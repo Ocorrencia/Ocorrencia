@@ -5,7 +5,7 @@ using System.Web;
 
 namespace NWORKFLOW_WEB.MVC_4_BS.Model
 {
-    public class listaTransportadora
+    public class ListaTransportadora
     {
         public string CODTRA { get; set; }
 

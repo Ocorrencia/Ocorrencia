@@ -148,14 +148,23 @@ namespace NWORKFLOW_WEB.MVC_4_BS.Controllers
                 modelo.ListaMotivoDevolucao = this.PesqLancRegistroOcorrencia.ListaMotivoDevolucao;
                 modelo.ListaOrigemOcorrencia = this.PesqLancRegistroOcorrencia.ListaOrigemOcorrencia;
                 modelo.ListaTipoAtendimento = this.PesqLancRegistroOcorrencia.ListaTipoAtendimento;
-
+                
                 N0203REGBusiness N0203REGBusiness = new N0203REGBusiness();
                 N0203REG N0203REG = new N0203REG();
                 N0203ANX N0203ANX = new N0203ANX();
                 var dataAtual = DateTime.Now;
 
+
+
                 N0203REG.NUMREG = long.Parse(modelo.NumRegistro);
-                N0203REG.SITREG = (long)Enums.SituacaoRegistroOcorrencia.Pendente;
+                if(N0203REG.USUDEP != 0 && N0203REG.SITREG == 1)
+                {
+                    N0203REG.SITREG = (long)Enums.SituacaoRegistroOcorrencia.Aprovar;
+                }
+                else
+                { 
+                    N0203REG.SITREG = (long)Enums.SituacaoRegistroOcorrencia.Pendente;
+                }
 
                 if (modelo.Acao == "Finalizar")
                 {
@@ -181,10 +190,12 @@ namespace NWORKFLOW_WEB.MVC_4_BS.Controllers
                 {
                     foreach (HttpPostedFileBase file in modelo.AnexoArquivo)
                     {
-                        N0203ANX = new N0203ANX();
-                        N0203ANX.NUMREG = N0203REG.NUMREG;
-                        N0203ANX.NOMANX = file.FileName;
-                        N0203ANX.EXTANX = file.ContentType;
+                        N0203ANX = new N0203ANX
+                        {
+                            NUMREG = N0203REG.NUMREG,
+                            NOMANX = file.FileName,
+                            EXTANX = file.ContentType
+                        };
 
                         byte[] anexoBytes = null;
                         BinaryReader reader = new BinaryReader(file.InputStream);
@@ -441,7 +452,7 @@ namespace NWORKFLOW_WEB.MVC_4_BS.Controllers
                     }
                 }
 
-                return this.Json(new { ListaN0203ANXPesquisa, PesquisaSucesso = PesquisaSucesso }, JsonRequestBehavior.AllowGet);
+                return this.Json(new { ListaN0203ANXPesquisa, PesquisaSucesso }, JsonRequestBehavior.AllowGet);
             }
             catch (Exception ex)
             {
@@ -450,11 +461,11 @@ namespace NWORKFLOW_WEB.MVC_4_BS.Controllers
             }
         }
 
-        public JsonResult descTransportadoraIndenizacao(long CodTra)
+        public JsonResult DescTransportadoraIndenizacao(long CodTra)
         {
             N0203REGBusiness n0203REGBusiness = new N0203REGBusiness();
-            var DescTransportadora = n0203REGBusiness.descTransportadoraIndenizacao(CodTra);
-            return this.Json(new { DescTransportadora = DescTransportadora, redirectUrl = Url.Action("Login", "Login"), Logado = true }, JsonRequestBehavior.AllowGet);
+            var DescTransportadora = n0203REGBusiness.DescTransportadoraIndenizacao(CodTra);
+            return this.Json(new { DescTransportadora, redirectUrl = Url.Action("Login", "Login"), Logado = true }, JsonRequestBehavior.AllowGet);
         }
 
         public JsonResult PesquisarItemAnexo(string codigoRegistro, string idLinhaAnexo)
@@ -525,7 +536,7 @@ namespace NWORKFLOW_WEB.MVC_4_BS.Controllers
                 var listaNotasAgrupadas = this.ListaNotasAgrupadas(lista);
                 var N0203REGBusiness = new N0203REGBusiness();
                 var validaNotas = N0203REGBusiness.ValidaNotasProtocoloReprovado(long.Parse(codProtocolo), listaNotasAgrupadas);
-                return this.Json(new { validaNotas = validaNotas }, JsonRequestBehavior.AllowGet);
+                return this.Json(new { validaNotas }, JsonRequestBehavior.AllowGet);
             }
             catch (Exception ex)
             {
@@ -598,7 +609,7 @@ namespace NWORKFLOW_WEB.MVC_4_BS.Controllers
                 ModelState.Remove("NumNotaSug");
                 modelo.Aprovado = 0;
                 N0203REGBusiness N0203REGBusiness = new N0203REGBusiness();
-                if (N0203REGBusiness.verificaAprovador(modelo.OrigemOcorrencia, modelo.TipoAtendimento) == false)
+                if (N0203REGBusiness.VerificaAprovador(modelo.OrigemOcorrencia, modelo.TipoAtendimento) == false)
                 {
                     modelo.MensagemRetorno = "Não existe usuário aprovador para esta origem!";
                     modelo.Aprovado = 1;
@@ -609,7 +620,6 @@ namespace NWORKFLOW_WEB.MVC_4_BS.Controllers
                 N0203ANX N0203ANX = new N0203ANX();
                 modelo.MensagemRetorno = string.Empty;
                 var dataAtual = DateTime.Now;
-                long codProtocolo;
 
                 N0203REG.CODCLI = long.Parse(modelo.CodCliente);
                 N0203REG.CODMOT = long.Parse(modelo.CodMotorista);
@@ -655,9 +665,11 @@ namespace NWORKFLOW_WEB.MVC_4_BS.Controllers
                 {
                     foreach (HttpPostedFileBase file in modelo.AnexoArquivo)
                     {
-                        N0203ANX = new N0203ANX();
-                        N0203ANX.NOMANX = file.FileName;
-                        N0203ANX.EXTANX = file.ContentType;
+                        N0203ANX = new N0203ANX
+                        {
+                            NOMANX = file.FileName,
+                            EXTANX = file.ContentType
+                        };
 
                         byte[] anexoBytes = null;
                         BinaryReader reader = new BinaryReader(file.InputStream);
@@ -668,7 +680,7 @@ namespace NWORKFLOW_WEB.MVC_4_BS.Controllers
                     }
                 }
 
-                if (N0203REGBusiness.InserirRegistroOcorrencia(N0203REG, out codProtocolo))
+                if (N0203REGBusiness.InserirRegistroOcorrencia(N0203REG, out long codProtocolo))
                 {
                     modelo.MensagemRetorno = "Registro salvo com sucesso! Ocorrência número: " + codProtocolo.ToString() + ".";
 
@@ -809,7 +821,7 @@ namespace NWORKFLOW_WEB.MVC_4_BS.Controllers
                         string[] usuario = lista[i + 21].Split('-');
                         itemLista.USUULT = long.Parse(usuario[0].Replace(" ", ""));
                         listaN0203IPV.Add(itemLista);
-                        i = i + 21;
+                        i += 21;
                     }
                 }
 
@@ -1033,7 +1045,7 @@ namespace NWORKFLOW_WEB.MVC_4_BS.Controllers
                     PesquisaSucesso = true;
                 }
 
-                return this.Json(new { listaNotasSaida, PesquisaSucesso = PesquisaSucesso }, JsonRequestBehavior.AllowGet);
+                return this.Json(new { listaNotasSaida, PesquisaSucesso }, JsonRequestBehavior.AllowGet);
             }
             catch (Exception ex)
             {
@@ -1060,7 +1072,7 @@ namespace NWORKFLOW_WEB.MVC_4_BS.Controllers
                     PesquisaSucesso = true;
                 }
 
-                return this.Json(new { listaItens, PesquisaSucesso = PesquisaSucesso }, JsonRequestBehavior.AllowGet);
+                return this.Json(new { listaItens, PesquisaSucesso }, JsonRequestBehavior.AllowGet);
             }
             catch (Exception ex)
             {
@@ -1113,7 +1125,7 @@ namespace NWORKFLOW_WEB.MVC_4_BS.Controllers
                 else
                 {
                     var validaNotas = N0203REGBusiness.ValidaNotasOutroProtocolo(codReg, listaNotasAgrupadas, tipAtend, out msgRetorno, this.LoginUsuario);
-                    return this.Json(new { validaNotas = validaNotas, msgRetorno = msgRetorno }, JsonRequestBehavior.AllowGet);
+                    return this.Json(new { validaNotas, msgRetorno }, JsonRequestBehavior.AllowGet);
                 }
 
             }
@@ -1136,7 +1148,7 @@ namespace NWORKFLOW_WEB.MVC_4_BS.Controllers
                     for (int i = 0; i < arrayLista.Length - 1; i++)
                     {
                         listaNova.Add(new Tuple<long, long>(long.Parse(arrayLista[i]), long.Parse(arrayLista[i + 1])));
-                        i = i + 1;
+                        i += 1;
                     }
                 }
 
@@ -1184,7 +1196,7 @@ namespace NWORKFLOW_WEB.MVC_4_BS.Controllers
             }
         }
 
-        public JsonResult montarPermissao(string login)
+        public JsonResult MontarPermissao(string login)
         {
             try
             {
@@ -1195,7 +1207,7 @@ namespace NWORKFLOW_WEB.MVC_4_BS.Controllers
                 var dadosUsuario = listaDadosUsuario.ListaDadosUsuarioPorLogin(login);
                 var permissoes = montaPermissao.montaPermissoes(Convert.ToInt64(dadosUsuario.CODUSU), (int)Enums.Sistema.NWORKFLOW);
 
-                return this.Json(new { permissoes = permissoes }, JsonRequestBehavior.AllowGet);
+                return this.Json(new { permissoes }, JsonRequestBehavior.AllowGet);
             }
             catch (Exception ex)
             {
@@ -1203,7 +1215,7 @@ namespace NWORKFLOW_WEB.MVC_4_BS.Controllers
                 return this.Json(new { redirectUrl = Url.Action("ErroException", "Erro"), ErroExcecao = true }, JsonRequestBehavior.AllowGet);
             }
         }
-        public JsonResult removerAcesso(long codMen, string usuario)
+        public JsonResult RemoverAcesso(long codMen, string usuario)
         {
             try
             {
@@ -1214,7 +1226,7 @@ namespace NWORKFLOW_WEB.MVC_4_BS.Controllers
 
                 var permissoes = acesso.removerAcesso(codMen, Convert.ToInt64(dadosUsuario.CODUSU));
 
-                return this.Json(new { permissoes = permissoes }, JsonRequestBehavior.AllowGet);
+                return this.Json(new { permissoes }, JsonRequestBehavior.AllowGet);
             }
             catch (Exception ex)
             {
@@ -1222,7 +1234,7 @@ namespace NWORKFLOW_WEB.MVC_4_BS.Controllers
                 return this.Json(new { redirectUrl = Url.Action("ErroException", "Erro"), ErroExcecao = true }, JsonRequestBehavior.AllowGet);
             }
         }
-        public JsonResult adicionarAcesso(long codMen, string usuario)
+        public JsonResult AdicionarAcesso(long codMen, string usuario)
         {
             try
             {
@@ -1232,7 +1244,7 @@ namespace NWORKFLOW_WEB.MVC_4_BS.Controllers
                 var dadosUsuario = listaDadosUsuario.ListaDadosUsuarioPorLogin(usuario);
                 var permissoes = acesso.adicionarAcesso(codMen, Convert.ToInt64(dadosUsuario.CODUSU));
 
-                return this.Json(new { permissoes = permissoes }, JsonRequestBehavior.AllowGet);
+                return this.Json(new { permissoes }, JsonRequestBehavior.AllowGet);
             }
             catch (Exception ex)
             {
@@ -1271,28 +1283,24 @@ namespace NWORKFLOW_WEB.MVC_4_BS.Controllers
 
                 if (listaRegistros.Count == 0)
                 {
-                    return this.Json(new { msgRetorno = msgRetorno, listaVazia = true }, JsonRequestBehavior.AllowGet);
+                    return this.Json(new { msgRetorno, listaVazia = true }, JsonRequestBehavior.AllowGet);
                 }
 
                 DateTime dataEmissao = DateTime.Now;
                 listaRegistros[0].DATAEMISSAO = dataEmissao.ToString();
                 listaRegistros[0].USUIMPR = this.NomeUsuarioLogado;
 
-                LocalReport report = new LocalReport();
-
-                report.ReportPath = Server.MapPath("~/Reports/RelatorioAnalitico.rdlc");
+                LocalReport report = new LocalReport
+                {
+                    ReportPath = Server.MapPath("~/Reports/RelatorioAnalitico.rdlc")
+                };
 
                 var reportRelatorio = new ReportDataSource("RelatorioAnaliticoDataSet", listaRegistros);
                 report.Refresh();
                 report.DataSources.Add(reportRelatorio);
 
                 string reportType = "PDF";
-                string mineType;
                 byte[] reportBytes;
-                string encoding;
-                string fileNameExtension;
-                Warning[] warnings;
-                string[] streams;
 
                 string deviceInfo =
                 "<DeviceInfo>" +
@@ -1308,11 +1316,11 @@ namespace NWORKFLOW_WEB.MVC_4_BS.Controllers
                 reportBytes = report.Render(
                     reportType,
                     deviceInfo,
-                    out mineType,
-                    out encoding,
-                    out fileNameExtension,
-                    out streams,
-                    out warnings);
+                    out string mineType,
+                    out string encoding,
+                    out string fileNameExtension,
+                    out string[] streams,
+                    out Warning[] warnings);
 
                 var base64EncodedPDF = System.Convert.ToBase64String(reportBytes);
                 return this.Json("data:application/pdf;base64, " + base64EncodedPDF);
@@ -1342,7 +1350,7 @@ namespace NWORKFLOW_WEB.MVC_4_BS.Controllers
                     }
                 }
 
-                return this.Json(new { ListaN0203TRAPesquisa = ListaN0203TRAPesquisa }, JsonRequestBehavior.AllowGet);
+                return this.Json(new { ListaN0203TRAPesquisa }, JsonRequestBehavior.AllowGet);
             }
             catch (Exception ex)
             {
@@ -1421,7 +1429,7 @@ namespace NWORKFLOW_WEB.MVC_4_BS.Controllers
                 var dtFat = string.IsNullOrEmpty(dataFaturamento) ? auxData : DateTime.Parse(dataFaturamento);
                 var tipPesq = int.Parse(tipoPesquisa);
 
-                if (N0203REGBusiness.validarPlaca(codPlaca.ToUpper()))
+                if (N0203REGBusiness.ValidarPlaca(codPlaca.ToUpper()))
                 {
                     return this.Json(new { placa = false }, JsonRequestBehavior.AllowGet);
                 }
@@ -1441,9 +1449,10 @@ namespace NWORKFLOW_WEB.MVC_4_BS.Controllers
                 /***********************************************************************************************************************************************/
                 listaItensColeta = N0203REGBusiness.ItensColeta(codPlaca.ToUpper());
                 /***********************************************************************************************************************************************/
-                LocalReport report = new LocalReport();
-
-                report.ReportPath = Server.MapPath("~/Reports/RelatorioSintetico.rdlc");
+                LocalReport report = new LocalReport
+                {
+                    ReportPath = Server.MapPath("~/Reports/RelatorioSintetico.rdlc")
+                };
 
                 var reportRelatorio = new ReportDataSource("RelatorioSinteticoDataSet", listaRegistros);
                 report.Refresh();
@@ -1458,12 +1467,7 @@ namespace NWORKFLOW_WEB.MVC_4_BS.Controllers
                 report.DataSources.Add(reportItensColeta);
 
                 string reportType = "PDF";
-                string mineType;
                 byte[] reportBytes;
-                string encoding;
-                string fileNameExtension;
-                Warning[] warnings;
-                string[] streams;
 
                 string deviceInfo =
                 "<DeviceInfo>" +
@@ -1479,11 +1483,11 @@ namespace NWORKFLOW_WEB.MVC_4_BS.Controllers
                 reportBytes = report.Render(
                     reportType,
                     deviceInfo,
-                    out mineType,
-                    out encoding,
-                    out fileNameExtension,
-                    out streams,
-                    out warnings);
+                    out string mineType,
+                    out string encoding,
+                    out string fileNameExtension,
+                    out string[] streams,
+                    out Warning[] warnings);
 
                 var base64EncodedPDF = System.Convert.ToBase64String(reportBytes);
                 return this.Json("data:application/pdf;base64, " + base64EncodedPDF);
@@ -1549,7 +1553,7 @@ namespace NWORKFLOW_WEB.MVC_4_BS.Controllers
                 }
 
 
-                if (N0203REGBusiness.validarPlaca(codPlaca))
+                if (N0203REGBusiness.ValidarPlaca(codPlaca))
                 {
                     return this.Json(new { placa = false }, JsonRequestBehavior.AllowGet);
                 }
@@ -1558,11 +1562,12 @@ namespace NWORKFLOW_WEB.MVC_4_BS.Controllers
                 listaItensTroca = N0203REGBusiness.ItensTrocaConferencia(codPlaca.ToUpper(), dataFaturamento, codigoCliente);
                 /***********************************************************************************************************************************************/
                 /***********************************************************************************************************************************************/
-                listaItensColeta = N0203REGBusiness.ItensColetaConferencia(codPlaca.ToUpper(), dataFaturamento);
+                listaItensColeta = N0203REGBusiness.ItensColetaConferencia(codPlaca.ToUpper());
                 /***********************************************************************************************************************************************/
-                LocalReport report = new LocalReport();
-
-                report.ReportPath = Server.MapPath("~/Reports/RelatorioSinteticoConferencia.rdlc");
+                LocalReport report = new LocalReport
+                {
+                    ReportPath = Server.MapPath("~/Reports/RelatorioSinteticoConferencia.rdlc")
+                };
 
                 var reportRelatorio = new ReportDataSource("Carga", listaRegistros);
                 report.Refresh();
@@ -1577,12 +1582,7 @@ namespace NWORKFLOW_WEB.MVC_4_BS.Controllers
                 report.DataSources.Add(reportItensColeta);
 
                 string reportType = "PDF";
-                string mineType;
                 byte[] reportBytes;
-                string encoding;
-                string fileNameExtension;
-                Warning[] warnings;
-                string[] streams;
 
                 string deviceInfo =
                 "<DeviceInfo>" +
@@ -1598,11 +1598,11 @@ namespace NWORKFLOW_WEB.MVC_4_BS.Controllers
                 reportBytes = report.Render(
                     reportType,
                     deviceInfo,
-                    out mineType,
-                    out encoding,
-                    out fileNameExtension,
-                    out streams,
-                    out warnings);
+                    out string mineType,
+                    out string encoding,
+                    out string fileNameExtension,
+                    out string[] streams,
+                    out Warning[] warnings);
 
                 var base64EncodedPDF = System.Convert.ToBase64String(reportBytes);
                 return this.Json("data:application/pdf;base64, " + base64EncodedPDF);
@@ -1617,7 +1617,7 @@ namespace NWORKFLOW_WEB.MVC_4_BS.Controllers
         #endregion
 
         #region Relatório Tempo Etapas
-        public JsonResult RelatorioTempoCarga(string fililal, string numeroNotaFiscal, string codCliente, string dataInicial, string dataFinal, string embarque, string motivo, string situacao, string origem, string tipo, string dataInicialOCR, string dataFinalOCR, string codPlaca, string transpotadora)
+        public JsonResult RelatorioTempoCarga(string fililal, string codCliente, string dataInicial, string dataFinal, string embarque, string motivo, string situacao, string origem, string tipo, string dataInicialOCR, string dataFinalOCR, string codPlaca, string transpotadora)
         {
             if (this.Logado != ((char)Enums.Logado.Sim).ToString())
             {
@@ -1629,24 +1629,21 @@ namespace NWORKFLOW_WEB.MVC_4_BS.Controllers
                 N0203REGBusiness N0203REGBusiness = new N0203REGBusiness();
                 string msgRetorno = "Nenhum registro encontrado.";
 
-                listaRegistros = N0203REGBusiness.RelatorioTempoCarga(fililal, numeroNotaFiscal, codCliente, dataInicial, dataFinal, embarque, motivo, situacao, origem, tipo, dataInicialOCR, dataFinalOCR, codPlaca, transpotadora);
+                listaRegistros = N0203REGBusiness.RelatorioTempoCarga(fililal, embarque, codCliente, dataInicial, dataFinal, motivo, situacao, origem, tipo, dataInicialOCR, dataFinalOCR, codPlaca, transpotadora);
                 if (listaRegistros.Count == 0)
                 {
-                    return this.Json(new { msgRetorno = msgRetorno, listaVazia = true }, JsonRequestBehavior.AllowGet);
+                    return this.Json(new { msgRetorno, listaVazia = true }, JsonRequestBehavior.AllowGet);
                 }
-                LocalReport report = new LocalReport();
-                report.ReportPath = Server.MapPath("~/Reports/RelatorioEtapas.rdlc");
+                LocalReport report = new LocalReport
+                {
+                    ReportPath = Server.MapPath("~/Reports/RelatorioEtapas.rdlc")
+                };
 
                 var reportRelatorio = new ReportDataSource("RelatorioEtapas", listaRegistros);
                 report.Refresh();
                 report.DataSources.Add(reportRelatorio);
                 string reportType = "PDF";
-                string mineType;
                 byte[] reportBytes;
-                string encoding;
-                string fileNameExtension;
-                Warning[] warnings;
-                string[] streams;
 
                 string deviceInfo =
                 "<DeviceInfo>" +
@@ -1662,11 +1659,11 @@ namespace NWORKFLOW_WEB.MVC_4_BS.Controllers
                 reportBytes = report.Render(
                     reportType,
                     deviceInfo,
-                    out mineType,
-                    out encoding,
-                    out fileNameExtension,
-                    out streams,
-                    out warnings);
+                    out string mineType,
+                    out string encoding,
+                    out string fileNameExtension,
+                    out string[] streams,
+                    out Warning[] warnings);
 
                 var base64EncodedPDF = System.Convert.ToBase64String(reportBytes);
                 return this.Json("data:application/pdf;base64, " + base64EncodedPDF);
@@ -1706,23 +1703,19 @@ namespace NWORKFLOW_WEB.MVC_4_BS.Controllers
 
                 if (listaRegistros.Count == 0)
                 {
-                    return this.Json(new { msgRetorno = msgRetorno, listaVazia = true }, JsonRequestBehavior.AllowGet);
+                    return this.Json(new { msgRetorno, listaVazia = true }, JsonRequestBehavior.AllowGet);
                 }
 
-                LocalReport report = new LocalReport();
-
-                report.ReportPath = Server.MapPath("~/Reports/RelatorioOcorrencia.rdlc");
+                LocalReport report = new LocalReport
+                {
+                    ReportPath = Server.MapPath("~/Reports/RelatorioOcorrencia.rdlc")
+                };
 
                 var reportRelatorio = new ReportDataSource("RelatorioOcorrencia", listaRegistros);
                 report.Refresh();
                 report.DataSources.Add(reportRelatorio);
                 string reportType = "PDF";
-                string mineType;
                 byte[] reportBytes;
-                string encoding;
-                string fileNameExtension;
-                Warning[] warnings;
-                string[] streams;
 
                 string deviceInfo =
                 "<DeviceInfo>" +
@@ -1738,11 +1731,11 @@ namespace NWORKFLOW_WEB.MVC_4_BS.Controllers
                 reportBytes = report.Render(
                     reportType,
                     deviceInfo,
-                    out mineType,
-                    out encoding,
-                    out fileNameExtension,
-                    out streams,
-                    out warnings);
+                    out string mineType,
+                    out string encoding,
+                    out string fileNameExtension,
+                    out string[] streams,
+                    out Warning[] warnings);
 
                 var base64EncodedPDF = System.Convert.ToBase64String(reportBytes);
                 return this.Json("data:application/pdf;base64, " + base64EncodedPDF);
@@ -1754,7 +1747,7 @@ namespace NWORKFLOW_WEB.MVC_4_BS.Controllers
             }
         }
         #endregion
-        public JsonResult anexosOcorrencia(string codigoRegistro)
+        public JsonResult AnexosOcorrencia(string codigoRegistro)
         {
             if (this.Logado != ((char)Enums.Logado.Sim).ToString())
             {
@@ -1784,7 +1777,7 @@ namespace NWORKFLOW_WEB.MVC_4_BS.Controllers
             }
         }
 
-        public ActionResult CadVinculoColeta(string codigoRegistro)
+        public ActionResult CadVinculoColeta()
         {
             if (this.Logado != ((char)Enums.Logado.Sim).ToString())
             {
@@ -1900,46 +1893,6 @@ namespace NWORKFLOW_WEB.MVC_4_BS.Controllers
             }
         }
 
-        public List<ListaN0204ATDPesquisa> ListaTiposAtendimento()
-        {
-            N0204ATDBusiness N0204ATDBusiness = new N0204ATDBusiness();
-            List<N0204ATD> listaTipoAtendimento = new List<N0204ATD>();
-            List<ListaN0204ATDPesquisa> ListaN0204ATDPesquisa = new List<ListaN0204ATDPesquisa>();
-            listaTipoAtendimento = N0204ATDBusiness.PesquisaTipoAtendimento();
-
-            if (listaTipoAtendimento.Count > 0)
-            {
-                ListaN0204ATDPesquisa = new List<ListaN0204ATDPesquisa>();
-
-                foreach (N0204ATD item in listaTipoAtendimento)
-                {
-                    ListaN0204ATDPesquisa.Add((ListaN0204ATDPesquisa)item);
-                }
-            }
-
-            return ListaN0204ATDPesquisa;
-        }
-
-        public List<ListaN0204ATDPesquisa> ListaTiposAtendimentoPorUsuario()
-        {
-            N0204ATDBusiness N0204ATDBusiness = new N0204ATDBusiness();
-            List<N0204ATD> listaTipoAtendimento = new List<N0204ATD>();
-            List<ListaN0204ATDPesquisa> ListaN0204ATDPesquisa = new List<ListaN0204ATDPesquisa>();
-            listaTipoAtendimento = N0204ATDBusiness.PesquisaTipoAtendimentoPorUsuario(int.Parse(this.CodigoUsuarioLogado));
-
-            if (listaTipoAtendimento.Count > 0)
-            {
-                ListaN0204ATDPesquisa = new List<ListaN0204ATDPesquisa>();
-
-                foreach (N0204ATD item in listaTipoAtendimento)
-                {
-                    ListaN0204ATDPesquisa.Add((ListaN0204ATDPesquisa)item);
-                }
-            }
-
-            return ListaN0204ATDPesquisa;
-        }
-
         public JsonResult InserirTipoAtendimento(string descricao)
         {
             if (this.Logado != ((char)Enums.Logado.Sim).ToString())
@@ -2030,7 +1983,7 @@ namespace NWORKFLOW_WEB.MVC_4_BS.Controllers
                     }
                 }
 
-                return this.Json(new { listaTipoAtendOrigem = listaTipoAtendOrigem, PesquisaSucesso = PesquisaSucesso }, JsonRequestBehavior.AllowGet);
+                return this.Json(new { listaTipoAtendOrigem, PesquisaSucesso }, JsonRequestBehavior.AllowGet);
 
             }
             catch (Exception ex)
@@ -2089,7 +2042,7 @@ namespace NWORKFLOW_WEB.MVC_4_BS.Controllers
             {
 
                 N0203REGBusiness N0203REG = new N0203REGBusiness();
-                var retorno = N0203REG.consultarParametroJustificativa(loginUsuario);
+                var retorno = N0203REG.ConsultarParametroJustificativa(loginUsuario);
 
                 return Json(new { retorno }, JsonRequestBehavior.AllowGet);
             }
@@ -2110,7 +2063,7 @@ namespace NWORKFLOW_WEB.MVC_4_BS.Controllers
                     return Json(new { campos = false }, JsonRequestBehavior.AllowGet);
                 }
                 N0203REGBusiness N0203REG = new N0203REGBusiness();
-                var retorno = N0203REG.inserirVinculo(loginUsuario, operacao);
+                var retorno = N0203REG.InserirVinculo(loginUsuario, operacao);
 
                 return Json(new { retorno, campos }, JsonRequestBehavior.AllowGet);
             }
@@ -2253,7 +2206,7 @@ namespace NWORKFLOW_WEB.MVC_4_BS.Controllers
                     }
                 }
 
-                return this.Json(new { ListaOrigensMotivo = ListaOrigensMotivo, PesquisaSucesso = PesquisaSucesso }, JsonRequestBehavior.AllowGet);
+                return this.Json(new { ListaOrigensMotivo, PesquisaSucesso }, JsonRequestBehavior.AllowGet);
 
             }
             catch (Exception ex)
@@ -2327,7 +2280,7 @@ namespace NWORKFLOW_WEB.MVC_4_BS.Controllers
             }
         }
 
-        public JsonResult ExcluirMotivoDevolucao(string codigo, string descricao)
+        public JsonResult ExcluirMotivoDevolucao(string codigo)
         {
             if (this.Logado != ((char)Enums.Logado.Sim).ToString())
             {
@@ -2358,23 +2311,22 @@ namespace NWORKFLOW_WEB.MVC_4_BS.Controllers
 
             try
             {
-                LocalReport report = new LocalReport();
-                report.ReportPath = Server.MapPath("~/Reports/MotivosDevolucao.rdlc");
+                LocalReport report = new LocalReport
+                {
+                    ReportPath = Server.MapPath("~/Reports/MotivosDevolucao.rdlc")
+                };
 
-                var lista = new List<Tuple<string, string>>();
-                lista.Add(new Tuple<string, string>(this.NomeUsuarioLogado, DateTime.Now.ToString()));
+                var lista = new List<Tuple<string, string>>
+                {
+                    new Tuple<string, string>(this.NomeUsuarioLogado, DateTime.Now.ToString())
+                };
 
                 var reportRelatorio = new ReportDataSource("MotivosDevolucaoDataSet", lista);
                 report.Refresh();
                 report.DataSources.Add(reportRelatorio);
 
                 string reportType = "PDF";
-                string mineType;
                 byte[] reportBytes;
-                string encoding;
-                string fileNameExtension;
-                Warning[] warnings;
-                string[] streams;
 
                 string deviceInfo =
                 "<DeviceInfo>" +
@@ -2390,11 +2342,11 @@ namespace NWORKFLOW_WEB.MVC_4_BS.Controllers
                 reportBytes = report.Render(
                     reportType,
                     deviceInfo,
-                    out mineType,
-                    out encoding,
-                    out fileNameExtension,
-                    out streams,
-                    out warnings);
+                    out string mineType,
+                    out string encoding,
+                    out string fileNameExtension,
+                    out string[] streams,
+                    out Warning[] warnings);
 
                 var base64EncodedPDF = System.Convert.ToBase64String(reportBytes);
                 return this.Json("data:application/pdf;base64, " + base64EncodedPDF);
@@ -2685,10 +2637,12 @@ namespace NWORKFLOW_WEB.MVC_4_BS.Controllers
 
                     for (int i = 0; i < lista.Length; i++)
                     {
-                        itemLista = new N0204AOR();
-                        itemLista.CODATD = codTipAtd;
-                        itemLista.CODORI = long.Parse(lista[i]);
-                        itemLista.SITREL = situacao;
+                        itemLista = new N0204AOR
+                        {
+                            CODATD = codTipAtd,
+                            CODORI = long.Parse(lista[i]),
+                            SITREL = situacao
+                        };
                         listaTipAtendOrigem.Add(itemLista);
                     }
                 }
@@ -2817,10 +2771,12 @@ namespace NWORKFLOW_WEB.MVC_4_BS.Controllers
 
                     for (int i = 0; i < lista.Length; i++)
                     {
-                        itemLista = new N0204MDO();
-                        itemLista.CODMDV = codMot;
-                        itemLista.CODORI = long.Parse(lista[i]);
-                        itemLista.SITREL = situacao;
+                        itemLista = new N0204MDO
+                        {
+                            CODMDV = codMot,
+                            CODORI = long.Parse(lista[i]),
+                            SITREL = situacao
+                        };
                         listaMotivosOrigens.Add(itemLista);
                     }
                 }
@@ -2928,7 +2884,7 @@ namespace NWORKFLOW_WEB.MVC_4_BS.Controllers
 
                 var N0204AUSBusiness = new N0204AUSBusiness();
                 var listaTipoAtendiUsuarios = N0204AUSBusiness.PesquisarTipoAtendimentoUsuario(dadosUsuario.CODUSU);
-                return this.Json(new { listaTipoAtendiUsuarios = listaTipoAtendiUsuarios }, JsonRequestBehavior.AllowGet);
+                return this.Json(new { listaTipoAtendiUsuarios }, JsonRequestBehavior.AllowGet);
             }
             catch (Exception ex)
             {
@@ -2961,10 +2917,12 @@ namespace NWORKFLOW_WEB.MVC_4_BS.Controllers
 
                     for (int i = 0; i < lista.Length; i++)
                     {
-                        var itemLista = new N0204AUS();
-                        itemLista.CODUSU = codUsu;
-                        itemLista.CODATD = long.Parse(lista[i]);
-                        itemLista.SITREL = ((char)Enums.SituacaoRegistro.Ativo).ToString();
+                        var itemLista = new N0204AUS
+                        {
+                            CODUSU = codUsu,
+                            CODATD = long.Parse(lista[i]),
+                            SITREL = ((char)Enums.SituacaoRegistro.Ativo).ToString()
+                        };
                         listaAtdUsuario.Add(itemLista);
                     }
                 }
@@ -3017,7 +2975,7 @@ namespace NWORKFLOW_WEB.MVC_4_BS.Controllers
 
                 this.InicializaView();
 
-                var padrao = ListaPrazoDevolucaoTroca().Where(c => string.IsNullOrEmpty(c.loginUsuario)).FirstOrDefault();
+                var padrao = ListaPrazoDevolucaoTroca(0).Where(c => string.IsNullOrEmpty(c.loginUsuario)).FirstOrDefault();
                 if (padrao != null)
                 {
                     this.CadastroPrazoDevTrocaXUsuario.PrazoDeTroca = padrao.prazoTroca;
@@ -3060,7 +3018,7 @@ namespace NWORKFLOW_WEB.MVC_4_BS.Controllers
             }
         }
 
-        public JsonResult PesquisaPrazoDevolucaoTroca()
+        public JsonResult PesquisaPrazoDevolucaoTroca(long usudep)
         {
             if (this.Logado != ((char)Enums.Logado.Sim).ToString())
             {
@@ -3069,7 +3027,7 @@ namespace NWORKFLOW_WEB.MVC_4_BS.Controllers
 
             try
             {
-                var ListaN0204PPUPesquisa = ListaPrazoDevolucaoTroca().Where(c => !string.IsNullOrEmpty(c.loginUsuario)).ToList();
+                var ListaN0204PPUPesquisa = ListaPrazoDevolucaoTroca(usudep).Where(c => !string.IsNullOrEmpty(c.loginUsuario)).ToList();
 
                 return this.Json(new { ListaN0204PPUPesquisa }, JsonRequestBehavior.AllowGet);
 
@@ -3081,13 +3039,13 @@ namespace NWORKFLOW_WEB.MVC_4_BS.Controllers
             }
         }
 
-        public List<ListaN0204PPUPesquisa> ListaPrazoDevolucaoTroca()
+        public List<ListaN0204PPUPesquisa> ListaPrazoDevolucaoTroca(long usudep)
         {
             var N0204PPUBusiness = new N0204PPUBusiness();
             var listPrazosDevTroca = new List<N0204PPU>();
             var ListaN0204PPUPesquisa = new List<ListaN0204PPUPesquisa>();
 
-            listPrazosDevTroca = N0204PPUBusiness.PesquisaPrazoDevolucaoTroca();
+            listPrazosDevTroca = N0204PPUBusiness.PesquisaPrazoDevolucaoTroca(usudep);
 
             if (listPrazosDevTroca.Count > 0)
             {
@@ -3102,7 +3060,8 @@ namespace NWORKFLOW_WEB.MVC_4_BS.Controllers
             return ListaN0204PPUPesquisa;
         }
 
-        public JsonResult SalvarPrazoDevolucaoTroca(string prazoDev, string prazoTroca, string listaUsuarios)
+        
+        public JsonResult SalvarPrazoDevolucaoTroca(string prazoDev, string prazoTroca, string listaUsuarios, string usudep)
         {
             if (this.Logado != ((char)Enums.Logado.Sim).ToString())
             {
@@ -3123,9 +3082,12 @@ namespace NWORKFLOW_WEB.MVC_4_BS.Controllers
 
                     for (int i = 0; i < lista.Length; i++)
                     {
-                        var itemLista = new N0204PPU();
-                        itemLista.QTDDEV = long.Parse(prazoDev);
-                        itemLista.QTDTRC = long.Parse(prazoTroca);
+                        var itemLista = new N0204PPU
+                        {
+                            QTDDEV = long.Parse(prazoDev),
+                            QTDTRC = long.Parse(prazoTroca),
+                            USUDEP = long.Parse(usudep)
+                        };
 
                         var loginUsuario = lista[i];
                         // Busca código do usuário
@@ -3146,9 +3108,13 @@ namespace NWORKFLOW_WEB.MVC_4_BS.Controllers
                 }
                 else
                 {
-                    var itemLista = new N0204PPU();
-                    itemLista.QTDDEV = long.Parse(prazoDev);
-                    itemLista.QTDTRC = long.Parse(prazoTroca);
+                    var itemLista = new N0204PPU
+                    {
+                        QTDDEV = long.Parse(prazoDev),
+                        QTDTRC = long.Parse(prazoTroca), 
+                        USUDEP = long.Parse(usudep)
+                        
+                    };
                     listPrazosDevTroca.Add(itemLista);
                 }
 
@@ -3181,6 +3147,10 @@ namespace NWORKFLOW_WEB.MVC_4_BS.Controllers
                 var dadosUsuario = N9999USUBusiness.ListaDadosUsuarioPorLogin(loginUsuario);
 
                 bool sucesso = N0204PPUBusiness.ExcluirPrazoDevolucaoTroca((int)dadosUsuario.CODUSU);
+                if (sucesso == false)
+                {
+                    msgRetorno = "Usuário não pode ser removido, favor verificar!";
+                }
                 return this.Json(new { msgRetorno, ExcluidoSucesso = sucesso }, JsonRequestBehavior.AllowGet);
             }
             catch (Exception ex)
@@ -3203,23 +3173,22 @@ namespace NWORKFLOW_WEB.MVC_4_BS.Controllers
 
             try
             {
-                LocalReport report = new LocalReport();
-                report.ReportPath = Server.MapPath("~/Reports/SituacaoProtocolos.rdlc");
+                LocalReport report = new LocalReport
+                {
+                    ReportPath = Server.MapPath("~/Reports/SituacaoProtocolos.rdlc")
+                };
 
-                var lista = new List<Tuple<string, string>>();
-                lista.Add(new Tuple<string, string>(this.NomeUsuarioLogado, DateTime.Now.ToString()));
+                var lista = new List<Tuple<string, string>>
+                {
+                    new Tuple<string, string>(NomeUsuarioLogado, DateTime.Now.ToString())
+                };
 
                 var reportRelatorio = new ReportDataSource("SituacaoProtocolosDataSet", lista);
                 report.Refresh();
                 report.DataSources.Add(reportRelatorio);
 
                 string reportType = "PDF";
-                string mineType;
                 byte[] reportBytes;
-                string encoding;
-                string fileNameExtension;
-                Warning[] warnings;
-                string[] streams;
 
                 string deviceInfo =
                 "<DeviceInfo>" +
@@ -3235,11 +3204,11 @@ namespace NWORKFLOW_WEB.MVC_4_BS.Controllers
                 reportBytes = report.Render(
                     reportType,
                     deviceInfo,
-                    out mineType,
-                    out encoding,
-                    out fileNameExtension,
-                    out streams,
-                    out warnings);
+                    out string mineType,
+                    out string encoding,
+                    out string fileNameExtension,
+                    out string[] streams,
+                    out Warning[] warnings);
 
                 var base64EncodedPDF = System.Convert.ToBase64String(reportBytes);
                 return this.Json("data:application/pdf;base64, " + base64EncodedPDF);
@@ -3390,53 +3359,148 @@ namespace NWORKFLOW_WEB.MVC_4_BS.Controllers
             if (this.CadastroPrazoDevTrocaXUsuario == null)
             {
                 this.CadastroPrazoDevTrocaXUsuario = new CadPrazoDevTrocaModel();
+                this.CadastroPrazoDevTrocaXUsuario.ListaN0204PPU = ListaN0204PPU();
             }
         }
+
+        public List<ListaN0204PPU> ListarN0204PPU() 
+        {
+            N0204PPUBusiness n0204PPUBusiness = new N0204PPUBusiness();
+            List<N0204PPU> ListaUsuarioDependente = new List<N0204PPU>();
+            List<ListaN0204PPU> listaN0204PPUs = new List<ListaN0204PPU>();
+            ListaUsuarioDependente = n0204PPUBusiness.PesquisaPrazoDevolucaoTroca(0);
+            if(ListaUsuarioDependente.Count > 0)
+            {
+                listaN0204PPUs = new List<ListaN0204PPU>();
+
+                foreach(N0204PPU item in ListaUsuarioDependente)
+                {
+                    listaN0204PPUs.Add((ListaN0204PPU)item);
+                }
+            }
+
+            return listaN0204PPUs;
+
+        }
+
+        public List<ListaN0204PPU> ListaN0204PPU()
+        {
+            List<ListaN0204PPU> ListaN0204PPU = new List<ListaN0204PPU>();
+            ListaN0204PPU = ListarN0204PPU();
+            ListaN0204PPU itemListaTp = new ListaN0204PPU
+            {
+                codigo = 0,
+                descricao = "Selecione....",
+                usuaprovador = ""
+
+            };
+            ListaN0204PPU.Add(itemListaTp);
+            return ListaN0204PPU.OrderBy(c => c.codigo).ToList();
+
+        }
+
+        // VERIFICAR AQUI 
 
         public List<ListaN0204ATDPesquisa> ListaTipoAtendimento()
         {
             List<ListaN0204ATDPesquisa> ListaTipoAtendimento = new List<ListaN0204ATDPesquisa>();
             ListaTipoAtendimento = ListaTiposAtendimento();
-            ListaN0204ATDPesquisa itemListaTp = new ListaN0204ATDPesquisa();
-            itemListaTp.Codigo = 0;
-            itemListaTp.Descricao = "Selecione...";
-            itemListaTp.Situacao = ((char)Enums.SituacaoRegistro.Ativo).ToString(); ;
+            ListaN0204ATDPesquisa itemListaTp = new ListaN0204ATDPesquisa
+            {
+                Codigo = 0,
+                Descricao = "Selecione...",
+                Situacao = ((char)Enums.SituacaoRegistro.Ativo).ToString()
+            };
+            ;
             ListaTipoAtendimento.Add(itemListaTp);
             return ListaTipoAtendimento.OrderBy(c => c.Codigo).ToList();
+        }
+
+        public List<ListaN0204ATDPesquisa> ListaTiposAtendimento()
+        {
+            N0204ATDBusiness N0204ATDBusiness = new N0204ATDBusiness();
+            List<N0204ATD> listaTipoAtendimento = new List<N0204ATD>();
+            List<ListaN0204ATDPesquisa> ListaN0204ATDPesquisa = new List<ListaN0204ATDPesquisa>();
+            listaTipoAtendimento = N0204ATDBusiness.PesquisaTipoAtendimento();
+
+            if (listaTipoAtendimento.Count > 0)
+            {
+                ListaN0204ATDPesquisa = new List<ListaN0204ATDPesquisa>();
+
+                foreach (N0204ATD item in listaTipoAtendimento)
+                {
+                    ListaN0204ATDPesquisa.Add((ListaN0204ATDPesquisa)item);
+                }
+            }
+
+            return ListaN0204ATDPesquisa;
+        }
+
+        //ANTES verificar aqui 
+
+        public List<ListaN0204ATDPesquisa> ListaTiposAtendimentoPorUsuario()
+        {
+            N0204ATDBusiness N0204ATDBusiness = new N0204ATDBusiness();
+            List<N0204ATD> listaTipoAtendimento = new List<N0204ATD>();
+            List<ListaN0204ATDPesquisa> ListaN0204ATDPesquisa = new List<ListaN0204ATDPesquisa>();
+            listaTipoAtendimento = N0204ATDBusiness.PesquisaTipoAtendimentoPorUsuario(int.Parse(this.CodigoUsuarioLogado));
+
+            if (listaTipoAtendimento.Count > 0)
+            {
+                ListaN0204ATDPesquisa = new List<ListaN0204ATDPesquisa>();
+
+                foreach (N0204ATD item in listaTipoAtendimento)
+                {
+                    ListaN0204ATDPesquisa.Add((ListaN0204ATDPesquisa)item);
+                }
+            }
+
+            return ListaN0204ATDPesquisa;
         }
 
         public List<ListaN0204ATDPesquisa> ListaTipoAtendimentoPorUsuario()
         {
             List<ListaN0204ATDPesquisa> ListaTipoAtendimento = new List<ListaN0204ATDPesquisa>();
             ListaTipoAtendimento = ListaTiposAtendimentoPorUsuario();
-            ListaN0204ATDPesquisa itemListaTp = new ListaN0204ATDPesquisa();
-            itemListaTp.Codigo = 0;
-            itemListaTp.Descricao = "Selecione...";
-            itemListaTp.Situacao = ((char)Enums.SituacaoRegistro.Ativo).ToString(); ;
+            ListaN0204ATDPesquisa itemListaTp = new ListaN0204ATDPesquisa
+            {
+                Codigo = 0,
+                Descricao = "Selecione...",
+                Situacao = ((char)Enums.SituacaoRegistro.Ativo).ToString()
+            };
+            ;
             ListaTipoAtendimento.Add(itemListaTp);
             return ListaTipoAtendimento.OrderBy(c => c.Codigo).ToList();
         }
+
+        //
 
         public List<ListaN0204MDVPesquisa> ListaMotivoDevolucao()
         {
             List<ListaN0204MDVPesquisa> ListaMotivoDevolucao = new List<ListaN0204MDVPesquisa>();
             ListaMotivoDevolucao = ListaMotivos();
-            ListaN0204MDVPesquisa itemListaMd = new ListaN0204MDVPesquisa();
-            itemListaMd.Codigo = 0;
-            itemListaMd.Descricao = "Selecione...";
-            itemListaMd.Situacao = ((char)Enums.SituacaoRegistro.Ativo).ToString(); ;
+            ListaN0204MDVPesquisa itemListaMd = new ListaN0204MDVPesquisa
+            {
+                Codigo = 0,
+                Descricao = "Selecione...",
+                Situacao = ((char)Enums.SituacaoRegistro.Ativo).ToString()
+            };
+            ;
             ListaMotivoDevolucao.Add(itemListaMd);
             return ListaMotivoDevolucao.OrderBy(c => c.Codigo).ToList();
         }
-
+        
         public List<ListaN0204ORIPesquisa> ListaOrigemOcorrencia()
         {
             List<ListaN0204ORIPesquisa> ListaOrigemOcorrencia = new List<ListaN0204ORIPesquisa>();
             ListaOrigemOcorrencia = ListaOrigens();
-            ListaN0204ORIPesquisa itemListaOr = new ListaN0204ORIPesquisa();
-            itemListaOr.Codigo = 0;
-            itemListaOr.Descricao = "Selecione...";
-            itemListaOr.Situacao = ((char)Enums.SituacaoRegistro.Ativo).ToString(); ;
+            ListaN0204ORIPesquisa itemListaOr = new ListaN0204ORIPesquisa
+            {
+                Codigo = 0,
+                Descricao = "Selecione...",
+                Situacao = ((char)Enums.SituacaoRegistro.Ativo).ToString()
+            };
+            ;
             ListaOrigemOcorrencia.Add(itemListaOr);
             return ListaOrigemOcorrencia.OrderBy(c => c.Codigo).ToList();
         }
@@ -3448,9 +3512,11 @@ namespace NWORKFLOW_WEB.MVC_4_BS.Controllers
         private void PopulaSituacaoRegOcorr()
         {
             this.ConsultaRelAnalitico.ListaSituacaoRegistroOcorrencia = new List<SitRegOcorModel>();
-            SitRegOcorModel item = new SitRegOcorModel();
-            item.Id = 0;
-            item.Descricao = "Selecione...";
+            SitRegOcorModel item = new SitRegOcorModel
+            {
+                Id = 0,
+                Descricao = "Selecione..."
+            };
             this.ConsultaRelAnalitico.ListaSituacaoRegistroOcorrencia.Add((SitRegOcorModel)item);
             this.ConsultaRelAnalitico.ListaSituacaoRegistroOcorrencia.Add((SitRegOcorModel)Enums.SituacaoRegistroOcorrencia.Pendente);
             this.ConsultaRelAnalitico.ListaSituacaoRegistroOcorrencia.Add((SitRegOcorModel)Enums.SituacaoRegistroOcorrencia.Fechado);
@@ -3463,9 +3529,11 @@ namespace NWORKFLOW_WEB.MVC_4_BS.Controllers
         private void PopulaSituacaoRegOcorrSintetico()
         {
             this.ConsultaRelSintetico.ListaSituacaoRegistroOcorrencia = new List<SitRegOcorModel>();
-            SitRegOcorModel item = new SitRegOcorModel();
-            item.Id = 0;
-            item.Descricao = "Selecione...";
+            SitRegOcorModel item = new SitRegOcorModel
+            {
+                Id = 0,
+                Descricao = "Selecione..."
+            };
             this.ConsultaRelSintetico.ListaSituacaoRegistroOcorrencia.Add((SitRegOcorModel)item);
             this.ConsultaRelSintetico.ListaSituacaoRegistroOcorrencia.Add((SitRegOcorModel)Enums.SituacaoRegistroOcorrencia.Pendente);
             this.ConsultaRelSintetico.ListaSituacaoRegistroOcorrencia.Add((SitRegOcorModel)Enums.SituacaoRegistroOcorrencia.Fechado);
@@ -3480,8 +3548,10 @@ namespace NWORKFLOW_WEB.MVC_4_BS.Controllers
         /// </summary>
         private void PopulaTipoPesquisaRelSintetico()
         {
-            this.ConsultaRelSintetico.ListaTipoPesquisaReg = new List<TipoPesquisaRegModel>();
-            this.ConsultaRelSintetico.ListaTipoPesquisaReg.Add((TipoPesquisaRegModel)Enums.TipoPesquisaRegistroOcorrencia.AnaliseEmbarque);
+            this.ConsultaRelSintetico.ListaTipoPesquisaReg = new List<TipoPesquisaRegModel>
+            {
+                (TipoPesquisaRegModel)Enums.TipoPesquisaRegistroOcorrencia.AnaliseEmbarque
+            };
         }
     }
 

@@ -13,7 +13,8 @@ namespace NWORKFLOW_WEB.MVC_4_BS.Models
         public string loginUsuario { get; set; }
         public long prazoDev { get; set; }
         public long prazoTroca { get; set; }
-
+        public string usuaprovador { get; set; }
+        
         public static explicit operator ListaN0204PPUPesquisa(N0204PPU N0204PPU)
         {
             var item = new ListaN0204PPUPesquisa();
@@ -27,12 +28,23 @@ namespace NWORKFLOW_WEB.MVC_4_BS.Models
                 var dadosUsuario = N9999USUBusiness.ListaDadosUsuarioPorCodigo((int)N0204PPU.CODUSU);
                 var usuario = ActiveDirectoryBusiness.ListaDadosUsuarioAD(dadosUsuario.LOGIN);
 
+                if(N0204PPU.USUDEP != 0)
+                { 
+                    var dadosusuariodependente = N9999USUBusiness.ListaDadosUsuarioPorCodigo((int)N0204PPU.USUDEP);
+                    var usuariodependente      = ActiveDirectoryBusiness.ListaDadosUsuarioAD(dadosusuariodependente.LOGIN);
+                    item.usuaprovador = usuariodependente.Nome;
+                }
+                else
+                {
+                    item.usuaprovador = null;
+                }
                 item.loginUsuario = dadosUsuario.LOGIN;
                 item.nomeUsuario = usuario.Nome;
             }
-
-            item.prazoDev = N0204PPU.QTDDEV;
-            item.prazoTroca = N0204PPU.QTDTRC;
+            
+            item.prazoDev     = N0204PPU.QTDDEV;
+            item.prazoTroca   = N0204PPU.QTDTRC;
+            
             return item;
         }
     }

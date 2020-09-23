@@ -51,26 +51,26 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
                 else
                     data = DateTime.Now.AddDays(-qtdeDiasTroca).ToShortDateString();
 
-                string sql = "Select A.CodEmp as CodigoEmpresa,                              " +
-                             "       A.CodFil as CodigoFilial,                               " +
-                             "       A.CodSnf as SerieNota,                                  " +
-                             "       A.NumNfv as NumeroNota,                                 " +
-                             "       A.DatEmi as DataEmissao,                                " +
-                             "       TO_CHAR(A.VlrLiq, '999999990D99') as ValorLiquido,      " +
-                             "       'Fechada'as SituacaoNota,                               " +
-                             "       A.TipNfs as TipoNota,                                   " +
-                             "       A.CodCli as CodigoCliente,                              " +
-                             "       C.NOMCLI as NomeCliente,                                " +
-                             "       A.TnsPro as TipoTransacao,                              " +
-                             "       B.DesTns as DescricaoTipoTransacao,                     " +
-                             "       A.CodTra as CodigoTransportadora,                       " +
-                             "       ' '      as IndicativoConferencia,                      " +
-                             " round((to_date(current_date) - A.DatEmi)) as DiasFaturamento   " +
-                             "  From SAPIENS.E140NFV A, SAPIENS.E001TNS B, SAPIENS.E085CLI C                         " +
-                             " Where A.CodEmp = B.CodEmp                                     " +
-                             "   And A.TnsPro = B.CodTns                                     " +
-                             "   And A.SitNfv = 2                                            " +
-                             "   And A.CodTra = 1                                            " +
+                string sql = "Select A.CodEmp as CodigoEmpresa,                                " +
+                             "       A.CodFil as CodigoFilial,                                 " +
+                             "       A.CodSnf as SerieNota,                                    " +
+                             "       A.NumNfv as NumeroNota,                                   " +
+                             "       A.DatEmi as DataEmissao,                                  " +
+                             "       TO_CHAR(A.VlrLiq, '999999990D99') as ValorLiquido,        " +
+                             "       'Fechada'as SituacaoNota,                                 " +
+                             "       A.TipNfs as TipoNota,                                     " +
+                             "       A.CodCli as CodigoCliente,                                " +
+                             "       C.NOMCLI as NomeCliente,                                  " +
+                             "       A.TnsPro as TipoTransacao,                                " +
+                             "       B.DesTns as DescricaoTipoTransacao,                       " +
+                             "       A.CodTra as CodigoTransportadora,                         " +
+                             "       ' '      as IndicativoConferencia,                        " +
+                             " round((to_date(current_date) - A.DatEmi)) as DiasFaturamento    " +
+                             "  From SAPIENS.E140NFV A, SAPIENS.E001TNS B, SAPIENS.E085CLI C   " +
+                             " Where A.CodEmp = B.CodEmp                                       " +
+                             "   And A.TnsPro = B.CodTns                                       " +
+                             "   And A.SitNfv = 2                                              " +
+                             "   And A.CodTra = 1                                              " +
                              "   And A.DatEmi >= " + "'" + data + "'" +
                              "   And A.CodMtr = " + codigoMotorista +
                              "   And A.CodCli = " + codigoCliente +
@@ -82,27 +82,27 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
                 // Transportadora
                 if (codigoMotorista == 0)
                 {
-                    sql = "Select A.CodEmp as CodigoEmpresa,                              " +
-                          "       A.CodFil as CodigoFilial,                               " +
-                          "       A.CodSnf as SerieNota,                                  " +
-                          "       A.NumNfv as NumeroNota,                                 " +
-                          "       A.DatEmi as DataEmissao,                                " +
-                          "       TO_CHAR(A.VlrLiq, '999999990D99') as ValorLiquido,      " +
-                          "       'Fechada'as SituacaoNota,                               " +
-                          "       A.TipNfs as TipoNota,                                   " +
-                          "       A.CodCli as CodigoCliente,                              " +
-                          "       C.NOMCLI as NomeCliente,                                " +
-                          "       A.TnsPro as TipoTransacao,                              " +
-                          "       B.DesTns as DescricaoTipoTransacao,                     " +
-                          "       A.CodTra as CodigoTransportadora,                       " +
-                          "       ' '      as IndicativoConferencia,                      " +
-                          " round((to_date(current_date) - A.DatEmi)) as DiasFaturamento  " +
-                          "  From SAPIENS.E140NFV A, SAPIENS.E001TNS B, SAPIENS.E085CLI C                         " +
-                          " Where A.CodEmp = B.CodEmp                                     " +
-                          "   And A.TnsPro = B.CodTns                                     " +
-                          "   And A.SitNfv = 2                                            " +
-                          "   And A.Tipnfs in(1,10)                                       " +
-                          "   And A.CodTra <> 1                                           " +
+                    sql = "Select A.CodEmp as CodigoEmpresa,                                " +
+                          "       A.CodFil as CodigoFilial,                                 " +
+                          "       A.CodSnf as SerieNota,                                    " +
+                          "       A.NumNfv as NumeroNota,                                   " +
+                          "       A.DatEmi as DataEmissao,                                  " +
+                          "       TO_CHAR(A.VlrLiq, '999999990D99') as ValorLiquido,        " +
+                          "       'Fechada'as SituacaoNota,                                 " +
+                          "       A.TipNfs as TipoNota,                                     " +
+                          "       A.CodCli as CodigoCliente,                                " +
+                          "       C.NOMCLI as NomeCliente,                                  " +
+                          "       A.TnsPro as TipoTransacao,                                " +
+                          "       B.DesTns as DescricaoTipoTransacao,                       " +
+                          "       A.CodTra as CodigoTransportadora,                         " +
+                          "       ' '      as IndicativoConferencia,                        " +
+                          " round((to_date(current_date) - A.DatEmi)) as DiasFaturamento    " +
+                          "  From SAPIENS.E140NFV A, SAPIENS.E001TNS B, SAPIENS.E085CLI C   " +
+                          " Where A.CodEmp = B.CodEmp                                       " +
+                          "   And A.TnsPro = B.CodTns                                       " +
+                          "   And A.SitNfv = 2                                              " +
+                          "   And A.Tipnfs in(1,10)                                         " +
+                          "   And A.CodTra <> 1                                             " +
                           "   And A.CODFIL <> 101                                           " +
                           "   And A.DatEmi >= " + "'" + data + "'" +
                           "   And A.CodCli = " + codigoCliente +
@@ -123,21 +123,21 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
                 while (dr.Read())
                 {
                     itemNota = new E140NFVModel();
-                    itemNota.CodigoEmpresa = dr.GetInt32(0);
-                    itemNota.CodigoFilial = dr.GetInt32(1);
-                    itemNota.SerieNota = dr.GetString(2);
-                    itemNota.NumeroNota = dr.GetInt64(3);
-                    itemNota.DataEmissao = dr.GetDateTime(4).ToShortDateString();
-                    itemNota.ValorLiquido = dr.GetString(5);
-                    itemNota.SituacaoNota = dr.GetString(6);
-                    itemNota.TipoNota = dr.GetInt32(7);
-                    itemNota.CodigoCliente = dr.GetInt32(8);
-                    itemNota.NomeCliente = dr.GetString(9);
-                    itemNota.TipoTransacao = dr.GetString(10);
+                    itemNota.CodigoEmpresa          = dr.GetInt32(0);
+                    itemNota.CodigoFilial           = dr.GetInt32(1);
+                    itemNota.SerieNota              = dr.GetString(2);
+                    itemNota.NumeroNota             = dr.GetInt64(3);
+                    itemNota.DataEmissao            = dr.GetDateTime(4).ToShortDateString();
+                    itemNota.ValorLiquido           = dr.GetString(5);
+                    itemNota.SituacaoNota           = dr.GetString(6);
+                    itemNota.TipoNota               = dr.GetInt32(7);
+                    itemNota.CodigoCliente          = dr.GetInt32(8);
+                    itemNota.NomeCliente            = dr.GetString(9);
+                    itemNota.TipoTransacao          = dr.GetString(10);
                     itemNota.DescricaoTipoTransacao = dr.GetString(11);
-                    itemNota.CodigoTransportadora = dr.GetInt32(12);
-                    itemNota.IndicativoConferencia = dr.GetString(13);
-                    itemNota.DiasFaturamento = dr.GetInt32(14);
+                    itemNota.CodigoTransportadora   = dr.GetInt32(12);
+                    itemNota.IndicativoConferencia  = dr.GetString(13);
+                    itemNota.DiasFaturamento        = dr.GetInt32(14);
                     listaNotas.Add(itemNota);
                 }
 

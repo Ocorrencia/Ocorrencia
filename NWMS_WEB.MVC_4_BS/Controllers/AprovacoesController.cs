@@ -169,7 +169,7 @@ namespace NWORKFLOW_WEB.MVC_4_BS.Controllers
                     tipoAtend = Enums.TipoAtendimento.TrocaMercadorias;
                 N0203UAPBusiness N0203UAPBusiness = new N0203UAPBusiness();
                 var listaOrigensUsuario = N0203UAPBusiness.PesquisaUsuarioAprovadorXOrigemOcorrencia(dadosUsuario.CODUSU, tipoAtend);
-                return this.Json(new { listaOrigensUsuario = listaOrigensUsuario }, JsonRequestBehavior.AllowGet);
+                return this.Json(new { listaOrigensUsuario }, JsonRequestBehavior.AllowGet);
             }
             catch (Exception ex)
             {
@@ -200,10 +200,12 @@ namespace NWORKFLOW_WEB.MVC_4_BS.Controllers
                     string[] lista = listaOrigemOcorrencia.Split('-');
                     for (int i = 0; i < lista.Length; i++)
                     {
-                        itemLista = new N0203UAP();
-                        itemLista.CODATD = (long)tipoAtend;
-                        itemLista.CODUSU = codUsu;
-                        itemLista.CODORI = long.Parse(lista[i]);
+                        itemLista = new N0203UAP
+                        {
+                            CODATD = (long)tipoAtend,
+                            CODUSU = codUsu,
+                            CODORI = long.Parse(lista[i])
+                        };
                         listaOrigensUsuario.Add(itemLista);
                     }
                 }
@@ -273,7 +275,7 @@ namespace NWORKFLOW_WEB.MVC_4_BS.Controllers
                 }
                 var N0203UOFBusiness = new N0203UOFBusiness();
                 var listaOperacoes = N0203UOFBusiness.PesquisaUsuarioAprovadorXOperacaoFat(dadosUsuario.CODUSU, tipoAtendimento);
-                return this.Json(new { listaOperacoes = listaOperacoes }, JsonRequestBehavior.AllowGet);
+                return this.Json(new { listaOperacoes }, JsonRequestBehavior.AllowGet);
             }
             catch (Exception ex)
             {
@@ -303,10 +305,12 @@ namespace NWORKFLOW_WEB.MVC_4_BS.Controllers
                     string[] lista = listaOperacoes.Split('-');
                     for (int i = 0; i < lista.Length; i++)
                     {
-                        itemLista = new N0203UOF();
-                        itemLista.CODATD = tipAtd;
-                        itemLista.CODUSU = codUsu;
-                        itemLista.CODOPE = long.Parse(lista[i]);
+                        itemLista = new N0203UOF
+                        {
+                            CODATD = tipAtd,
+                            CODUSU = codUsu,
+                            CODOPE = long.Parse(lista[i])
+                        };
                         listaOperacoesUsuario.Add(itemLista);
                     }
                 }
@@ -342,7 +346,7 @@ namespace NWORKFLOW_WEB.MVC_4_BS.Controllers
                 long? auxLong = null;
                 var codUsu = string.IsNullOrEmpty(codigoUsuario) ? auxLong : long.Parse(codigoUsuario);
                 var listaUsuarios = E099USUBusiness.PesquisarUsuariosSapiens(codUsu);
-                return this.Json(new { listaUsuarios = listaUsuarios }, JsonRequestBehavior.AllowGet);
+                return this.Json(new { listaUsuarios }, JsonRequestBehavior.AllowGet);
             }
             catch (Exception ex)
             {
@@ -388,7 +392,7 @@ namespace NWORKFLOW_WEB.MVC_4_BS.Controllers
             {
                 N0203REGBusiness N0203REGBusiness = new N0203REGBusiness();
                 var listaAprovacao = N0203REGBusiness.PesquisaProtocolosPendentesAprovacao(long.Parse(this.CodigoUsuarioLogado));
-                return this.Json(new { listaAprovacao = listaAprovacao }, JsonRequestBehavior.AllowGet);
+                return this.Json(new { listaAprovacao }, JsonRequestBehavior.AllowGet);
             }
             catch (Exception ex)
             {
@@ -423,7 +427,7 @@ namespace NWORKFLOW_WEB.MVC_4_BS.Controllers
 
             N0203REGBusiness N0203REGBusiness = new N0203REGBusiness();
 
-            var obsreg = N0203REGBusiness.pesquisarObservacaoSAC(Convert.ToInt64(numeroProtocolo));
+            var obsreg = N0203REGBusiness.PesquisarObservacaoSAC(Convert.ToInt64(numeroProtocolo));
 
             var emailCabecalho = Attributes.KeyValueAttribute.GetFirst("Descricao", Enums.Email.Cabecalho).GetValue<string>();
             var emailCorpo = Attributes.KeyValueAttribute.GetFirst("Descricao", Enums.Email.Corpo).GetValue<string>();
@@ -462,7 +466,7 @@ namespace NWORKFLOW_WEB.MVC_4_BS.Controllers
                 N9999USUBusiness N9999USUBusiness = new N9999USUBusiness();
                 UsuarioADModel usuarioAD = new UsuarioADModel();
                 var ActiveDirectoryBusiness = new ActiveDirectoryBusiness();
-                var dadosProtocolo = N0203REGBusiness.PesquisaRegistroOcorrencia(long.Parse(codigoRegistro), (int)Enums.SituacaoRegistroOcorrencia.Fechado);
+                var dadosProtocolo = N0203REGBusiness.PesquisaRegistroOcorrencia(long.Parse(codigoRegistro));
                 if (dadosProtocolo != null)
                 {
                     var tipoAtend = Enums.TipoAtendimento.DevolucaoMercadorias;
@@ -533,7 +537,7 @@ namespace NWORKFLOW_WEB.MVC_4_BS.Controllers
                             this.MontarEmailFinanceiroNotasBoleto(dadosProtocolo.NUMREG.ToString(), notasEmail, cliente, tipoAtend);
                         }
                     }
-                    return this.Json(new { AprovadoSucesso = AprovadoSucesso }, JsonRequestBehavior.AllowGet);
+                    return this.Json(new { AprovadoSucesso }, JsonRequestBehavior.AllowGet);
                 }
                 else
                 {
@@ -561,7 +565,7 @@ namespace NWORKFLOW_WEB.MVC_4_BS.Controllers
                 N9999USUBusiness N9999USUBusiness = new N9999USUBusiness();
                 UsuarioADModel usuarioAD = new UsuarioADModel();
                 var ActiveDirectoryBusiness = new ActiveDirectoryBusiness();
-                var dadosProtocolo = N0203REGBusiness.PesquisaRegistroOcorrencia(long.Parse(codigoRegistro), (int)Enums.SituacaoRegistroOcorrencia.Fechado);
+                var dadosProtocolo = N0203REGBusiness.PesquisaRegistroOcorrencia(long.Parse(codigoRegistro));
                 if (dadosProtocolo != null)
                 {
                     var tipoAtend = Enums.TipoAtendimento.DevolucaoMercadorias;
@@ -571,7 +575,7 @@ namespace NWORKFLOW_WEB.MVC_4_BS.Controllers
                     usuarioAD = ActiveDirectoryBusiness.ListaDadosUsuarioAD(N9999USU.LOGIN);
                     bool ReprovadoSucesso = N0203REGBusiness.ReprovarRegistrosOcorrenciaNivel1(long.Parse(codigoRegistro), long.Parse(this.CodigoUsuarioLogado), observacaoReprovacao);
                     this.MontarEmailProtocoloReprovado(codigoRegistro, observacaoReprovacao, tipoAtend, usuarioAD.Email);
-                    return this.Json(new { ReprovadoSucesso = ReprovadoSucesso }, JsonRequestBehavior.AllowGet);
+                    return this.Json(new { ReprovadoSucesso }, JsonRequestBehavior.AllowGet);
                 }
                 else
                 {
@@ -613,7 +617,7 @@ namespace NWORKFLOW_WEB.MVC_4_BS.Controllers
                 return this.RedirectToAction("ErroException", "Erro");
             }
         }
-        public JsonResult EmitirNotaEntradaSapiens(string codigoRegistro, int codTra, string operacao, string tipoNota, string observacao)
+        public JsonResult EmitirNotaEntradaSapiens(string codigoRegistro, string operacao, string tipoNota)
         {
             if (this.Logado != ((char)Enums.Logado.Sim).ToString())
             {
@@ -632,7 +636,7 @@ namespace NWORKFLOW_WEB.MVC_4_BS.Controllers
                 
                 if (int.Parse(operacao) == (int)Enums.OperacaoAprovacaoFaturamento.Aprovar && int.Parse(tipoNota) == (int)Enums.TipoNotaDevolucao.Nutriplan)
                 {
-                    var dadosProtocolo = N0203REGBusiness.PesquisaRegistroOcorrencia(long.Parse(codigoRegistro), (int)Enums.SituacaoRegistroOcorrencia.Recebido);
+                    var dadosProtocolo = N0203REGBusiness.PesquisaRegistroOcorrencia(long.Parse(codigoRegistro));
                     if (dadosProtocolo != null)
                     {
                         var cnpj = E085CLIBusiness.PesquisaClientes(dadosProtocolo.CODCLI).FirstOrDefault().CnpjCpf;
@@ -651,7 +655,7 @@ namespace NWORKFLOW_WEB.MVC_4_BS.Controllers
                             { 
                                 N0203REGBusiness.PedidosViaOcorrencia(Convert.ToInt32(codigoRegistro), int.Parse(this.CodigoUsuarioLogado), out msgRetornoPedido);
                             }
-                            if (!N0203REGBusiness.EmitirLancamentoNfe(long.Parse(codigoRegistro), dadosProtocolo, out msgRetornoSapiens))
+                            if (!N0203REGBusiness.EmitirLancamentoNfe( dadosProtocolo, out msgRetornoSapiens))
                             {
                                 msgRetornoSapiens = "Registro de devolução Nº " + codigoRegistro + " não aprovado.<br/><br/>Erro de integração com o sistema sapiens.<br/><br/>" + msgRetornoSapiens + " " + msgRetornoPedido;
                                 var tipoAtend = Enums.TipoAtendimento.DevolucaoMercadorias;
@@ -667,7 +671,7 @@ namespace NWORKFLOW_WEB.MVC_4_BS.Controllers
                         }
                         else
                         {
-                            N0203REGBusiness.rollbackAprovacao(codigoRegistro);
+                            N0203REGBusiness.RollbackAprovacao(codigoRegistro);
                             msgRetornoSapiens = "Registro de devolução Nº " + codigoRegistro + " não aprovado.<br/><br/>Verifique as notas " + string.Join(",", validarNotas) + " do cliente.<br/><br/>Selecione o tipo de nota Cliente.";
                         }
                     }
@@ -678,7 +682,7 @@ namespace NWORKFLOW_WEB.MVC_4_BS.Controllers
                 }
                 if (aprovadoSucesso == false)
                 {
-                    N0203REGBusiness.rollbackAprovacao(codigoRegistro);
+                    N0203REGBusiness.RollbackAprovacao(codigoRegistro);
                 }
                 return this.Json(new { msgRetornoSapiens, AprovadoSucesso = aprovadoSucesso }, JsonRequestBehavior.AllowGet);
             }
@@ -693,14 +697,14 @@ namespace NWORKFLOW_WEB.MVC_4_BS.Controllers
         {
             var N0203REGBusiness = new N0203REGBusiness();
             var listaTransportador = N0203REGBusiness.ConsultaTransportadora(ocorrencia, tipo);
-            return this.Json(new { listaTransportador = listaTransportador, redirectUrl = Url.Action("Login", "Login"), Logado = true }, JsonRequestBehavior.AllowGet);
+            return this.Json(new { listaTransportador, redirectUrl = Url.Action("Login", "Login"), Logado = true }, JsonRequestBehavior.AllowGet);
         }
 
         public JsonResult OrigemOcorrencia(int Numreg)
         {
             var N0203REGBusiness = new N0203REGBusiness();
             var ListaOrigemOcorrencia = N0203REGBusiness.OrigemOcorrencia(Numreg);
-            return this.Json(new { ListaOrigemOcorrencia = ListaOrigemOcorrencia, redirectUrl = Url.Action("Login", "Login"), Logado = true }, JsonRequestBehavior.AllowGet);
+            return this.Json(new { ListaOrigemOcorrencia, redirectUrl = Url.Action("Login", "Login"), Logado = true }, JsonRequestBehavior.AllowGet);
         }
         
         public JsonResult AprovarRegistrosOcorrencia(string codigoRegistro, string operacao, string tipoOperacao, string tipoNota, string observacao, string msgRetornoSapiens)
@@ -819,23 +823,26 @@ namespace NWORKFLOW_WEB.MVC_4_BS.Controllers
         public List<ListaN0204ATDPesquisa> ListaTipoAtendimento()
         {
             var ListaTipoAtendimento = ListaTiposAtendimento();
-            var itemListaTp = new ListaN0204ATDPesquisa();
-            itemListaTp.Codigo = 0;
-            itemListaTp.Descricao = "Selecione...";
-            itemListaTp.Situacao = ((char)Enums.SituacaoRegistro.Ativo).ToString(); ;
+            var itemListaTp = new ListaN0204ATDPesquisa
+            {
+                Codigo = 0,
+                Descricao = "Selecione...",
+                Situacao = ((char)Enums.SituacaoRegistro.Ativo).ToString()
+            };
+            ;
             ListaTipoAtendimento.Add(itemListaTp);
             return ListaTipoAtendimento.OrderBy(c => c.Codigo).ToList();
         }
         public List<ListaN0204ATDPesquisa> ListaTiposAtendimento()
         {
             var N0204ATDBusiness = new N0204ATDBusiness();
-            var listaTipoAtendimento = new List<N0204ATD>();
+            var ListaTipoAtendimento = new List<N0204ATD>();
             var ListaN0204ATDPesquisa = new List<ListaN0204ATDPesquisa>();
-            listaTipoAtendimento = N0204ATDBusiness.PesquisaTipoAtendimento();
-            if (listaTipoAtendimento.Count > 0)
+            ListaTipoAtendimento = N0204ATDBusiness.PesquisaTipoAtendimento();
+            if (ListaTipoAtendimento.Count > 0)
             {
                 ListaN0204ATDPesquisa = new List<ListaN0204ATDPesquisa>();
-                foreach (N0204ATD item in listaTipoAtendimento)
+                foreach (N0204ATD item in ListaTipoAtendimento)
                 {
                     ListaN0204ATDPesquisa.Add((ListaN0204ATDPesquisa)item);
                 }
@@ -848,11 +855,15 @@ namespace NWORKFLOW_WEB.MVC_4_BS.Controllers
         {
             var N0203UOFBusiness = new N0203UOFBusiness();
             var listaOperacoes = N0203UOFBusiness.PesquisaOperacoesAprovFatPorUsuario(long.Parse(this.CodigoUsuarioLogado));
-            var itemNew = new OperacaoAprovacaoModel();
-            itemNew.CodigoOperacao = 0;
-            itemNew.DescricaoOperacao = "Selecione...";
-            this.AprovarRegistroView.ListaOperacoesAprovacao = new List<OperacaoAprovacaoModel>();
-            this.AprovarRegistroView.ListaOperacoesAprovacao.Add((OperacaoAprovacaoModel)itemNew);
+            var itemNew = new OperacaoAprovacaoModel
+            {
+                CodigoOperacao = 0,
+                DescricaoOperacao = "Selecione..."
+            };
+            this.AprovarRegistroView.ListaOperacoesAprovacao = new List<OperacaoAprovacaoModel>
+            {
+                (OperacaoAprovacaoModel)itemNew
+            };
             if (listaOperacoes.Count > 0)
             {
                 foreach (var item in listaOperacoes)

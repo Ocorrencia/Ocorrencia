@@ -47,7 +47,7 @@ namespace NWORKFLOW_WEB.MVC_4_BS.Controllers
             try
             {
                 N0203REGBusiness n0203REGBusiness = new N0203REGBusiness();
-                var contador = n0203REGBusiness.pedidosFaturarIndenizacao();
+                var contador = n0203REGBusiness.PedidosFaturarIndenizacao();
                 return this.Json(new { contador, sucesso = true }, JsonRequestBehavior.AllowGet);
 
             }
@@ -69,7 +69,7 @@ namespace NWORKFLOW_WEB.MVC_4_BS.Controllers
             {
                 N0203REGBusiness N0203REGBusines = new N0203REGBusiness();
                 List<Ocorrencia> ListaIndicador = new List<Ocorrencia>();
-                ListaIndicador = N0203REGBusines.CarregarIndicadoresTabela(status, mes, filtroAgrup, indicador, ano);
+                ListaIndicador = N0203REGBusines.CarregarIndicadoresTabela(mes, filtroAgrup, indicador, ano);
 
                 return this.Json(new { ListaIndicador, sucesso = true }, JsonRequestBehavior.AllowGet);
             }
@@ -94,7 +94,7 @@ namespace NWORKFLOW_WEB.MVC_4_BS.Controllers
        
                 N0203REGBusiness N0203REGBusines = new N0203REGBusiness();
                 List<String> listarObservacoes = new List<String>();
-                listarObservacoes = N0203REGBusines.listarObservacoes(numreg);
+                listarObservacoes = N0203REGBusines.ListarObservacoes(numreg);
 
                 return this.Json(new { listarObservacoes, sucesso = true }, JsonRequestBehavior.AllowGet);
             }
@@ -113,10 +113,10 @@ namespace NWORKFLOW_WEB.MVC_4_BS.Controllers
                 N0203REGBusiness n0203REGBusiness = new N0203REGBusiness();
                 //string msgRetorno = "Nenhum Registro Encontrado.";
                 
-                ListaRelatorioItens = n0203REGBusiness.RelatorioGraficoItens(status, mes, filtroAgrup, indicador, ano);
+                ListaRelatorioItens = n0203REGBusiness.RelatorioGraficoItens( mes, filtroAgrup, indicador, ano);
 
                 List<RelatorioGraficoOcorrencia> ListaRelatorioOcorrencia = new List<RelatorioGraficoOcorrencia>();
-                ListaRelatorioOcorrencia = n0203REGBusiness.relatorioGraficoOcorrencias(mes, ano, indicador);
+                ListaRelatorioOcorrencia = n0203REGBusiness.RelatorioGraficoOcorrencias(mes, ano, indicador);
 
 
                 LocalReport report = new LocalReport();
@@ -177,10 +177,10 @@ namespace NWORKFLOW_WEB.MVC_4_BS.Controllers
                 N0203REGBusiness n0203REGBusiness = new N0203REGBusiness();
                 //string msgRetorno = "Nenhum Registro Encontrado.";
 
-                ListaRelatorioItens = n0203REGBusiness.RelatorioGraficoItens(status, mes, filtroAgrup, indicador, ano);
+                ListaRelatorioItens = n0203REGBusiness.RelatorioGraficoItens( mes, filtroAgrup, indicador, ano);
 
                 List<RelatorioGraficoOcorrencia> ListaRelatorioOcorrencia = new List<RelatorioGraficoOcorrencia>();
-                ListaRelatorioOcorrencia = n0203REGBusiness.relatorioGraficoOcorrencias(mes, ano, indicador);
+                ListaRelatorioOcorrencia = n0203REGBusiness.RelatorioGraficoOcorrencias(mes, ano, indicador);
 
 
                 LocalReport report = new LocalReport();
@@ -245,7 +245,7 @@ namespace NWORKFLOW_WEB.MVC_4_BS.Controllers
             {
                 N0203REGBusiness N0203REGBusines = new N0203REGBusiness();
                 List<Ocorrencia> ListaIndicador = new List<Ocorrencia>();
-                ListaIndicador = N0203REGBusines.carregarIndicadorSetores(status, mes, indicador, ano);
+                ListaIndicador = N0203REGBusines.CarregarIndicadorSetores(status, mes, indicador, ano);
 
                 return this.Json(new { ListaIndicador, sucesso = true }, JsonRequestBehavior.AllowGet);
             }
@@ -311,7 +311,7 @@ namespace NWORKFLOW_WEB.MVC_4_BS.Controllers
             {
                 N0203REGBusiness N0203REGBusines = new N0203REGBusiness();
                 List<TimeLine> listaTimeLine = new List<TimeLine>();
-                listaTimeLine = N0203REGBusines.timeLine(Convert.ToInt64(numeroOcorrencia));
+                listaTimeLine = N0203REGBusines.TimeLine(Convert.ToInt64(numeroOcorrencia));
 
                 return this.Json(new { listaTimeLine, sucesso = true }, JsonRequestBehavior.AllowGet);
             }
@@ -374,7 +374,7 @@ namespace NWORKFLOW_WEB.MVC_4_BS.Controllers
             {
                 N0203REGBusiness N0203REGBusines = new N0203REGBusiness();
                 List<Ocorrencia> ListaProtocolosPendentes = new List<Ocorrencia>();
-                ListaProtocolosPendentes = N0203REGBusines.ocorrenciaDrill(status, mes, filtroAgrup, indicador, ano);
+                ListaProtocolosPendentes = N0203REGBusines.OcorrenciaDrill(mes, indicador, ano);
                 return this.Json(new { ListaProtocolosPendentes, sucesso = true }, JsonRequestBehavior.AllowGet);
             }
             catch (Exception ex)
@@ -394,7 +394,7 @@ namespace NWORKFLOW_WEB.MVC_4_BS.Controllers
             {
                 N0203REGBusiness N0203REGBusines = new N0203REGBusiness();
                 List<Ocorrencia> ListaProtocolosPendentes = new List<Ocorrencia>();
-                ListaProtocolosPendentes = N0203REGBusines.carregarOcorrenciasFaturamentoAtraso();
+                ListaProtocolosPendentes = N0203REGBusines.CarregarOcorrenciasFaturamentoAtraso();
                 return this.Json(new { ListaProtocolosPendentes, sucesso = true }, JsonRequestBehavior.AllowGet);
             }
             catch (Exception ex)
@@ -414,7 +414,7 @@ namespace NWORKFLOW_WEB.MVC_4_BS.Controllers
             {
                 N0203REGBusiness N0203REGBusines = new N0203REGBusiness();
                 List<Ocorrencia> ListaProtocolosPendentes = new List<Ocorrencia>();
-                ListaProtocolosPendentes = N0203REGBusines.carregarOcorrenciasFaturamentoEmDia();
+                ListaProtocolosPendentes = N0203REGBusines.CarregarOcorrenciasFaturamentoEmDia();
                 return this.Json(new { ListaProtocolosPendentes, sucesso = true }, JsonRequestBehavior.AllowGet);
             }
             catch (Exception ex)
@@ -456,7 +456,7 @@ namespace NWORKFLOW_WEB.MVC_4_BS.Controllers
             try
             {
                 N0203REGBusiness N0203REGBusines = new N0203REGBusiness();
-                ArrayList quantidade = N0203REGBusines.carregarAtrasoFaturamento();
+                ArrayList quantidade = N0203REGBusines.CarregarAtrasoFaturamento();
 
                 return this.Json(new { quantidade, sucesso = true }, JsonRequestBehavior.AllowGet);
             }
@@ -479,7 +479,7 @@ namespace NWORKFLOW_WEB.MVC_4_BS.Controllers
                 int quantidadeEmAtraso = 0;
                 N0203REGBusiness N0203REGBusines = new N0203REGBusiness();
                 List<Ocorrencia> lista = new List<Ocorrencia>();
-                lista = N0203REGBusines.carregarProtocolosForamAprovadosEsperandoFaturamento("", "", "", "", "", "", "", "4,6,8,9,11", "", Convert.ToInt64(this.CodigoUsuarioLogado));
+                lista = N0203REGBusines.CarregarProtocolosForamAprovadosEsperandoFaturamento("", "", "", "", "", "", "", "4,6,8,9,11", "", Convert.ToInt64(this.CodigoUsuarioLogado));
                 DateTime dateForButton = DateTime.Now.AddDays(-30);
                 foreach (var item in lista)
                 {
@@ -546,7 +546,7 @@ namespace NWORKFLOW_WEB.MVC_4_BS.Controllers
 
                 List<N0204ORI> ListaN0204ORI = new List<N0204ORI>();
                 N0203REGBusiness N0203ORIBusiness = new N0203REGBusiness();
-                ListaN0204ORI = N0203ORIBusiness.quantidadeProtocolosPorArea(dias, situacao);
+                ListaN0204ORI = N0203ORIBusiness.QuantidadeProtocolosPorArea(dias, situacao);
 
                 return this.Json(new { ListaN0204ORI }, JsonRequestBehavior.AllowGet);
             }
@@ -576,7 +576,7 @@ namespace NWORKFLOW_WEB.MVC_4_BS.Controllers
                 N0203REGBusiness N0203ORIBusiness = new N0203REGBusiness();
                 if (dadosUsuario != null)
                 {
-                    ListaN0204ORI = N0203ORIBusiness.quantidadeProtocolosPorAreaMeses(dias, situacao);
+                    ListaN0204ORI = N0203ORIBusiness.QuantidadeProtocolosPorAreaMeses(dias, situacao);
                 }
                 return this.Json(new { ListaN0204ORI }, JsonRequestBehavior.AllowGet);
             }
@@ -598,7 +598,7 @@ namespace NWORKFLOW_WEB.MVC_4_BS.Controllers
             {
                 List<MesXOcorrencia> mesOcorrencia = new List<MesXOcorrencia>();
                 N0203REGBusiness N0203ORIBusiness = new N0203REGBusiness();
-                mesOcorrencia = N0203ORIBusiness.mesXOcorrencia();
+                mesOcorrencia = N0203ORIBusiness.MesXOcorrencia();
                 return this.Json(new { mesOcorrencia }, JsonRequestBehavior.AllowGet);
             }
             catch (Exception ex)
@@ -619,7 +619,7 @@ namespace NWORKFLOW_WEB.MVC_4_BS.Controllers
             {
                 List<MesXOrigem> mesOrigem = new List<MesXOrigem>();
                 N0203REGBusiness N0203REGBusiness = new N0203REGBusiness();
-                mesOrigem = N0203REGBusiness.mesXOrigem();
+                mesOrigem = N0203REGBusiness.MesXOrigem();
                 return this.Json(new { mesOrigem }, JsonRequestBehavior.AllowGet);
             }
             catch (Exception ex)
@@ -640,7 +640,7 @@ namespace NWORKFLOW_WEB.MVC_4_BS.Controllers
             {
                 int media;
                 N0203REGBusiness N0203REGBusiness = new N0203REGBusiness();
-                media = N0203REGBusiness.mediaPreAprovado();
+                media = N0203REGBusiness.MediaPreAprovado();
                 return this.Json(new { media }, JsonRequestBehavior.AllowGet);
             }
             catch (Exception ex)
@@ -662,7 +662,7 @@ namespace NWORKFLOW_WEB.MVC_4_BS.Controllers
                 int media;
                 List<MediaAprovado> MediaAprovado = new List<MediaAprovado>();
                 N0203REGBusiness N0203REGBusiness = new N0203REGBusiness();
-                media = N0203REGBusiness.mediaAprovado();
+                media = N0203REGBusiness.MediaAprovado();
                 return this.Json(new { media }, JsonRequestBehavior.AllowGet);
             }
             catch (Exception ex)

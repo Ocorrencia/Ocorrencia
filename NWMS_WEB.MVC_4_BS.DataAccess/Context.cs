@@ -25,7 +25,6 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
         public DbSet<N0001EMP_HIS> N0001EMP_HIS { get; set; }
         public DbSet<N0002FIL> N0002FIL { get; set; }
         public DbSet<N0003ARM> N0003ARM { get; set; }
-        public DbSet<N0005TNS> N0005TNS { get; set; }
         public DbSet<N0006DER> N0006DER { get; set; }
         public DbSet<N0006FAM> N0006FAM { get; set; }
         public DbSet<N0006ORI> N0006ORI { get; set; }

@@ -31,8 +31,11 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
                 {
                     E140IPVDataAccess E140IPVDataAccess = new E140IPVDataAccess();
                     USU_T135LANDataAccess USU_T135LANDataAccess = new USU_T135LANDataAccess();
-                    
-                    
+
+                    //var padrao = contexto.N0204PPU.Where(c => !c.CODUSU.HasValue).FirstOrDefault();
+
+                   //  var exclusivo = contexto.N0204PPU.Where(c => c.CODUSU == N0203REG.USUGER).FirstOrDefault();
+
                     var itensDev = contexto.N0203IPV.Where(c => c.NUMREG == N0203REG.NUMREG).ToList();
                     foreach (N0203IPV item in itensDev)
                     {
@@ -51,12 +54,14 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
                         original.SITREG = N0203REG.SITREG;
                         original.OBSREG = N0203REG.OBSREG;
 
-                        N0203TRA itemTramites = new N0203TRA();
-                        itemTramites.NUMREG = N0203REG.NUMREG;
-                        itemTramites.DATTRA = N0203REG.DATULT;
-                        itemTramites.USUTRA = N0203REG.USUULT;
-                        itemTramites.DESTRA = "REGISTRO DE OCORRENCIA SALVO - RASCUNHO";
-                        itemTramites.SEQTRA = contexto.N0203TRA.Where(c => c.NUMREG == N0203REG.NUMREG).Max(p => p.SEQTRA + 1);
+                        N0203TRA itemTramites = new N0203TRA
+                        {
+                            NUMREG = N0203REG.NUMREG,
+                            DATTRA = N0203REG.DATULT,
+                            USUTRA = N0203REG.USUULT,
+                            DESTRA = "REGISTRO DE OCORRENCIA SALVO - RASCUNHO",
+                            SEQTRA = contexto.N0203TRA.Where(c => c.NUMREG == N0203REG.NUMREG).Max(p => p.SEQTRA + 1)
+                        };
 
                         if (N0203REG.SITREG == (long)Enums.SituacaoRegistroOcorrencia.Fechado)
                         {
@@ -78,14 +83,36 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
 
                         E140NFVDataAccess E140NFVDataAccess = new E140NFVDataAccess();
 
+                        string DataAmissao = "";
+
                         foreach (var item in listNotas)
                         {
                             // Data de emissão da nota
                             var dataEmi = E140NFVDataAccess.PesquisarDadosNota(item.NUMNFV, item.CODFIL, null, "3").FirstOrDefault().DataEmissao;
+                            DataAmissao = dataEmi;
                             var datTime = DateTime.Parse(dataEmi);
 
                             N0203REG.N0203IPV.Where(c => c.CODFIL == item.CODFIL && c.NUMNFV == item.NUMNFV).ToList().ForEach(c => c.DATEMI = datTime);
                         }
+
+                         DateTime dataatual = DateTime.Now;
+
+                        int totalDias = (dataatual.Subtract(DateTime.Parse(DataAmissao))).Days;
+
+                        var usuariopadrao = contexto.N0204PPU.Where(c => !c.CODUSU.HasValue).FirstOrDefault();
+                        var usuarioExclusivo = contexto.N0204PPU.Where(c => c.CODUSU == original.USUGER).FirstOrDefault();
+
+                        if((original.TIPATE == 1 && totalDias > usuariopadrao.QTDDEV) || (original.TIPATE == 2 && totalDias > usuariopadrao.QTDTRC))
+                        {
+                            if(((usuariopadrao.QTDDEV < usuarioExclusivo.QTDDEV) || (usuariopadrao.QTDTRC < usuarioExclusivo.QTDTRC)) && usuarioExclusivo.USUDEP != 0)
+                            {
+                                if(original.SITREG == (int)Enums.SituacaoRegistroOcorrencia.Fechado)
+                                {
+                                    original.SITREG = (int)Enums.SituacaoRegistroOcorrencia.Aprovar;
+                                }
+                            }
+                        }
+                        
 
                         bool valida = false;
                         foreach (N0203ANX item in N0203REG.N0203ANX)
@@ -115,14 +142,12 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
 
                             if (originalItens == null)
                             {
-                                long analiseEmbaque;
-                                E140IPVDataAccess.PesquisaAnaliseEmbarquePorNota(itemNovo.NUMNFV, itemNovo.CODFIL, out analiseEmbaque);
+                                E140IPVDataAccess.PesquisaAnaliseEmbarquePorNota(itemNovo.NUMNFV, itemNovo.CODFIL, out long analiseEmbaque);
                                 itemNovo.NUMANE = analiseEmbaque;
 
                                 if (itemNovo.CODFIL == 101)
                                 {
-                                    long analiseEmbaqueFilial;
-                                    USU_T135LANDataAccess.PesquisaRelacionamentoAneEmbarqueEntreFilial(analiseEmbaque, out analiseEmbaqueFilial);
+                                    USU_T135LANDataAccess.PesquisaRelacionamentoAneEmbarqueEntreFilial(analiseEmbaque, out long analiseEmbaqueFilial);
                                     itemNovo.NUMANE_REL = analiseEmbaqueFilial;
                                 }
 
@@ -164,7 +189,7 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
         /// <param name="codigoCliente">Código do Cliente</param>
         /// <param name="filtro">Filtro</param>
         /// <returns>itens</returns>
-        public List<Agrupamento> pesquisarAgrupamento(long codigoCliente, int filtro)
+        public List<Agrupamento> PesquisarAgrupamento(long codigoCliente, int filtro)
         {
             try
             {
@@ -180,8 +205,10 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
                 sql += filtro == 1 ? "GROUP BY AGR1.AGRREG, AGR1.STAGR" : "AND AGR1.STAGR = 'N' GROUP BY AGR1.AGRREG, AGR1.STAGR";
 
                 OracleConnection conn = new OracleConnection(OracleStringConnection);
-                OracleCommand cmd = new OracleCommand(sql, conn);
-                cmd.CommandType = CommandType.Text;
+                OracleCommand cmd = new OracleCommand(sql, conn)
+                {
+                    CommandType = CommandType.Text
+                };
                 conn.Open();
                 Agrupamento AGP = new Agrupamento();
                 List<Agrupamento> itens = new List<Agrupamento>();
@@ -189,11 +216,13 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
 
                 while (dr.Read())
                 {
-                    AGP = new Agrupamento();
-                    AGP.AGRREG = Convert.ToInt32(dr["AGRREG"]);
-                    AGP.QTDAGRREG = Convert.ToInt32(dr["QUANTIDADE"]);
-                    AGP.VLRLIQ = dr["VALORTOTAL"].ToString();
-                    AGP.STATUS = dr["STATUS"].ToString();
+                    AGP = new Agrupamento
+                    {
+                        AGRREG = Convert.ToInt32(dr["AGRREG"]),
+                        QTDAGRREG = Convert.ToInt32(dr["QUANTIDADE"]),
+                        VLRLIQ = dr["VALORTOTAL"].ToString(),
+                        STATUS = dr["STATUS"].ToString()
+                    };
                     itens.Add(AGP);
                 }
 
@@ -211,11 +240,11 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
         /// </summary>
         /// <param name="excluirAgrupamentoSelecionado">Exclui Agrupamento Selecionado</param>
         /// <returns></returns>
-        public bool excluirAgrupamento(string excluirAgrupamentoSelecionado)
+        public bool ExcluirAgrupamento(string excluirAgrupamentoSelecionado)
         {
             try
             {
-                var statusAgrupamento = consultaArrayString("NWMS_PRODUCAO.N0203AGR", "STAGR", "AGRREG IN (" + excluirAgrupamentoSelecionado + ")");
+                var statusAgrupamento = ConsultaArrayString("NWMS_PRODUCAO.N0203AGR", "STAGR", "AGRREG IN (" + excluirAgrupamentoSelecionado + ")");
                 foreach (var item in statusAgrupamento)
                 {
                     if (item == "I")
@@ -226,8 +255,10 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
                 string sql = "DELETE FROM NWMS_PRODUCAO.N0203AGR AGR WHERE AGR.STAGR = 'N' AND AGR.AGRREG IN( " + excluirAgrupamentoSelecionado + ")";
 
                 OracleConnection conn = new OracleConnection(OracleStringConnection);
-                OracleCommand cmd = new OracleCommand(sql, conn);
-                cmd.CommandType = CommandType.Text;
+                OracleCommand cmd = new OracleCommand(sql, conn)
+                {
+                    CommandType = CommandType.Text
+                };
                 conn.Open();
                 Agrupamento AGP = new Agrupamento();
                 OracleDataReader dr = cmd.ExecuteReader();
@@ -251,13 +282,15 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
         /// <param name="coluna">Nome da Coluna</param>
         /// <param name="where">Seleção</param>
         /// <returns>COLUNA</returns>
-        public string consultaString(String tabela, String coluna, String where)
+        public string ConsultaString(String tabela, String coluna, String where)
         {
             String sql = "SELECT " + coluna + " AS COLUNA FROM " + tabela + " WHERE " + where + "";
 
             OracleConnection conn = new OracleConnection(OracleStringConnection);
-            OracleCommand cmd = new OracleCommand(sql, conn);
-            cmd.CommandType = CommandType.Text;
+            OracleCommand cmd = new OracleCommand(sql, conn)
+            {
+                CommandType = CommandType.Text
+            };
             conn.Open();
             OracleDataReader dr = cmd.ExecuteReader();
             if (dr.Read())
@@ -267,13 +300,15 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
             return "VAZIO";
         }
 
-        public bool verificaAprovador(long CodOri, long CodAtendimento)
+        public bool VerificaAprovador(long CodOri, long CodAtendimento)
         {
             string sql = "SELECT COUNT(CODORI) AS QUANTIDADE FROM N0203UAP WHERE CODORI = " + CodOri + " AND CODATD = " + CodAtendimento;
 
             OracleConnection conn = new OracleConnection(OracleStringConnection);
-            OracleCommand cmd = new OracleCommand(sql, conn);
-            cmd.CommandType = CommandType.Text;
+            OracleCommand cmd = new OracleCommand(sql, conn)
+            {
+                CommandType = CommandType.Text
+            };
             conn.Open();
             OracleDataReader dr = cmd.ExecuteReader();
 
@@ -292,13 +327,15 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
         /// <param name="coluna">Nome da Coluna</param>
         /// <param name="where">Comendo de Seleção</param>
         /// <returns>itens</returns>
-        public List<String> consultaArrayString(String tabela, String coluna, String where)
+        public List<String> ConsultaArrayString(String tabela, String coluna, String where)
         {
             String sql = "SELECT " + coluna + " AS COLUNA FROM " + tabela + " WHERE " + where + "";
 
             OracleConnection conn = new OracleConnection(OracleStringConnection);
-            OracleCommand cmd = new OracleCommand(sql, conn);
-            cmd.CommandType = CommandType.Text;
+            OracleCommand cmd = new OracleCommand(sql, conn)
+            {
+                CommandType = CommandType.Text
+            };
             conn.Open();
             OracleDataReader dr = cmd.ExecuteReader();
             List<string> itens = new List<string>();
@@ -309,29 +346,28 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
             return itens;
         }
 
+        [Obsolete]
         public bool InserirTransporteIndenizado(long NumReg, int CodTra)
         {
             string sql = "UPDATE N0203REG SET TRACLI = " + CodTra + " WHERE NUMREG = " + NumReg;
 
-            //string sql = "select USUGER from N0203REG WHERE NUMREG = " + NumReg;
-
             OracleConnection conn = new OracleConnection(OracleStringConnection);
-            OracleCommand cmd = new OracleCommand(sql, conn);
-            cmd.CommandType = CommandType.Text;
+            OracleCommand cmd = new OracleCommand(sql, conn)
+            {
+                CommandType = CommandType.Text
+            };
             conn.Open();
-            OracleDataReader dr = cmd.ExecuteReader();
+            //OracleDataReader dr = cmd.ExecuteReader();
             
-            //if (dr.Read()) { 
-            //    email.Email("inserir ocorrencia ", dr["USUGER"].ToString());
-            //}
             conn.Close();
 
             return true;
         }
 
-        public listaTransportadora ConsultaTransportadora(int NotaOcorrencia, string Tipo)
+        [Obsolete]
+        public ListaTransportadora ConsultaTransportadora(int NotaOcorrencia, string Tipo)
         {
-            String sql = "";
+            string sql;
             if (Tipo == "O") { 
                 sql = "SELECT DISTINCT(NFV.CODTRA) AS CODTRA, TRA.NOMTRA AS NOMTRA, TRA.APETRA AS APETRA, NFV.CODRED AS CODRED FROM  " +
                     "SAPIENS.E140NFV NFV, N0203IPV IPV, SAPIENs.E073TRA TRA" +
@@ -350,11 +386,13 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
             }
 
             OracleConnection conn = new OracleConnection(OracleStringConnection);
-            OracleCommand cmd = new OracleCommand(sql, conn);
-            cmd.CommandType = CommandType.Text;
+            OracleCommand cmd = new OracleCommand(sql, conn)
+            {
+                CommandType = CommandType.Text
+            };
             conn.Open();
-            OracleDataReader dr = cmd.ExecuteReader();
-            listaTransportadora lista = new listaTransportadora();
+            var dr = cmd.ExecuteReader();
+            ListaTransportadora lista = new ListaTransportadora();
             int codRed = 0;
 
             if (dr.Read())
@@ -373,8 +411,10 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
             {
                 sql = "SELECT NOMTRA AS NOMETRAREDES, APETRA AS CODREDAPETRA FROM SAPIENS.E073TRA WHERE CODTRA = " + lista.CODRED;
                 OracleConnection con2 = new OracleConnection(OracleStringConnection);
-                OracleCommand cmd2 = new OracleCommand(sql, con2);
-                cmd2.CommandType = CommandType.Text;
+                OracleCommand cmd2 = new OracleCommand(sql, con2)
+                {
+                    CommandType = CommandType.Text
+                };
                 con2.Open();
                 
                 OracleDataReader dr2 = cmd2.ExecuteReader();
@@ -395,8 +435,10 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
             string origem = "";
             string sql = "SELECT ORIOCO FROM N0203REG WHERE NUMREG = " + NumReg;
             OracleConnection conn = new OracleConnection(OracleStringConnection);
-            OracleCommand cmd = new OracleCommand(sql, conn);
-            cmd.CommandType = CommandType.Text;
+            OracleCommand cmd = new OracleCommand(sql, conn)
+            {
+                CommandType = CommandType.Text
+            };
             conn.Open();
             OracleDataReader dr = cmd.ExecuteReader();
             if (dr.Read())
@@ -408,13 +450,15 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
 
         }
 
-        public int pegaTransportadoraOcorrencia(long NumReg)
+        public int PegaTransportadoraOcorrencia(long NumReg)
         {
             string sql = "SELECT TRACLI FROM N0203REG WHERE NUMREG = " + NumReg;
 
             OracleConnection conn = new OracleConnection(OracleStringConnection);
-            OracleCommand cmd = new OracleCommand(sql, conn);
-            cmd.CommandType = CommandType.Text;
+            OracleCommand cmd = new OracleCommand(sql, conn)
+            {
+                CommandType = CommandType.Text
+            };
             conn.Open();
             OracleDataReader dr = cmd.ExecuteReader();
             int TraCli = 0;
@@ -430,8 +474,10 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
             string sql = "SELECT MAX(SEQTRA) AS SEQTRA FROM N0203TRA WHERE NUMREG = " + NumReg;
 
             OracleConnection conn = new OracleConnection(OracleStringConnection);
-            OracleCommand cmd = new OracleCommand(sql, conn);
-            cmd.CommandType = CommandType.Text;
+            OracleCommand cmd = new OracleCommand(sql, conn)
+            {
+                CommandType = CommandType.Text
+            };
             conn.Open();
             OracleDataReader dr = cmd.ExecuteReader();
             long sequencia = 0;
@@ -442,15 +488,17 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
 
             conn.Close();
 
-            sequencia = sequencia + 1;
+            sequencia += 1;
 
             DateTime DataAtual = DateTime.Now;
 
             sql = "INSERT INTO N0203TRA VALUES(" + NumReg + "," + sequencia + ", 'REGISTO DE OCORRENCIA INDENIZADO', " + Usuario + ",'" + DataAtual + "', '', '')";
 
             OracleConnection con2 = new OracleConnection(OracleStringConnection);
-            OracleCommand cmd2 = new OracleCommand(sql, con2);
-            cmd2.CommandType = CommandType.Text;
+            OracleCommand cmd2 = new OracleCommand(sql, con2)
+            {
+                CommandType = CommandType.Text
+            };
             con2.Open();
             OracleDataReader dr2 = cmd2.ExecuteReader();
             con2.Close();
@@ -466,21 +514,23 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
         /// <param name="dataGeracao">Data de Geração</param>
         /// <param name="usuarioGeracao">Usuário que Gerou</param>
         /// <returns></returns>
-        public string GravarAgrupamento(string ocorrencias, string dataGeracao, string usuarioGeracao)
+        public string GravarAgrupamento(string ocorrencias, string usuarioGeracao)
         {
-            var retorno = "";
             var res = ocorrencias.Split(',');
-            var codigoAgrupador = consultaString("NWMS_PRODUCAO.N0203AGR", "MAX(AGRREG) + 1", "1=1");
+            var codigoAgrupador = ConsultaString("NWMS_PRODUCAO.N0203AGR", "MAX(AGRREG) + 1", "1=1");
 
             for (int i = 0; i < res.Count(); i++)
             {
+                string retorno;
                 try
                 {
                     string sql = "INSERT INTO NWMS_PRODUCAO.N0203AGR VALUES (" + codigoAgrupador + "," + res[i] + ",TO_DATE('" + DateTime.Now.ToString("dd/MM/yyyy") + "'), " + usuarioGeracao + ", 'N')";
                     sql = sql.Replace("00:00:00", "");
                     OracleConnection conn = new OracleConnection(OracleStringConnection);
-                    OracleCommand cmd = new OracleCommand(sql, conn);
-                    cmd.CommandType = CommandType.Text;
+                    OracleCommand cmd = new OracleCommand(sql, conn)
+                    {
+                        CommandType = CommandType.Text
+                    };
                     conn.Open();
                     OracleDataReader dr = cmd.ExecuteReader();
 
@@ -490,7 +540,7 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
                     conn.Close();
                     retorno = "ok";
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
                     retorno = "Ocorreu um errro ao agrupar as ocorrências";
                 }
@@ -501,7 +551,7 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
         /// Pesquisa ocorrências agrupadas
         /// </summary>
         /// <returns>Lista de Ocorrências</returns>
-        public List<Agrupamento> pesquisarOcorrenciaAGP()
+        public List<Agrupamento> PesquisarOcorrenciaAGP()
         {
 
             try
@@ -546,8 +596,10 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
                                         REG.NUMREG = IPV.NUMREG";
 
                 OracleConnection conn = new OracleConnection(OracleStringConnection);
-                OracleCommand cmd = new OracleCommand(sql, conn);
-                cmd.CommandType = CommandType.Text;
+                OracleCommand cmd = new OracleCommand(sql, conn)
+                {
+                    CommandType = CommandType.Text
+                };
                 conn.Open();
                 Agrupamento AGP = new Agrupamento();
                 List<Agrupamento> itens = new List<Agrupamento>();
@@ -571,7 +623,7 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
         /// </summary>
         /// <param name="numreg">Código de Ocorrência</param>
         /// <returns>itens</returns>
-        public List<Agrupamento> pesquisarPorOcorrenciaAGP(long numreg)
+        public List<Agrupamento> PesquisarPorOcorrenciaAGP(long numreg)
         {
             try
             {
@@ -604,8 +656,10 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
                 sql += " GROUP BY REG.NUMREG ORDER BY NUMREG";
 
                 OracleConnection conn = new OracleConnection(OracleStringConnection);
-                OracleCommand cmd = new OracleCommand(sql, conn);
-                cmd.CommandType = CommandType.Text;
+                OracleCommand cmd = new OracleCommand(sql, conn)
+                {
+                    CommandType = CommandType.Text
+                };
                 conn.Open();
                 Agrupamento AGP = new Agrupamento();
                 List<Agrupamento> itens = new List<Agrupamento>();
@@ -613,15 +667,17 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
 
                 while (dr.Read())
                 {
-                    AGP = new Agrupamento();
-                    AGP.NUMREG = Convert.ToInt32(dr["NUMREG"]);
-                    AGP.NUMNFV = dr["NUMNFV"].ToString();
-                    AGP.VLRLIQ = dr["VLRLIQ"].ToString() != "0" ? string.Format(CultureInfo.GetCultureInfo("pt-BR"), "R$ {0:#,###.##}", dr["VLRLIQ"]) : "R$ 0,00";
-                    AGP.PERIPI = dr["PERIPI"].ToString() != "0" ? string.Format(CultureInfo.GetCultureInfo("pt-BR"), "R$ {0:#,###.##}", dr["PERIPI"]) : "R$ 0,00";
-                    AGP.VLRST = dr["VLRST"].ToString() != "0" ? string.Format(CultureInfo.GetCultureInfo("pt-BR"), "R$ {0:#,###.##}", dr["VLRST"]) : "R$ 0,00";
-                    AGP.VLRFRE = dr["VLRFRE"].ToString() != "0" ? string.Format(CultureInfo.GetCultureInfo("pt-BR"), "R$ {0:#,###.##}", dr["VLRFRE"]) : "R$ 0,00";
-                    AGP.ICMS = "0,00";
-                    AGP.VLRBRT = dr["VLRBRT"].ToString() != "0" ? string.Format(CultureInfo.GetCultureInfo("pt-BR"), "R$ {0:#,###.##}", dr["VLRBRT"]) : "R$ 0,00";
+                    AGP = new Agrupamento
+                    {
+                        NUMREG = Convert.ToInt32(dr["NUMREG"]),
+                        NUMNFV = dr["NUMNFV"].ToString(),
+                        VLRLIQ = dr["VLRLIQ"].ToString() != "0" ? string.Format(CultureInfo.GetCultureInfo("pt-BR"), "R$ {0:#,###.##}", dr["VLRLIQ"]) : "R$ 0,00",
+                        PERIPI = dr["PERIPI"].ToString() != "0" ? string.Format(CultureInfo.GetCultureInfo("pt-BR"), "R$ {0:#,###.##}", dr["PERIPI"]) : "R$ 0,00",
+                        VLRST = dr["VLRST"].ToString() != "0" ? string.Format(CultureInfo.GetCultureInfo("pt-BR"), "R$ {0:#,###.##}", dr["VLRST"]) : "R$ 0,00",
+                        VLRFRE = dr["VLRFRE"].ToString() != "0" ? string.Format(CultureInfo.GetCultureInfo("pt-BR"), "R$ {0:#,###.##}", dr["VLRFRE"]) : "R$ 0,00",
+                        ICMS = "0,00",
+                        VLRBRT = dr["VLRBRT"].ToString() != "0" ? string.Format(CultureInfo.GetCultureInfo("pt-BR"), "R$ {0:#,###.##}", dr["VLRBRT"]) : "R$ 0,00"
+                    };
                     itens.Add(AGP);
                 }
 
@@ -647,8 +703,10 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
                 string sql = @"SELECT NUMREG FROM NWMS_PRODUCAO.N0203AGR WHERE AGRREG = " + numreg + "";
 
                 OracleConnection conn = new OracleConnection(OracleStringConnection);
-                OracleCommand cmd = new OracleCommand(sql, conn);
-                cmd.CommandType = CommandType.Text;
+                OracleCommand cmd = new OracleCommand(sql, conn)
+                {
+                    CommandType = CommandType.Text
+                };
                 conn.Open();
                 int ocorrencias = new int();
                 List<int> itens = new List<int>();
@@ -676,15 +734,17 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
         /// <param name="numeroRegistro">Código de Ocorrência</param>
         /// <param name="placa">Placa</param>
         /// <returns></returns>
-        public bool verificarVinculo(string numeroRegistro, string placa)
+        public bool VerificarVinculo(string numeroRegistro)
         {
             try
             {
                 string sql = "SELECT COUNT(1) AS LINHA FROM NWMS_PRODUCAO.N0204POC WHERE NUMREG = '" + numeroRegistro + "' ";
 
                 OracleConnection conn = new OracleConnection(OracleStringConnection);
-                OracleCommand cmd = new OracleCommand(sql, conn);
-                cmd.CommandType = CommandType.Text;
+                OracleCommand cmd = new OracleCommand(sql, conn)
+                {
+                    CommandType = CommandType.Text
+                };
                 conn.Open();
 
                 OracleDataReader dr = cmd.ExecuteReader();
@@ -714,7 +774,7 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
         /// </summary>
         /// <param name="numeroRegistro">Código de Ocorrência</param>
         /// <returns></returns>
-        public bool verificarRedespacho(string numeroRegistro)
+        public bool VerificarRedespacho(string numeroRegistro)
         {
             try
             {
@@ -736,8 +796,10 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
                       "           ORDER BY REG.NUMREG DESC";
 
                 OracleConnection conn = new OracleConnection(OracleStringConnection);
-                OracleCommand cmd = new OracleCommand(sql, conn);
-                cmd.CommandType = CommandType.Text;
+                OracleCommand cmd = new OracleCommand(sql, conn)
+                {
+                    CommandType = CommandType.Text
+                };
                 conn.Open();
 
                 OracleDataReader dr = cmd.ExecuteReader();
@@ -775,8 +837,10 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
                 string sql = "SELECT COUNT(1) AS LINHA FROM NWMS_PRODUCAO.N0203REG WHERE NUMREG = '" + numeroRegistro + "' AND CODMOT = '0' AND SITREG IN (3,4,8)";
 
                 OracleConnection conn = new OracleConnection(OracleStringConnection);
-                OracleCommand cmd = new OracleCommand(sql, conn);
-                cmd.CommandType = CommandType.Text;
+                OracleCommand cmd = new OracleCommand(sql, conn)
+                {
+                    CommandType = CommandType.Text
+                };
                 conn.Open();
 
                 OracleDataReader dr = cmd.ExecuteReader();
@@ -789,7 +853,7 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
                     }
                     else
                     {
-                        return verificarRedespacho(numeroRegistro) ? false : true;
+                        return !VerificarRedespacho(numeroRegistro);
                     }
                 }
                 dr.Close();
@@ -807,15 +871,17 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
         /// </summary>
         /// <param name="numeroRegistro">Código de Ocorrência</param>
         /// <returns>true/false</returns>
-        public String consultaStatusRegistro(string numeroRegistro)
+        public String ConsultaStatusRegistro(string numeroRegistro)
         {
             try
             {
                 string sql = "SELECT SITREG FROM NWMS_PRODUCAO.N0203REG REG WHERE REG.NUMREG = " + numeroRegistro + "";
 
                 OracleConnection conn = new OracleConnection(OracleStringConnection);
-                OracleCommand cmd = new OracleCommand(sql, conn);
-                cmd.CommandType = CommandType.Text;
+                OracleCommand cmd = new OracleCommand(sql, conn)
+                {
+                    CommandType = CommandType.Text
+                };
                 conn.Open();
 
                 OracleDataReader dr = cmd.ExecuteReader();
@@ -838,15 +904,17 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
         /// </summary>
         /// <param name="numeroRegistro">Código de Ocorrência</param>
         /// <returns>true/false</returns>
-        public String consultaStatusAnterior(string numeroRegistro)
+        public String ConsultaStatusAnterior(string numeroRegistro)
         {
             try
             {
                 string sql = "SELECT SITREG FROM NWMS_PRODUCAO.N0204POC POC WHERE POC.NUMREG = " + numeroRegistro + "";
 
                 OracleConnection conn = new OracleConnection(OracleStringConnection);
-                OracleCommand cmd = new OracleCommand(sql, conn);
-                cmd.CommandType = CommandType.Text;
+                OracleCommand cmd = new OracleCommand(sql, conn)
+                {
+                    CommandType = CommandType.Text
+                };
                 conn.Open();
 
                 OracleDataReader dr = cmd.ExecuteReader();
@@ -874,13 +942,14 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
         /// <param name="codPlaca">Placa</param>
         /// <param name="observacao">Observação</param>
         /// <returns>true/false</returns>
+        [Obsolete]
         public Boolean Vincular(string numReg, string usuGer, string datVin, string codPlaca, string observacao)
         {
             try
             {
-                String sitReg = consultaStatusRegistro(numReg);
+                String sitReg = ConsultaStatusRegistro(numReg);
                 long sequenciaTrammite;
-                if (verificarVinculo(numReg, codPlaca.ToUpper()))
+                if (VerificarVinculo(numReg))
                 {
                     return false;
                 }
@@ -897,18 +966,22 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
                 var sql = "INSERT INTO NWMS_PRODUCAO.N0204POC (NUMREG, USUGER, DATVIN, SITPOC, PLACA, OBSREG, SITREG ) VALUES ('" + numeroRegistro + "', '" + usuGer + "', '" + datVin + "', '1', '" + codPlaca.ToUpper() + "', '" + observacao + "', '" + sitReg + "')";
                 
                 OracleConnection conn = new OracleConnection(OracleStringConnection);
-                OracleCommand cmd = new OracleCommand(sql, conn);
-                cmd.CommandType = CommandType.Text;
+                OracleCommand cmd = new OracleCommand(sql, conn)
+                {
+                    CommandType = CommandType.Text
+                };
                 conn.Open();
                 OracleDataReader dr = cmd.ExecuteReader();
                 dr.Close();
                 conn.Close();
-                alterarStatusOcorrencia(numReg);
+                AlterarStatusOcorrencia(numReg);
 
                 string sqlTrammite = "INSERT INTO NWMS_PRODUCAO.N0203TRA (NUMREG, SEQTRA, DESTRA, USUTRA, DATTRA, OBSTRA, CODORI) VALUES ('" + numeroRegistro + "', '" + sequenciaTrammite + "','OCORRENCIA CONFERIDO','" + usuGer + "', TO_DATE('" + DateTime.Now.ToString() + "', 'DD-MM-YYYY HH24:MI:SS'),'MERCADORIA CONFERIDA', '1')";
                 OracleConnection connTrammite = new OracleConnection(OracleStringConnection);
-                OracleCommand cmdTrammite = new OracleCommand(sqlTrammite, connTrammite);
-                cmdTrammite.CommandType = CommandType.Text;
+                OracleCommand cmdTrammite = new OracleCommand(sqlTrammite, connTrammite)
+                {
+                    CommandType = CommandType.Text
+                };
                 connTrammite.Open();
                 cmdTrammite.ExecuteNonQuery();
                 connTrammite.Close();
@@ -927,7 +1000,7 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
         /// </summary>
         /// <param name="numeroRegistro">Código de Ocorrência</param>
         /// <returns>true/false</returns>
-        public bool atualizarPOC(string numeroRegistro)
+        public bool AtualizarPOC(string numeroRegistro)
         {
             try
             {
@@ -936,8 +1009,10 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
                               " WHERE NUMREG = '" + numeroRegistro + "' AND SITPOC = 1";
 
                 OracleConnection conn = new OracleConnection(OracleStringConnection);
-                OracleCommand cmd = new OracleCommand(sql, conn);
-                cmd.CommandType = CommandType.Text;
+                OracleCommand cmd = new OracleCommand(sql, conn)
+                {
+                    CommandType = CommandType.Text
+                };
                 conn.Open();
                 cmd.ExecuteNonQuery();
                 conn.Close();
@@ -955,7 +1030,7 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
         /// </summary>
         /// <param name="numeroRegistro">Código de Ocorrência</param>
         /// <returns>true/false</returns>
-        public bool atualizarRecebimentoPOC(string numeroRegistro)
+        public bool AtualizarRecebimentoPOC(string numeroRegistro)
         {
             try
             {
@@ -964,8 +1039,10 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
                               " WHERE NUMREG = '" + numeroRegistro + "' AND SITPOC = 1";
 
                 OracleConnection conn = new OracleConnection(OracleStringConnection);
-                OracleCommand cmd = new OracleCommand(sql, conn);
-                cmd.CommandType = CommandType.Text;
+                OracleCommand cmd = new OracleCommand(sql, conn)
+                {
+                    CommandType = CommandType.Text
+                };
                 conn.Open();
                 cmd.ExecuteNonQuery();
                 conn.Close();
@@ -982,11 +1059,11 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
         /// </summary>
         /// <param name="loginUsuario">Login do Usuário</param>
         /// <returns>true/false</returns>
-        public bool consultarParametroJustificativaColeta(string loginUsuario)
+        public bool ConsultarParametroJustificativaColeta(string loginUsuario)
         {
             try
             {
-                if (consultaString("NWMS_PRODUCAO.N9999PAR", "OPERACAO", "OPERACAO LIKE '%1%' AND LOGIN = '" + loginUsuario + "'") != "VAZIO")
+                if (ConsultaString("NWMS_PRODUCAO.N9999PAR", "OPERACAO", "OPERACAO LIKE '%1%' AND LOGIN = '" + loginUsuario + "'") != "VAZIO")
                 {
                     return true;
                 }
@@ -1008,15 +1085,17 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
         /// </summary>
         /// <param name="loginUsuario">Login do Usuário</param>
         /// <returns>true/false</returns>
-        public string consultarParametroJustificativa(string loginUsuario)
+        public string ConsultarParametroJustificativa(string loginUsuario)
         {
             try
             {
                 string sql = "SELECT OPERACAO AS LINHA FROM NWMS_PRODUCAO.N9999PAR WHERE LOGIN = '" + loginUsuario + "'";
 
                 OracleConnection conn = new OracleConnection(OracleStringConnection);
-                OracleCommand cmd = new OracleCommand(sql, conn);
-                cmd.CommandType = CommandType.Text;
+                OracleCommand cmd = new OracleCommand(sql, conn)
+                {
+                    CommandType = CommandType.Text
+                };
                 conn.Open();
 
                 OracleDataReader dr = cmd.ExecuteReader();
@@ -1043,15 +1122,17 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
         /// <param name="loginUsuario">Login do Usuário</param>
         /// <param name="operacao">Operação</param>
         /// <returns>true/false</returns>
-        public bool inserirVinculo(string loginUsuario, string operacao)
+        public bool InserirVinculo(string loginUsuario, string operacao)
         {
             try
             {
                 string sql = "SELECT COUNT(1) AS LINHA FROM NWMS_PRODUCAO.N9999PAR WHERE LOGIN = '" + loginUsuario + "'";
 
                 OracleConnection conn = new OracleConnection(OracleStringConnection);
-                OracleCommand cmd = new OracleCommand(sql, conn);
-                cmd.CommandType = CommandType.Text;
+                OracleCommand cmd = new OracleCommand(sql, conn)
+                {
+                    CommandType = CommandType.Text
+                };
                 conn.Open();
 
                 OracleDataReader dr = cmd.ExecuteReader();
@@ -1067,8 +1148,10 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
                             string sql1 = "UPDATE NWMS_PRODUCAO.N9999PAR SET OPERACAO = '" + operacao + "'";
                             sql1 += " WHERE LOGIN = '" + loginUsuario + "'";
                             OracleConnection conn1 = new OracleConnection(OracleStringConnection);
-                            OracleCommand cmd1 = new OracleCommand(sql1, conn1);
-                            cmd1.CommandType = CommandType.Text;
+                            OracleCommand cmd1 = new OracleCommand(sql1, conn1)
+                            {
+                                CommandType = CommandType.Text
+                            };
                             conn1.Open();
 
                             OracleDataReader dr1 = cmd1.ExecuteReader();
@@ -1092,8 +1175,10 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
                             var sql2 = "INSERT INTO NWMS_PRODUCAO.N9999PAR (LOGIN, OPERACAO) VALUES ('" + loginUsuario + "','" + operacao + "')";
 
                             OracleConnection conn2 = new OracleConnection(OracleStringConnection);
-                            OracleCommand cmd2 = new OracleCommand(sql2, conn2);
-                            cmd2.CommandType = CommandType.Text;
+                            OracleCommand cmd2 = new OracleCommand(sql2, conn2)
+                            {
+                                CommandType = CommandType.Text
+                            };
                             conn2.Open();
 
                             OracleDataReader dr2 = cmd2.ExecuteReader();
@@ -1110,10 +1195,9 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
                 }
                 return false;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return false;
-                throw ex;
             }
         }
 
@@ -1123,15 +1207,17 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
         /// </summary>
         /// <param name="numeroRegistro">Código de Ocorrência</param>
         /// <returns>true/false</returns>
-        public bool consultarVinculo(string numeroRegistro)
+        public bool ConsultarVinculo(string numeroRegistro)
         {
             try
             {
                 string sql = "SELECT COUNT(1) AS LINHA FROM NWMS_PRODUCAO.N0204POC WHERE NUMREG = '" + numeroRegistro + "'";
 
                 OracleConnection conn = new OracleConnection(OracleStringConnection);
-                OracleCommand cmd = new OracleCommand(sql, conn);
-                cmd.CommandType = CommandType.Text;
+                OracleCommand cmd = new OracleCommand(sql, conn)
+                {
+                    CommandType = CommandType.Text
+                };
                 conn.Open();
 
                 OracleDataReader dr = cmd.ExecuteReader();
@@ -1163,15 +1249,17 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
         /// </summary>
         /// <param name="numeroRegistro">Código de Ocorrência</param>
         /// <returns>true/false</returns>
-        public bool consultarOcorrencia(string numeroRegistro)
+        public bool ConsultarOcorrencia(string numeroRegistro)
         {
             try
             {
                 string sql = "SELECT COUNT(1) AS LINHA FROM NWMS_PRODUCAO.N0203REG WHERE NUMREG = " + numeroRegistro + " and SITREG IN (4,6,8)";
 
                 OracleConnection conn = new OracleConnection(OracleStringConnection);
-                OracleCommand cmd = new OracleCommand(sql, conn);
-                cmd.CommandType = CommandType.Text;
+                OracleCommand cmd = new OracleCommand(sql, conn)
+                {
+                    CommandType = CommandType.Text
+                };
                 conn.Open();
 
                 OracleDataReader dr = cmd.ExecuteReader();
@@ -1202,15 +1290,17 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
         /// </summary>
         /// <param name="numeroRegistro">Código de Ocorrência</param>
         /// <returns>Placa</returns>
-        public string consultarPlacaPOC(string numeroRegistro)
+        public string ConsultarPlacaPOC(string numeroRegistro)
         {
             try
             {
                 string sql = "SELECT PLACA FROM NWMS_PRODUCAO.N0204POC WHERE NUMREG = " + numeroRegistro + " and SITPOC = 1";
 
                 OracleConnection conn = new OracleConnection(OracleStringConnection);
-                OracleCommand cmd = new OracleCommand(sql, conn);
-                cmd.CommandType = CommandType.Text;
+                OracleCommand cmd = new OracleCommand(sql, conn)
+                {
+                    CommandType = CommandType.Text
+                };
                 conn.Open();
 
                 OracleDataReader dr = cmd.ExecuteReader();
@@ -1233,14 +1323,16 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
         /// UPDATE NWMS_PRODUCAO.N0203REG " + "SET SITREG = '9'" + " WHERE NUMREG = '" + codigoRegistro + "' AND SITREG IN (3)"
         /// </summary>
         /// <param name="codigoRegistro">Código de Ocorrência</param>
-        public void rollbackAprovacao(string codigoRegistro)
+        public void RollbackAprovacao(string codigoRegistro)
         {
             string sql = "UPDATE NWMS_PRODUCAO.N0203REG " +
                           "SET SITREG = '9'" +
                         " WHERE NUMREG = '" + codigoRegistro + "' AND SITREG IN (3)";
             OracleConnection conn = new OracleConnection(OracleStringConnection);
-            OracleCommand cmd = new OracleCommand(sql, conn);
-            cmd.CommandType = CommandType.Text;
+            OracleCommand cmd = new OracleCommand(sql, conn)
+            {
+                CommandType = CommandType.Text
+            };
             conn.Open();
             cmd.ExecuteNonQuery();
             conn.Close();
@@ -1254,15 +1346,15 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
         /// <param name="PLACA">Placa</param>
         /// <param name="usuarioLogado">Código Usuário Logado</param>
         /// <returns>true/false</returns>
-        public bool confirmarRecebimento(string NUMREG, string PLACA, long usuarioLogado)
+        public bool ConfirmarRecebimento(string NUMREG, string PLACA, long usuarioLogado)
         {
             string placaParametro = PLACA;
             long sequenciaTrammite;
             try
             {
-                if (consultarVinculo(NUMREG))
+                if (ConsultarVinculo(NUMREG))
                 {
-                    PLACA = consultarPlacaPOC(NUMREG);
+                    PLACA = ConsultarPlacaPOC(NUMREG);
 
                     if (PLACA == "" || placaParametro.ToUpper() != PLACA)
                     {
@@ -1280,13 +1372,15 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
                             sequenciaTrammite = original.N0203TRA.OrderBy(c => c.SEQTRA).Last().SEQTRA + 1;
                         }
                         
-                        atualizarRecebimentoPOC(NUMREG);
+                        AtualizarRecebimentoPOC(NUMREG);
                         string sql = "UPDATE NWMS_PRODUCAO.N0203REG " +
                             "SET SITREG = '9'" +
                           " WHERE NUMREG = '" + NUMREG + "' AND SITREG IN (4,6,8)";
                         OracleConnection conn = new OracleConnection(OracleStringConnection);
-                        OracleCommand cmd = new OracleCommand(sql, conn);
-                        cmd.CommandType = CommandType.Text;
+                        OracleCommand cmd = new OracleCommand(sql, conn)
+                        {
+                            CommandType = CommandType.Text
+                        };
                         conn.Open();
                         cmd.ExecuteNonQuery();
                         conn.Close();
@@ -1294,8 +1388,10 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
                         string sqlTrammite = "INSERT INTO NWMS_PRODUCAO.N0203TRA (NUMREG, SEQTRA, DESTRA, USUTRA, DATTRA, OBSTRA, CODORI) VALUES ('" + NUMREG + "', '" + sequenciaTrammite + "','OCORRENCIA CONFERIDO','" + usuarioLogado + "', TO_DATE('" + DateTime.Now.ToString() + "', 'DD-MM-YYYY HH24:MI:SS'),'MERCADORIA CONFERIDO', '4')";
 
                         OracleConnection connTrammite = new OracleConnection(OracleStringConnection);
-                        OracleCommand cmdTrammite = new OracleCommand(sqlTrammite, connTrammite);
-                        cmdTrammite.CommandType = CommandType.Text;
+                        OracleCommand cmdTrammite = new OracleCommand(sqlTrammite, connTrammite)
+                        {
+                            CommandType = CommandType.Text
+                        };
                         connTrammite.Open();
                         cmdTrammite.ExecuteNonQuery();
                         connTrammite.Close();
@@ -1303,7 +1399,7 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
                     }
 
                 }
-                else if (consultarOcorrencia(NUMREG))
+                else if (ConsultarOcorrencia(NUMREG))
                 {
                     var numeroRegistro = Convert.ToInt64(NUMREG);
 
@@ -1318,8 +1414,10 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
                                " WHERE NUMREG = " + NUMREG + " ";
                     
                     OracleConnection conn = new OracleConnection(OracleStringConnection);
-                    OracleCommand cmd = new OracleCommand(sql, conn);
-                    cmd.CommandType = CommandType.Text;
+                    OracleCommand cmd = new OracleCommand(sql, conn)
+                    {
+                        CommandType = CommandType.Text
+                    };
                     conn.Open();
                     cmd.ExecuteNonQuery();
                     conn.Close();
@@ -1327,8 +1425,10 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
                     string sqlTrammite = "INSERT INTO NWMS_PRODUCAO.N0203TRA (NUMREG, SEQTRA, DESTRA, USUTRA, DATTRA, OBSTRA, CODORI) VALUES ('" + NUMREG + "', '" + sequenciaTrammite + "','OCORRENCIA CONFERIDO','" + usuarioLogado + "', TO_DATE('" + DateTime.Now.ToString() + "', 'DD-MM-YYYY HH24:MI:SS'),'MERCADORIA CONFERIDO', '4')";
 
                     OracleConnection connTrammite = new OracleConnection(OracleStringConnection);
-                    OracleCommand cmdTrammite = new OracleCommand(sqlTrammite, connTrammite);
-                    cmdTrammite.CommandType = CommandType.Text;
+                    OracleCommand cmdTrammite = new OracleCommand(sqlTrammite, connTrammite)
+                    {
+                        CommandType = CommandType.Text
+                    };
                     connTrammite.Open();
                     cmdTrammite.ExecuteNonQuery();
                     connTrammite.Close();
@@ -1348,7 +1448,7 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
         /// </summary>
         /// <param name="numeroRegistro">Código de Ocorrência</param>
         /// <returns>true/false</returns>
-        public bool alterarStatusOcorrencia(string numeroRegistro)
+        public bool AlterarStatusOcorrencia(string numeroRegistro)
         {
             try
             {
@@ -1357,8 +1457,10 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
                               " WHERE NUMREG = '" + numeroRegistro + "'";
 
                 OracleConnection conn = new OracleConnection(OracleStringConnection);
-                OracleCommand cmd = new OracleCommand(sql, conn);
-                cmd.CommandType = CommandType.Text;
+                OracleCommand cmd = new OracleCommand(sql, conn)
+                {
+                    CommandType = CommandType.Text
+                };
                 conn.Open();
                 cmd.ExecuteNonQuery();
                 conn.Close();
@@ -1375,7 +1477,7 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
         /// Verifica todas as ocorrências que estão com atraso de faturamento
         /// </summary>
         /// <returns>true/false</returns>
-        public ArrayList ocorrenciasAtrasoFaturamento()
+        public ArrayList OcorrenciasAtrasoFaturamento()
         {
             try
             {
@@ -1404,17 +1506,21 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
                                                REG.SITREG = 3 AND SYSDATE - TRA.DATTRA < 1))";
 
                 OracleConnection conn = new OracleConnection(OracleStringConnection);
-                OracleCommand cmd = new OracleCommand(sql, conn);
-                cmd.CommandType = CommandType.Text;
+                OracleCommand cmd = new OracleCommand(sql, conn)
+                {
+                    CommandType = CommandType.Text
+                };
                 conn.Open();
                 OracleDataReader dr = cmd.ExecuteReader();
                 
                 ArrayList lista = new ArrayList();
                 if (dr.Read())
                 {
-                    ArrayList itens = new ArrayList();
-                    itens.Add(dr.GetInt32(0));
-                    itens.Add(dr.GetInt32(1));
+                    ArrayList itens = new ArrayList
+                    {
+                        dr.GetInt32(0),
+                        dr.GetInt32(1)
+                    };
                     lista.Add(itens);
                 }
                 dr.Close();
@@ -1433,7 +1539,7 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
         /// <param name="numeroRegistro">Código de Ocorrência</param>
         /// <param name="placa">Placa</param>
         /// <returns>true/false</returns>
-        public bool inativarVinculoAnterior(string numeroRegistro, string placa)
+        public bool InativarVinculoAnterior(string numeroRegistro)
         {
             try
             {
@@ -1442,8 +1548,10 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
                               " WHERE NUMREG = '" + numeroRegistro + "'";
 
                 OracleConnection conn = new OracleConnection(OracleStringConnection);
-                OracleCommand cmd = new OracleCommand(sql, conn);
-                cmd.CommandType = CommandType.Text;
+                OracleCommand cmd = new OracleCommand(sql, conn)
+                {
+                    CommandType = CommandType.Text
+                };
                 conn.Open();
                 cmd.ExecuteNonQuery();
                 conn.Close();
@@ -1469,7 +1577,7 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
             long sequenciaTrammite;
             try
             {
-                if (inativarVinculoAnterior(numReg, codPlaca.ToUpper()))
+                if (InativarVinculoAnterior(numReg))
                 {
                     return false;
                 }
@@ -1486,8 +1594,10 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
                 var sql = "INSERT INTO NWMS_PRODUCAO.N0204POC (NUMREG, USUGER, DATVIN, SITPOC, PLACA, OBSREG ) VALUES ('" + numReg + "', '" + usuGer + "', '" + datVin + "', '1', '" + codPlaca.ToUpper() + "', '" + observacao + "')";
 
                 OracleConnection conn = new OracleConnection(OracleStringConnection);
-                OracleCommand cmd = new OracleCommand(sql, conn);
-                cmd.CommandType = CommandType.Text;
+                OracleCommand cmd = new OracleCommand(sql, conn)
+                {
+                    CommandType = CommandType.Text
+                };
                 conn.Open();
 
                 OracleDataReader dr = cmd.ExecuteReader();
@@ -1498,8 +1608,10 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
                 string sqlTrammite = "INSERT INTO NWMS_PRODUCAO.N0203TRA (NUMREG, SEQTRA, DESTRA, DESTRA, OBSTRA, USUTRA,DATTRA, CODORI) VALUES ('" + numReg + "','OCORRENCIA CONFERIDO', '" + sequenciaTrammite + "','" + usuGer + "',TO_DATE('" + DateTime.Now.ToString() + "', 'DD-MM-YYYY HH24:MI:SS'), '4')";
 
                 OracleConnection connTrammite = new OracleConnection(OracleStringConnection);
-                OracleCommand cmdTrammite = new OracleCommand(sqlTrammite, connTrammite);
-                cmdTrammite.CommandType = CommandType.Text;
+                OracleCommand cmdTrammite = new OracleCommand(sqlTrammite, connTrammite)
+                {
+                    CommandType = CommandType.Text
+                };
                 connTrammite.Open();
                 cmdTrammite.ExecuteNonQuery();
                 connTrammite.Close();
@@ -1536,10 +1648,12 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
                     }
 
                     codProtocolo = N0203REG.NUMREG;
-
-                    N0203TRA itemTramites = new N0203TRA();
-                    itemTramites.DATTRA = N0203REG.DATGER;
-                    itemTramites.DESTRA = "REGISTRO DE OCORRENCIA FECHADO";
+                                        
+                    N0203TRA itemTramites = new N0203TRA
+                    {
+                        DATTRA = N0203REG.DATGER,
+                        DESTRA = "REGISTRO DE OCORRENCIA FECHADO"
+                    };
 
                     if (N0203REG.SITREG == (long)Enums.SituacaoRegistroOcorrencia.Pendente)
                     {
@@ -1566,27 +1680,50 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
                                      select new { grupo.Key.CODFIL, grupo.Key.NUMNFV }).ToList();
 
                     E140NFVDataAccess E140NFVDataAccess = new E140NFVDataAccess();
+                    String DataAmissao = "";
 
                     foreach (var item in listNotas)
                     {
                         // Data de emissão da nota
                         var dataEmi = E140NFVDataAccess.PesquisarDadosNota(item.NUMNFV, item.CODFIL, null, "3").FirstOrDefault().DataEmissao;
+                        DataAmissao = dataEmi;
                         var datTime = DateTime.Parse(dataEmi);
 
                         N0203REG.N0203IPV.Where(c => c.CODFIL == item.CODFIL && c.NUMNFV == item.NUMNFV).ToList().ForEach(c => c.DATEMI = datTime);
                     }
 
+                    DateTime dataatual = DateTime.Now;
+
+                    int totalDias = (dataatual.Subtract(DateTime.Parse(DataAmissao))).Days;
+
+                    var padrao = contexto.N0204PPU.Where(c => !c.CODUSU.HasValue).FirstOrDefault();
+                    var exclusivo = contexto.N0204PPU.Where(c => c.CODUSU == N0203REG.USUGER).FirstOrDefault();
+
+                    if ((N0203REG.TIPATE == 1 && totalDias > padrao.QTDDEV) || (N0203REG.TIPATE == 2 && totalDias > padrao.QTDTRC))
+                    {
+                        if (((padrao.QTDDEV < exclusivo.QTDDEV) || (padrao.QTDTRC < exclusivo.QTDTRC)) && exclusivo.USUDEP != 0)
+                        {
+                            if(N0203REG.SITREG == (int)Enums.SituacaoRegistroOcorrencia.Pendente)
+                            {
+                                N0203REG.USUDEP = exclusivo.USUDEP;
+                            }
+                            else
+                            {
+                                N0203REG.USUDEP = exclusivo.USUDEP;
+                                N0203REG.SITREG = (int)Enums.SituacaoRegistroOcorrencia.Aprovar;
+                            }
+                        }
+                    }
+                    
                     foreach (N0203IPV item in N0203REG.N0203IPV)
                     {
                         item.NUMREG = N0203REG.NUMREG;
-                        long analiseEmbaque;
-                        E140IPVDataAccess.PesquisaAnaliseEmbarquePorNota(item.NUMNFV, item.CODFIL, out analiseEmbaque);
+                        E140IPVDataAccess.PesquisaAnaliseEmbarquePorNota(item.NUMNFV, item.CODFIL, out long analiseEmbaque);
                         item.NUMANE = analiseEmbaque;
 
                         if (item.CODFIL == 101)
                         {
-                            long analiseEmbaqueFilial;
-                            USU_T135LANDataAccess.PesquisaRelacionamentoAneEmbarqueEntreFilial(analiseEmbaque, out analiseEmbaqueFilial);
+                            USU_T135LANDataAccess.PesquisaRelacionamentoAneEmbarqueEntreFilial(analiseEmbaque, out long analiseEmbaqueFilial);
                             item.NUMANE_REL = analiseEmbaqueFilial;
                         }
                     }
@@ -1631,9 +1768,11 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
             {
                 using (Context contexto = new Context())
                 {
-                    var listaSituacao = new List<long>();
-                    listaSituacao.Add((long)Enums.SituacaoRegistroOcorrencia.Pendente);
-                    listaSituacao.Add((long)Enums.SituacaoRegistroOcorrencia.Reprovado);
+                    var listaSituacao = new List<long>
+                    {
+                        (long)Enums.SituacaoRegistroOcorrencia.Pendente,
+                        (long)Enums.SituacaoRegistroOcorrencia.Reprovado
+                    };
 
                     N9999USUDataAccess N9999USUDataAccess = new N9999USUDataAccess();
 
@@ -1665,14 +1804,16 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
             }
         }
 
-        public string descTransportadoraIndenizacao(long CodTRa)
+        public string DescTransportadoraIndenizacao(long CodTRa)
         {
             try
             {
                 string sql = "SELECT NOMTRA FROM SAPIENS.E073TRA WHERE CODTRA = " + CodTRa;
                 OracleConnection conn = new OracleConnection(OracleStringConnection);
-                OracleCommand cmd = new OracleCommand(sql, conn);
-                cmd.CommandType = CommandType.Text;
+                OracleCommand cmd = new OracleCommand(sql, conn)
+                {
+                    CommandType = CommandType.Text
+                };
                 conn.Open();
 
                 OracleDataReader dr = cmd.ExecuteReader();
@@ -1692,7 +1833,7 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
         /// Lista todas as ocorrências de Coleta
         /// </summary>
         /// <returns></returns>
-        public List<N0204POC> ocorrenciasColeta()
+        public List<N0204POC> OcorrenciasColeta()
         {
             try
             {
@@ -1716,12 +1857,14 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
                 OracleDataReader dr = cmd.ExecuteReader();
                 while (dr.Read())
                 {
-                    itens = new N0204POC();
-                    itens.NUMREG = Convert.ToInt64(dr["NUMREG"]);
-                    itens.CODUSU = dr["USUGER"].ToString();
-                    itens.NOMUSU = ActiveDirectoryDataAccess.ListaDadosUsuarioAD(dr["LOGIN"].ToString()).Nome;
-                    itens.DATVIN = dr["DATVIN"].ToString();
-                    itens.PLACA = dr["PLACA"].ToString().Insert(3, " - ");
+                    itens = new N0204POC
+                    {
+                        NUMREG = Convert.ToInt64(dr["NUMREG"]),
+                        CODUSU = dr["USUGER"].ToString(),
+                        NOMUSU = ActiveDirectoryDataAccess.ListaDadosUsuarioAD(dr["LOGIN"].ToString()).Nome,
+                        DATVIN = dr["DATVIN"].ToString(),
+                        PLACA = dr["PLACA"].ToString().Insert(3, " - ")
+                    };
                     listaColeta.Add(itens);
                 }
                 dr.Close();
@@ -1763,7 +1906,7 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
         /// <param name="codigoRegistro">Código de Ocorrência</param>
         /// <param name="situacaoRegistro">Situação</param>
         /// <returns>Lista de Ocorrências</returns>
-        public N0203REG PesquisaRegistroOcorrencia(long codigoRegistro, int situacaoRegistro)
+        public N0203REG PesquisaRegistroOcorrencia(long codigoRegistro)
         {
             try
             {
@@ -1783,15 +1926,17 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
         /// </summary>
         /// <param name="numeroRegistro">Código de Ocorrência</param>
         /// <returns>true/false</returns>
-        public bool verificarOcorrenciaVinculadaComTroca(string numeroRegistro)
+        public bool VerificarOcorrenciaVinculadaComTroca(string numeroRegistro)
         {
             try
             {
                 string sql = "SELECT 1 FROM SAPIENS.E120PED WHERE USU_ALFREG = '" + numeroRegistro + "' ";
 
                 OracleConnection conn = new OracleConnection(OracleStringConnection);
-                OracleCommand cmd = new OracleCommand(sql, conn);
-                cmd.CommandType = CommandType.Text;
+                OracleCommand cmd = new OracleCommand(sql, conn)
+                {
+                    CommandType = CommandType.Text
+                };
                 conn.Open();
 
                 OracleDataReader dr = cmd.ExecuteReader();
@@ -1827,7 +1972,7 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
         {
             try
             {
-                if (verificarOcorrenciaVinculadaComTroca(codigoRegistro.ToString()))
+                if (VerificarOcorrenciaVinculadaComTroca(codigoRegistro.ToString()))
                 {
                     return false;
                 }
@@ -1838,16 +1983,18 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
 
                     if (original.N0203TRA.Where(j => j.NUMREG == codigoRegistro && j.SEQTRA == sequencia) != null)
                     {
-                        sequencia = sequencia + 1;
+                        sequencia += 1;
                     }
 
-                    N0203TRA itemTramites = new N0203TRA();
-                    itemTramites.NUMREG = original.NUMREG;
-                    itemTramites.SEQTRA = sequencia;
-                    itemTramites.DESTRA = "REGISTRO DE OCORRENCIA CANCELADO";
-                    itemTramites.USUTRA = usuarioTramite;
-                    itemTramites.DATTRA = DateTime.Now;
-                    itemTramites.OBSTRA = "Cancelamento de Rascunho: " + motivoCancelamento;
+                    N0203TRA itemTramites = new N0203TRA
+                    {
+                        NUMREG = original.NUMREG,
+                        SEQTRA = sequencia,
+                        DESTRA = "REGISTRO DE OCORRENCIA CANCELADO",
+                        USUTRA = usuarioTramite,
+                        DATTRA = DateTime.Now,
+                        OBSTRA = "Cancelamento de Rascunho: " + motivoCancelamento
+                    };
 
                     original.N0203TRA.Add(itemTramites);
 
@@ -2065,6 +2212,10 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
                             {
                                 DescSituacaoRegistro = Attributes.KeyValueAttribute.GetFirst("Descricao", Enums.SituacaoRegistroOcorrencia.Indenizado).GetValue<string>();
                             }
+                            else if (item.SITREG == (int)Enums.SituacaoRegistroOcorrencia.Aprovar)
+                            {
+                                DescSituacaoRegistro = Attributes.KeyValueAttribute.GetFirst("Descricao", Enums.SituacaoRegistroOcorrencia.Aprovar).GetValue<string>();
+                            }
 
                             var UltimaAlteracao = item.DATULT.ToString();
                             var UsuarioUltimaAlteracao = item.USUULT.ToString();
@@ -2083,30 +2234,32 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
 
                             foreach (var itemDev in item.N0203IPV)
                             {
-                                itemLista = new RelatorioAnalitico();
-                                itemLista.CodigoRegistro = CodigoRegistro;
-                                itemLista.CodTipoAtendimento = CodTipoAtendimento;
-                                itemLista.DescTipoAtendimento = DescTipoAtendimento;
-                                itemLista.CodOrigemOcorrencia = CodOrigemOcorrencia;
-                                itemLista.DescOrigemOcorrencia = DescOrigemOcorrencia;
-                                itemLista.CodCliente = CodCliente;
-                                itemLista.NomeCliente = NomeCliente;
-                                itemLista.CodMotorista = CodMotorista;
-                                itemLista.CodPlaca = placa;
-                                itemLista.NomeMotorista = NomeMotorista;
-                                itemLista.DataHrGeracao = DataHrGeracao;
-                                itemLista.UsuarioGeracao = UsuarioGeracao;
-                                itemLista.NomeUsuarioGeracao = NomeUsuarioGeracao;
-                                itemLista.CodSituacaoRegistro = CodSituacaoRegistro;
-                                itemLista.DescSituacaoRegistro = DescSituacaoRegistro;
-                                itemLista.UltimaAlteracao = UltimaAlteracao;
-                                itemLista.UsuarioUltimaAlteracao = UsuarioUltimaAlteracao;
-                                itemLista.NomeUsuarioUltimaAlteracao = NomeUsuarioUltimaAlteracao;
-                                itemLista.Observacao = Observacao;
+                                itemLista = new RelatorioAnalitico
+                                {
+                                    CodigoRegistro = CodigoRegistro,
+                                    CodTipoAtendimento = CodTipoAtendimento,
+                                    DescTipoAtendimento = DescTipoAtendimento,
+                                    CodOrigemOcorrencia = CodOrigemOcorrencia,
+                                    DescOrigemOcorrencia = DescOrigemOcorrencia,
+                                    CodCliente = CodCliente,
+                                    NomeCliente = NomeCliente,
+                                    CodMotorista = CodMotorista,
+                                    CodPlaca = placa,
+                                    NomeMotorista = NomeMotorista,
+                                    DataHrGeracao = DataHrGeracao,
+                                    UsuarioGeracao = UsuarioGeracao,
+                                    NomeUsuarioGeracao = NomeUsuarioGeracao,
+                                    CodSituacaoRegistro = CodSituacaoRegistro,
+                                    DescSituacaoRegistro = DescSituacaoRegistro,
+                                    UltimaAlteracao = UltimaAlteracao,
+                                    UsuarioUltimaAlteracao = UsuarioUltimaAlteracao,
+                                    NomeUsuarioUltimaAlteracao = NomeUsuarioUltimaAlteracao,
+                                    Observacao = Observacao,
 
-                                // Itens Devolução
-                                itemLista.Empresa = itemDev.CODEMP.ToString();
-                                itemLista.Filial = itemDev.CODFIL;
+                                    // Itens Devolução
+                                    Empresa = itemDev.CODEMP.ToString(),
+                                    Filial = itemDev.CODFIL
+                                };
 
                                 // Add item na Lista de analises de embarque
                                 listaAnalises.Add(new Tuple<long, long>(itemDev.CODFIL, itemDev.NUMANE));
@@ -2140,9 +2293,9 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
                                 itemLista.ValorStS = itemLista.ValorSt.ToString("###,###,##0.00");
                                 itemLista.ValorLiquido = (itemDev.QTDDEV * decimal.Parse(itemDev.PREUNI.ToString())) + itemLista.ValorIpi + itemLista.ValorSt;
                                 itemLista.ValorLiquidoS = itemLista.ValorLiquido.ToString("###,###,##0.00");
-                                SomaTotalValorLiquido = SomaTotalValorLiquido + itemLista.ValorLiquido;
+                                SomaTotalValorLiquido +=  itemLista.ValorLiquido;
 
-                                countTotal = countTotal + 1;
+                                countTotal += 1;
 
                                 listaRegistros.Add(itemLista);
                             }
@@ -2203,7 +2356,7 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
         /// <param name="codPlaca">Placa</param>
         /// <param name="transportadora">Transportador</param>
         /// <returns></returns>
-        public List<RelatorioTempoCarga> RelatorioTempoCarga( string filial, string embarque, string numeroNotaFiscal, string codCliente, string dataInicial, string dataFinal, string motivo, string situacao, string origem, string tipo, string dataInicialOCR, string dataFinalOCR, string codPlaca, string transportadora)
+        public List<RelatorioTempoCarga> RelatorioTempoCarga( string filial, string embarque, string codCliente, string dataInicial, string dataFinal, string motivo, string situacao, string origem, string tipo, string dataInicialOCR, string dataFinalOCR, string codPlaca, string transportadora)
         {
             try
             {
@@ -2312,8 +2465,10 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
 
                 
                 OracleConnection conn = new OracleConnection(OracleStringConnection);
-                OracleCommand cmd = new OracleCommand(sql, conn);
-                cmd.CommandType = CommandType.Text;
+                OracleCommand cmd = new OracleCommand(sql, conn)
+                {
+                    CommandType = CommandType.Text
+                };
                 conn.Open();
                 //Gravar Arquivo
                 
@@ -2323,11 +2478,13 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
                 decimal valorTotal = 0;
                 while (dr.Read())
                 {
-                    itemProtocolo = new RelatorioTempoCarga();
-                    itemProtocolo.codigoProtocolo = Convert.ToInt64(dr["NUMREG"]);
-                    itemProtocolo.filial = 1;
-                    itemProtocolo.notaFiscal = Convert.ToInt64(dr["NOTA_ORIGEM"]);
-                    itemProtocolo.codigoCliente = Convert.ToInt64(dr["CODCLI"]);
+                    itemProtocolo = new RelatorioTempoCarga
+                    {
+                        codigoProtocolo = Convert.ToInt64(dr["NUMREG"]),
+                        filial = 1,
+                        notaFiscal = Convert.ToInt64(dr["NOTA_ORIGEM"]),
+                        codigoCliente = Convert.ToInt64(dr["CODCLI"])
+                    };
                     itemProtocolo.nomeCliente = itemProtocolo.codigoCliente + " - " + dr["NOMCLI"].ToString();
                     itemProtocolo.dataGeracao = Convert.ToDateTime(dr["DATGER"]);
                     itemProtocolo.status = dr["SITREG"].ToString() == "1" ? "Pendente" :
@@ -2382,6 +2539,7 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
         /// <param name="codPlaca">Placa</param>
         /// <param name="transportadora">Transportador</param>
         /// <returns></returns>
+        [Obsolete]
         public List<RelatorioSinteticoOcorrencia> RelatorioSinteticoOcorrencia(string filial, string embarque, string numeroNotaFiscal, string codCliente, string dataInicial, string dataFinal, string motivo, string situacao, string origem, string tipo, string dataInicialOCR, string dataFinalOCR, string codPlaca, string transportadora)
         {
             try
@@ -2495,8 +2653,10 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
 
                 OracleConnection conn = new OracleConnection(OracleStringConnection);
 
-                OracleCommand cmd = new OracleCommand(sql, conn);
-                cmd.CommandType = CommandType.Text;
+                OracleCommand cmd = new OracleCommand(sql, conn)
+                {
+                    CommandType = CommandType.Text
+                };
                 conn.Open();
                 //Gravar Arquivo
                 OracleDataReader dr = cmd.ExecuteReader();
@@ -2506,11 +2666,13 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
                 decimal valorTotal = 0;
                 while (dr.Read())
                 {
-                    itemProtocolo = new RelatorioSinteticoOcorrencia();
-                    itemProtocolo.codigoProtocolo = Convert.ToInt64(dr["NUMREG"]);
-                    itemProtocolo.filial = 1;
-                    itemProtocolo.notaFiscal = Convert.ToInt64(dr["NOTA_ORIGEM"]);
-                    itemProtocolo.codigoCliente = Convert.ToInt64(dr["CODCLI"]);
+                    itemProtocolo = new RelatorioSinteticoOcorrencia
+                    {
+                        codigoProtocolo = Convert.ToInt64(dr["NUMREG"]),
+                        filial = 1,
+                        notaFiscal = Convert.ToInt64(dr["NOTA_ORIGEM"]),
+                        codigoCliente = Convert.ToInt64(dr["CODCLI"])
+                    };
                     itemProtocolo.nomeCliente = itemProtocolo.codigoCliente + " - " + dr["NOMCLI"].ToString();
                     itemProtocolo.dataGeracao = dr["DATGER"].ToString();
                     itemProtocolo.status = dr["SITREG"].ToString() == "1" ? "Pendente" :
@@ -2601,8 +2763,10 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
                 }
 
                 OracleConnection conn = new OracleConnection(OracleStringConnection);
-                OracleCommand cmd = new OracleCommand(sql, conn);
-                cmd.CommandType = CommandType.Text;
+                OracleCommand cmd = new OracleCommand(sql, conn)
+                {
+                    CommandType = CommandType.Text
+                };
                 conn.Open();
 
                 OracleDataReader dr = cmd.ExecuteReader();
@@ -2627,18 +2791,22 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
                     string sql2 = "SELECT DISTINCT IPVREG.CODPRO, IPVREG.CODDER, IPVREG.CPLIPV, IPVREG.QTDDEV FROM NWMS_PRODUCAO.N0203IPV IPVREG WHERE IPVREG.NUMREG = " + Lista[sequencial];
 
                     OracleConnection conn1 = new OracleConnection(OracleStringConnection);
-                    OracleCommand cmd1 = new OracleCommand(sql2, conn1);
-                    cmd1.CommandType = CommandType.Text;
+                    OracleCommand cmd1 = new OracleCommand(sql2, conn1)
+                    {
+                        CommandType = CommandType.Text
+                    };
                     conn1.Open();
                     OracleDataReader dr2 = cmd1.ExecuteReader();
                     while (dr2.Read())
                     {
-                        itensTroca = new ItensTroca();
-                        itensTroca.CodProTroca = dr2["CODPRO"].ToString();
-                        itensTroca.CodDerTroca = dr2["CODDER"].ToString();
-                        itensTroca.DescProTroca = dr2["CPLIPV"].ToString();
-                        itensTroca.QtdeDevolucaoTroca = Convert.ToInt64(dr2["QTDDEV"]);
-                       listaItensTroca.Add(itensTroca);
+                        itensTroca = new ItensTroca
+                        {
+                            CodProTroca = dr2["CODPRO"].ToString(),
+                            CodDerTroca = dr2["CODDER"].ToString(),
+                            DescProTroca = dr2["CPLIPV"].ToString(),
+                            QtdeDevolucaoTroca = Convert.ToInt64(dr2["QTDDEV"])
+                        };
+                        listaItensTroca.Add(itensTroca);
                     }
                     dr2.Close();
                     conn1.Close();
@@ -2675,8 +2843,10 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
                   "             AND POC.PLACA = '" + codPlaca + "'";
 
                 OracleConnection conn = new OracleConnection(OracleStringConnection);
-                OracleCommand cmd = new OracleCommand(sql, conn);
-                cmd.CommandType = CommandType.Text;
+                OracleCommand cmd = new OracleCommand(sql, conn)
+                {
+                    CommandType = CommandType.Text
+                };
                 conn.Open();
 
                 OracleDataReader dr = cmd.ExecuteReader();
@@ -2686,11 +2856,13 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
 
                 while (dr.Read())
                 {
-                    itensTroca = new ItensColeta();
-                    itensTroca.CodProTroca = dr["CODPRO"].ToString();
-                    itensTroca.CodDerTroca = dr["CODDER"].ToString();
-                    itensTroca.DescProTroca = dr["CPLIPV"].ToString();
-                    itensTroca.QtdeDevolucaoTroca = Convert.ToInt64(dr["QTDDEV"]);
+                    itensTroca = new ItensColeta
+                    {
+                        CodProTroca = dr["CODPRO"].ToString(),
+                        CodDerTroca = dr["CODDER"].ToString(),
+                        DescProTroca = dr["CPLIPV"].ToString(),
+                        QtdeDevolucaoTroca = Convert.ToInt64(dr["QTDDEV"])
+                    };
                     listaItensTroca.Add(itensTroca);
                 }
                 dr.Close();
@@ -2875,8 +3047,10 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
                 }
 
                 OracleConnection conn = new OracleConnection(OracleStringConnection);
-                OracleCommand cmd = new OracleCommand(sql, conn);
-                cmd.CommandType = CommandType.Text;
+                OracleCommand cmd = new OracleCommand(sql, conn)
+                {
+                    CommandType = CommandType.Text
+                };
                 conn.Open();
 
                 OracleDataReader dr = cmd.ExecuteReader();
@@ -2887,23 +3061,25 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
 
                 while (dr.Read())
                 {
-                    itensTroca = new ItensSinteticoTroca();
-                    itensTroca.codigoProtocolo = Convert.ToInt64(dr["OCORRENCIA"].ToString().Replace(",", ""));
-                    itensTroca.notaFiscal = Convert.ToInt64(dr["NUMNFV"]);
-                    itensTroca.nomeCliente = dr["CLIENTE"].ToString();
-                    itensTroca.status = dr["SITREG"].ToString() == "1" ? "Pendente" :
+                    itensTroca = new ItensSinteticoTroca
+                    {
+                        codigoProtocolo = Convert.ToInt64(dr["OCORRENCIA"].ToString().Replace(",", "")),
+                        notaFiscal = Convert.ToInt64(dr["NUMNFV"]),
+                        nomeCliente = dr["CLIENTE"].ToString(),
+                        status = dr["SITREG"].ToString() == "1" ? "Pendente" :
                        dr["SITREG"].ToString() == "2" ? "Aguardando Aprovação" :
                        dr["SITREG"].ToString() == "3" ? "Integrado" :
                        dr["SITREG"].ToString() == "4" ? "Aprovado" :
                        dr["SITREG"].ToString() == "5" ? "Reprovado" :
                        dr["SITREG"].ToString() == "8" ? "Coleta" :
-                       dr["SITREG"].ToString() == "6" ? "Reabilitado":
+                       dr["SITREG"].ToString() == "6" ? "Reabilitado" :
                        dr["SITREG"].ToString() == "9" ? "Conferido" :
                        dr["SITREG"].ToString() == "10" ? "Faturado" :
                        dr["SITREG"].ToString() == "11" ? "Indenizado" :
-                       dr["SITREG"].ToString() == "7" ? "Cancelado" : "";
-                    itensTroca.dataGeracao = dr["DATGER"].ToString();
-                    itensTroca.embarque = dr["ANALISE"].ToString();
+                       dr["SITREG"].ToString() == "7" ? "Cancelado" : "",
+                        dataGeracao = dr["DATGER"].ToString(),
+                        embarque = dr["ANALISE"].ToString()
+                    };
                     somaTotalTroca += (decimal)Convert.ToDouble(dr["VALORLIQUIDO"]);
                     itensTroca.quantidade = somaTotalTroca.ToString("###,###,##0.00");
                     itensTroca.valorTotal = dr["VALORLIQUIDO"].ToString();
@@ -2924,21 +3100,23 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
         /// </summary>
         /// <param name="codPlaca">Placa</param>
         /// <returns>PLACA</returns>
-        public bool validarPlaca(string codPlaca)
+        public bool ValidarPlaca(string codPlaca)
         {
             try
             {
                 string sql = "SELECT COUNT(PLAVEI) AS LINHA FROM SAPIENS.E073VEI WHERE PLAVEI = '" + codPlaca.ToUpper() + "'";
 
                 OracleConnection conn = new OracleConnection(OracleStringConnection);
-                OracleCommand cmd = new OracleCommand(sql, conn);
-                cmd.CommandType = CommandType.Text;
+                OracleCommand cmd = new OracleCommand(sql, conn)
+                {
+                    CommandType = CommandType.Text
+                };
                 conn.Open();
                 OracleDataReader dr2 = cmd.ExecuteReader();
 
                 if (dr2.Read())
                 {
-                    return Convert.ToInt64(dr2["LINHA"]) > 0 ? false : true;
+                    return Convert.ToInt64(dr2["LINHA"]) <= 0;
                 }
 
                 dr2.Close();
@@ -3024,8 +3202,10 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
                 }
 
                 OracleConnection conn = new OracleConnection(OracleStringConnection);
-                OracleCommand cmd = new OracleCommand(sql, conn);
-                cmd.CommandType = CommandType.Text;
+                OracleCommand cmd = new OracleCommand(sql, conn)
+                {
+                    CommandType = CommandType.Text
+                };
                 conn.Open();
 
                 OracleDataReader dr = cmd.ExecuteReader();
@@ -3036,27 +3216,29 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
                 
                 while (dr.Read())
                 {
-                    itensCarga = new ItensSinteticoCarga();
-                    itensCarga.codigoProtocolo = Convert.ToInt64(dr["NUMREG"]);
-                    itensCarga.notaFiscal = Convert.ToInt64(dr["NUMNFV"]);
-                    itensCarga.nomeCliente = dr["NOMCLI"].ToString();
-                    itensCarga.status = dr["SITREG"].ToString() == "1" ? "Pendente" :
+                    itensCarga = new ItensSinteticoCarga
+                    {
+                        codigoProtocolo = Convert.ToInt64(dr["NUMREG"]),
+                        notaFiscal = Convert.ToInt64(dr["NUMNFV"]),
+                        nomeCliente = dr["NOMCLI"].ToString(),
+                        status = dr["SITREG"].ToString() == "1" ? "Pendente" :
                         dr["SITREG"].ToString() == "2" ? "Aguardando Aprovação" :
                         dr["SITREG"].ToString() == "3" ? "Integrado" :
                         dr["SITREG"].ToString() == "4" ? "Aprovado" :
                         dr["SITREG"].ToString() == "5" ? "Reprovado" :
-                        dr["SITREG"].ToString() == "6" ? "Reabilitado":
+                        dr["SITREG"].ToString() == "6" ? "Reabilitado" :
                         dr["SITREG"].ToString() == "8" ? "Coleta" :
                         dr["SITREG"].ToString() == "9" ? "Conferido" :
                         dr["SITREG"].ToString() == "10" ? "Faturado" :
                         dr["SITREG"].ToString() == "11" ? "Indenizado" :
-                        dr["SITREG"].ToString() == "7" ? "Cancelado" : "";
-                    itensCarga.dataGeracao = dr["DATGER"].ToString();
-                    itensCarga.embarque = dr["NUMANE"].ToString();
-                    //itensCarga.valorTotal = Convert.ToDouble(dr["VALORLIQUIDO"]).ToString("###,###,##0.00");
-                    itensCarga.valorTotal = (dr["VALORLIQUIDO"].ToString().Replace(".", "@"));
-                    itensCarga.PlacaCaminhao = codPlaca.ToUpper().ToString().Substring(0, 3) + "-" + codPlaca.ToUpper().ToString().Substring(3, 4);
-                    itensCarga.DataFaturamento = datFaturamento.ToString();
+                        dr["SITREG"].ToString() == "7" ? "Cancelado" : "",
+                        dataGeracao = dr["DATGER"].ToString(),
+                        embarque = dr["NUMANE"].ToString(),
+                        //itensCarga.valorTotal = Convert.ToDouble(dr["VALORLIQUIDO"]).ToString("###,###,##0.00");
+                        valorTotal = (dr["VALORLIQUIDO"].ToString().Replace(".", "@")),
+                        PlacaCaminhao = codPlaca.ToUpper().ToString().Substring(0, 3) + "-" + codPlaca.ToUpper().ToString().Substring(3, 4),
+                        DataFaturamento = datFaturamento.ToString()
+                    };
                     somaValorTotal += (decimal)Convert.ToDouble(dr["VALORLIQUIDO"]);
                     itensCarga.quantidade = somaValorTotal.ToString("###,###,##0.00");
                     listaItensCarga.Add(itensCarga);
@@ -3077,7 +3259,7 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
         /// <param name="codPlaca">Placa</param>
         /// <param name="datFaturamento">Data de Faturamento</param>
         /// <returns></returns>
-        public List<ItensSinteticoColeta> ItensColetaConferencia(string codPlaca, string datFaturamento)
+        public List<ItensSinteticoColeta> ItensColetaConferencia(string codPlaca)
         {
             try
             {
@@ -3103,8 +3285,10 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
                              "                 REG.DATGER," +
                              "                 PFA.NUMANE";
                 OracleConnection conn = new OracleConnection(OracleStringConnection);
-                OracleCommand cmd = new OracleCommand(sql, conn);
-                cmd.CommandType = CommandType.Text;
+                OracleCommand cmd = new OracleCommand(sql, conn)
+                {
+                    CommandType = CommandType.Text
+                };
                 conn.Open();
 
                 OracleDataReader dr = cmd.ExecuteReader();
@@ -3115,22 +3299,24 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
 
                 while (dr.Read())
                 {
-                    itensColeta = new ItensSinteticoColeta();
-                    itensColeta.codigoProtocolo = Convert.ToInt64(dr["NUMREG"]);
-                    itensColeta.notaFiscal = Convert.ToInt64(dr["NUMNFV"]);
-                    itensColeta.nomeCliente = dr["NOMCLI"].ToString();
-                    itensColeta.status = dr["SITREG"].ToString() == "1" ? "Pendente" :
+                    itensColeta = new ItensSinteticoColeta
+                    {
+                        codigoProtocolo = Convert.ToInt64(dr["NUMREG"]),
+                        notaFiscal = Convert.ToInt64(dr["NUMNFV"]),
+                        nomeCliente = dr["NOMCLI"].ToString(),
+                        status = dr["SITREG"].ToString() == "1" ? "Pendente" :
                         dr["SITREG"].ToString() == "2" ? "Aguardando Aprovação" :
                         dr["SITREG"].ToString() == "3" ? "Integrado" :
                         dr["SITREG"].ToString() == "4" ? "Aprovado" :
                         dr["SITREG"].ToString() == "5" ? "Reprovado" :
-                        dr["SITREG"].ToString() == "6" ? "Reabilitado":
+                        dr["SITREG"].ToString() == "6" ? "Reabilitado" :
                         dr["SITREG"].ToString() == "8" ? "Coleta" :
                         dr["SITREG"].ToString() == "9" ? "Conferido" :
                         dr["SITREG"].ToString() == "10" ? "Faturado" :
                         dr["SITREG"].ToString() == "11" ? "Indenizado" :
-                        dr["SITREG"].ToString() == "7" ? "Cancelado" : "";
-                    itensColeta.dataGeracao = dr["DATGER"].ToString();
+                        dr["SITREG"].ToString() == "7" ? "Cancelado" : "",
+                        dataGeracao = dr["DATGER"].ToString()
+                    };
                     somaTotalColeta += (decimal)Convert.ToDouble(dr["VALORLIQUIDO"]);
                     itensColeta.quantidade = somaTotalColeta.ToString("###,###,##0.00");
                     itensColeta.embarque = dr["NUMANE"].ToString();
@@ -3185,8 +3371,10 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
                              "                 PFA.NUMANE";
 
                 OracleConnection conn = new OracleConnection(OracleStringConnection);
-                OracleCommand cmd = new OracleCommand(sql, conn);
-                cmd.CommandType = CommandType.Text;
+                OracleCommand cmd = new OracleCommand(sql, conn)
+                {
+                    CommandType = CommandType.Text
+                };
                 conn.Open();
 
                 OracleDataReader dr = cmd.ExecuteReader();
@@ -3196,14 +3384,12 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
 
                 while (dr.Read())
                 {
-                    itensCarga = new N0203REG();
-                    itensCarga.NUMREG = Convert.ToInt64(dr["NUMREG"]);
-                    //itensCarga.N0203IPV = Convert.ToInt64(dr["NUMNFV"]);
-                    //itensCarga.C = dr["NOMCLI"].ToString();
-                    itensCarga.SITREG = Convert.ToInt64(dr["SITREG"]);
-                    itensCarga.DATGER = Convert.ToDateTime(dr["DATGER"]);
-                    //itensCarga.NUMANE = dr["NUMANE"].ToString();
-                    //  itensCarga.VAL = dr["VALORLIQUIDO"].ToString();
+                    itensCarga = new N0203REG
+                    {
+                        NUMREG = Convert.ToInt64(dr["NUMREG"]),
+                        SITREG = Convert.ToInt64(dr["SITREG"]),
+                        DATGER = Convert.ToDateTime(dr["DATGER"])
+                    };
                     listaItensCarga.Add(itensCarga);
                 }
                 dr.Close();
@@ -3246,10 +3432,12 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
                                           where r.NUMREG == null
                                           select new RelatorioSintetico { }).ToList();
 
-                    List<int> listaTiposPesquisa = new List<int>();
-                    listaTiposPesquisa.Add((int)Enums.TipoPesquisaRegistroOcorrencia.AnaliseEmbarque);
-                    listaTiposPesquisa.Add((int)Enums.TipoPesquisaRegistroOcorrencia.Placa_Periodo);
-                    listaTiposPesquisa.Add((int)Enums.TipoPesquisaRegistroOcorrencia.Placa_Data_Faturamento);
+                    List<int> listaTiposPesquisa = new List<int>
+                    {
+                        (int)Enums.TipoPesquisaRegistroOcorrencia.AnaliseEmbarque,
+                        (int)Enums.TipoPesquisaRegistroOcorrencia.Placa_Periodo,
+                        (int)Enums.TipoPesquisaRegistroOcorrencia.Placa_Data_Faturamento
+                    };
 
                     if (listaTiposPesquisa.Contains(tipoPesquisa))
                     {
@@ -3328,7 +3516,7 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
                             // Seleciona todas as analises de embarque dos protocolos acima
                             var listaAnalises = (from b in contexto.N0203IPV
                                                  where auxlistaProtocolos.Contains(b.NUMREG)
-                                                 group b by new { b.CODFIL, NUMANE = b.NUMANE } into grupo
+                                                 group b by new { b.CODFIL, b.NUMANE } into grupo
                                                  orderby grupo.Key.CODFIL, grupo.Key.NUMANE
                                                  select new { grupo.Key.CODFIL, grupo.Key.NUMANE }).ToList();
 
@@ -3437,7 +3625,7 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
         /// </summary>
         /// <param name="numeroRegistro">Código de Ocorrência</param>
         /// <returns>true/false</returns>
-        public String consultarPlacasFaturamento(long numeroRegistro)
+        public String ConsultarPlacasFaturamento(long numeroRegistro)
         {
             try
             {
@@ -3451,8 +3639,10 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
                              "   AND REG1.SITREG <> 9 ";
 
                 OracleConnection conn = new OracleConnection(OracleStringConnection);
-                OracleCommand cmd = new OracleCommand(sql, conn);
-                cmd.CommandType = CommandType.Text;
+                OracleCommand cmd = new OracleCommand(sql, conn)
+                {
+                    CommandType = CommandType.Text
+                };
                 conn.Open();
 
                 OracleDataReader dr = cmd.ExecuteReader();
@@ -3476,7 +3666,7 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
         /// </summary>
         /// <param name="codigoAgrupador">Código do agrupador</param>
         /// <returns></returns>
-        public List<int> verificarOcorrenciaAgrupada(int codigoAgrupador)
+        public List<int> VerificarOcorrenciaAgrupada(int codigoAgrupador)
         {
             try
             {
@@ -3487,8 +3677,10 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
 
 
                 OracleConnection conn = new OracleConnection(OracleStringConnection);
-                OracleCommand cmd = new OracleCommand(sql, conn);
-                cmd.CommandType = CommandType.Text;
+                OracleCommand cmd = new OracleCommand(sql, conn)
+                {
+                    CommandType = CommandType.Text
+                };
                 conn.Open();
 
                 OracleDataReader dr2 = cmd.ExecuteReader();
@@ -3513,7 +3705,7 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
         /// </summary>
         /// <param name="codigoAgrupador">Código do Agrupador</param>
         /// <returns>itens</returns>
-        public List<int> verificarOcorrencia(int codigoAgrupador)
+        public List<int> VerificarOcorrencia(int codigoAgrupador)
         {
             try
             {
@@ -3524,8 +3716,10 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
 
 
                 OracleConnection conn = new OracleConnection(OracleStringConnection);
-                OracleCommand cmd = new OracleCommand(sql, conn);
-                cmd.CommandType = CommandType.Text;
+                OracleCommand cmd = new OracleCommand(sql, conn)
+                {
+                    CommandType = CommandType.Text
+                };
                 conn.Open();
 
                 OracleDataReader dr2 = cmd.ExecuteReader();
@@ -3551,8 +3745,10 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
             {
                 string sql = "SELECT ORIOCO FROM N0203IPV WHERE NUMREG = " + Ocorrencia + "";
                 OracleConnection conn = new OracleConnection(OracleStringConnection);
-                OracleCommand cmd = new OracleCommand(sql, conn);
-                cmd.CommandType = CommandType.Text;
+                OracleCommand cmd = new OracleCommand(sql, conn)
+                {
+                    CommandType = CommandType.Text
+                };
                 conn.Open();
                 bool Motivo = false;
                 OracleDataReader dr2 = cmd.ExecuteReader();
@@ -3580,15 +3776,17 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
         /// Altera o Status do agrupamento
         /// </summary>
         /// <param name="codigoAgrupamento">Código do agrupador</param>
-        public void alterarStatusAgrupamento(long codigoAgrupamento)
+        public void AlterarStatusAgrupamento(long codigoAgrupamento)
         {
             try
             {
                 string sql = "UPDATE NWMS_PRODUCAO.N0203AGR SET STAGR = 'I' WHERE AGRREG = " + codigoAgrupamento + "";
 
                 OracleConnection conn = new OracleConnection(OracleStringConnection);
-                OracleCommand cmd = new OracleCommand(sql, conn);
-                cmd.CommandType = CommandType.Text;
+                OracleCommand cmd = new OracleCommand(sql, conn)
+                {
+                    CommandType = CommandType.Text
+                };
                 conn.Open();
                 OracleDataReader dr2 = cmd.ExecuteReader();
                 dr2.Close();
@@ -3614,7 +3812,7 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
         {
 
 
-            var itensAgrupados = verificarOcorrenciaAgrupada(Convert.ToInt16(codigoRegistro));
+            var itensAgrupados = VerificarOcorrenciaAgrupada(Convert.ToInt16(codigoRegistro));
 
             //VERIFICAR SE TODAS AS OCORRÊNCIAS AGRUPADAS ESTÃO COM O STATUS 9
             using (Context contexto = new Context())
@@ -3639,9 +3837,11 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
 
                     if (original != null)
                     {
-                        N0203TRA itemTramites = new N0203TRA();
-                        itemTramites.NUMREG = original.NUMREG;
-                        itemTramites.SEQTRA = original.N0203TRA.OrderBy(c => c.SEQTRA).Last().SEQTRA + 1;
+                        N0203TRA itemTramites = new N0203TRA
+                        {
+                            NUMREG = original.NUMREG,
+                            SEQTRA = original.N0203TRA.OrderBy(c => c.SEQTRA).Last().SEQTRA + 1
+                        };
 
                         if (situacaoRegistro == (int)Enums.OperacaoAprovacaoFaturamento.Aprovar)
                         {
@@ -3659,7 +3859,8 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
                         contexto.SaveChanges();
                     }
                 }
-            } alterarStatusAgrupamento(codigoRegistro);
+            } 
+            AlterarStatusAgrupamento(codigoRegistro);
             return "Registros de ocorrências agrupadas foram integradas com sucesso!";
         }
 
@@ -3676,7 +3877,7 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
         public string AprovarRegistrosOcorrencia(long codigoRegistro, long usuarioTramite, string observacao, int situacaoRegistro, string tipoOperacao)
         {
             //SITUAÇÃO DE APROVAÇÃO E CANCELAMENTO DE OCORRENCIAS AGRUPADAS
-            if (tipoOperacao == "2" && verificarOcorrenciaAgrupada(Convert.ToInt16(codigoRegistro)).Count > 0)
+            if (tipoOperacao == "2" && VerificarOcorrenciaAgrupada(Convert.ToInt16(codigoRegistro)).Count > 0)
             {
                 return AprovarRegistrosOcorrenciaAgrupada(codigoRegistro, usuarioTramite, observacao, situacaoRegistro);
             }
@@ -3692,16 +3893,18 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
                         return "Operação não permitida, verifique se a ocorrência está com a situação integrado ou faturada.";
                     }
 
-                    if (consultaString("NWMS_PRODUCAO.N0203AGR", "NUMREG", "NUMREG = " + codigoRegistro + "") == "VAZIO")
+                    if (ConsultaString("NWMS_PRODUCAO.N0203AGR", "NUMREG", "NUMREG = " + codigoRegistro + "") == "VAZIO")
                     {
-                        N0203TRA itemTramites = new N0203TRA();
-                        itemTramites.NUMREG = original.NUMREG;
+                        N0203TRA itemTramites = new N0203TRA
+                        {
+                            NUMREG = original.NUMREG,
 
-                        itemTramites.SEQTRA = original.N0203TRA.OrderBy(c => c.SEQTRA).Last().SEQTRA + 1;
-                        itemTramites.USUTRA = usuarioTramite;
-                        itemTramites.DATTRA = DateTime.Today;
-                        itemTramites.DESTRA = "REGISTRO DE OCORRENCIA CANCELADO";
-                        itemTramites.OBSTRA = observacao;
+                            SEQTRA = original.N0203TRA.OrderBy(c => c.SEQTRA).Last().SEQTRA + 1,
+                            USUTRA = usuarioTramite,
+                            DATTRA = DateTime.Today,
+                            DESTRA = "REGISTRO DE OCORRENCIA CANCELADO",
+                            OBSTRA = observacao
+                        };
                         original.N0203TRA.Add(itemTramites);
                         original.SITREG = (long)Enums.SituacaoRegistroOcorrencia.Cancelado;
 
@@ -3726,9 +3929,11 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
                     }
                     if (original != null)
                     {
-                        N0203TRA itemTramites = new N0203TRA();
-                        itemTramites.NUMREG = original.NUMREG;
-                        itemTramites.SEQTRA = original.N0203TRA.OrderBy(c => c.SEQTRA).Last().SEQTRA + 1;
+                        N0203TRA itemTramites = new N0203TRA
+                        {
+                            NUMREG = original.NUMREG,
+                            SEQTRA = original.N0203TRA.OrderBy(c => c.SEQTRA).Last().SEQTRA + 1
+                        };
 
                         if (situacaoRegistro == (int)Enums.OperacaoAprovacaoFaturamento.Aprovar)
                         {
@@ -3760,9 +3965,11 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
                     }
                     if (original != null)
                     {
-                        N0203TRA itemTramites = new N0203TRA();
-                        itemTramites.NUMREG = original.NUMREG;
-                        itemTramites.SEQTRA = original.N0203TRA.OrderBy(c => c.SEQTRA).Last().SEQTRA + 1;
+                        N0203TRA itemTramites = new N0203TRA
+                        {
+                            NUMREG = original.NUMREG,
+                            SEQTRA = original.N0203TRA.OrderBy(c => c.SEQTRA).Last().SEQTRA + 1
+                        };
 
                         if (situacaoRegistro == (int)Enums.OperacaoAprovacaoFaturamento.Reaprovar)
                         {
@@ -3803,6 +4010,13 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
                     List<N0203TRA> verificarAreasAprovadas = contexto.N0203TRA.Where(c => c.NUMREG == codigoRegistro && c.CODORI != null).ToList();
                     List<N0203UAP> codigoOrigem = contexto.N0203UAP.Where(c => c.CODUSU == codUsuarioLogado && c.CODATD == original.TIPATE).ToList();
                     List<N0203TRA> TemRegristroRepetido = contexto.N0203TRA.Where(c => c.NUMREG == codigoRegistro && c.DESTRA.Contains("REGISTRO DE OCORRENCIA PRÉ APROVADO")).ToList();
+                    bool tem = false;
+                    var desc = "REGISTRO DE OCORRENCIA PRÉ APROVADO";
+
+                    if(original.SITREG == (int)Enums.SituacaoRegistroOcorrencia.Aprovar)
+                    {
+                        desc = "REGISTRO DE OCORRENCIA APROVAR USUÁRIO APROVADOR";
+                    }
 
                     foreach (var codigoOrigemAp in codigoOrigem)
                     {
@@ -3813,26 +4027,35 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
                                 #region
                                 if (original != null)
                                 {
-                                    N0203TRA itemTramites = new N0203TRA();
-                                    itemTramites.NUMREG = original.NUMREG;
-                                    itemTramites.SEQTRA = original.N0203TRA.OrderBy(c => c.SEQTRA).Last().SEQTRA + 1;
-                                    itemTramites.DESTRA = "REGISTRO DE OCORRENCIA PRÉ APROVADO";
-                                    itemTramites.OBSTRA = observacaoAprovacao;
-                                    itemTramites.USUTRA = codUsuarioLogado;
-                                    itemTramites.DATTRA = DateTime.Now;
-                                    itemTramites.CODORI = item.ORIOCO;
+                                    N0203TRA itemTramites = new N0203TRA
+                                    {
+                                        NUMREG = original.NUMREG,
+                                        SEQTRA = original.N0203TRA.OrderBy(c => c.SEQTRA).Last().SEQTRA + 1,
+                                        DESTRA = desc,
+                                        OBSTRA = observacaoAprovacao,
+                                        USUTRA = codUsuarioLogado,
+                                        DATTRA = DateTime.Now,
+                                        CODORI = item.ORIOCO
+                                    };
                                     original.N0203TRA.Add(itemTramites);
                                     contexto.SaveChanges();
-
-                                    if (verificarAreasAprovadas.Count == verificarAreasParaAprovacao.Count)
-                                    {
-                                        original.SITREG = (long)Enums.SituacaoRegistroOcorrencia.PreAprovado;
-                                        original.APREAP = "N";
-                                    }
-                                    else
+                                    if(original.SITREG == (int)Enums.SituacaoRegistroOcorrencia.Aprovar)
                                     {
                                         original.SITREG = (long)Enums.SituacaoRegistroOcorrencia.Fechado;
-                                        original.APREAP = "S";
+                                        tem = true;
+                                    }
+                                    else 
+                                    { 
+                                        if (verificarAreasAprovadas.Count == verificarAreasParaAprovacao.Count)
+                                        {
+                                            original.SITREG = (long)Enums.SituacaoRegistroOcorrencia.PreAprovado;
+                                            original.APREAP = "N";
+                                        }
+                                        else
+                                        {
+                                            original.SITREG = (long)Enums.SituacaoRegistroOcorrencia.Fechado;
+                                            original.APREAP = "S";
+                                        }
                                     }
                                     contexto.SaveChanges();
 
@@ -3843,16 +4066,24 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
                     }
                     List<N0203IPV> verificarAreasParaAprovacaoAtualizada = contexto.N0203IPV.Where(c => c.NUMREG == codigoRegistro).ToList();
                     List<N0203TRA> verificarAreasAprovadasAtualizada = contexto.N0203TRA.Where(c => c.NUMREG == codigoRegistro && c.CODORI != null).ToList();
+                    
 
-                    if (verificarAreasParaAprovacaoAtualizada.Count <= verificarAreasAprovadasAtualizada.Count)
-                    {
-                        original.SITREG = (long)Enums.SituacaoRegistroOcorrencia.PreAprovado;
-                        original.APREAP = "N";
-                    }
-                    else
+                    if (tem == true)
                     {
                         original.SITREG = (long)Enums.SituacaoRegistroOcorrencia.Fechado;
-                        original.APREAP = "S";
+                    }
+                    else 
+                    { 
+                        if (verificarAreasParaAprovacaoAtualizada.Count <= verificarAreasAprovadasAtualizada.Count)
+                        {
+                            original.SITREG = (long)Enums.SituacaoRegistroOcorrencia.PreAprovado;
+                            original.APREAP = "N";
+                        }
+                        else
+                        {
+                            original.SITREG = (long)Enums.SituacaoRegistroOcorrencia.Fechado;
+                            original.APREAP = "S";
+                        }
                     }
                     contexto.SaveChanges();
                     return original != null;
@@ -3881,13 +4112,15 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
 
                     if (original != null)
                     {
-                        N0203TRA itemTramites = new N0203TRA();
-                        itemTramites.NUMREG = original.NUMREG;
-                        itemTramites.SEQTRA = original.N0203TRA.OrderBy(c => c.SEQTRA).Last().SEQTRA + 1;
-                        itemTramites.DESTRA = "REGISTRO DE OCORRENCIA REPROVADO";
-                        itemTramites.OBSTRA = observacaoReprovacao;
-                        itemTramites.USUTRA = codUsuarioLogado;
-                        itemTramites.DATTRA = DateTime.Now;
+                        N0203TRA itemTramites = new N0203TRA
+                        {
+                            NUMREG = original.NUMREG,
+                            SEQTRA = original.N0203TRA.OrderBy(c => c.SEQTRA).Last().SEQTRA + 1,
+                            DESTRA = "REGISTRO DE OCORRENCIA REPROVADO",
+                            OBSTRA = observacaoReprovacao,
+                            USUTRA = codUsuarioLogado,
+                            DATTRA = DateTime.Now
+                        };
                         original.N0203TRA.Add(itemTramites);
 
                         original.SITREG = (long)Enums.SituacaoRegistroOcorrencia.Reprovado;
@@ -3960,6 +4193,7 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
                 using (Context contexto = new Context())
                 {
                     var situacaoFechado = (int)Enums.SituacaoRegistroOcorrencia.Fechado;
+                    var aprovar = (int)Enums.SituacaoRegistroOcorrencia.Aprovar;
                     //var situacaoPreAprovado = (int)Enums.SituacaoRegistroOcorrencia.PreAprovado;
                     var tipoAtendimento = (int)Enums.TipoAtendimento.DevolucaoMercadorias;
                     var listaN0203REG = new List<N0203REG>();
@@ -3968,10 +4202,11 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
 
                     var listaRegistros = (from c in contexto.N0203REG
                                           join m in contexto.N0203IPV on new { c.NUMREG } equals new { m.NUMREG }
-                                          where (c.SITREG == situacaoFechado) && (c.APREAP == null || c.APREAP == "S") && centroCusto.Contains(m.ORIOCO)
+                                          where ((c.SITREG == situacaoFechado && (c.APREAP == null || c.APREAP == "S") && centroCusto.Contains(m.ORIOCO)) || (c.SITREG == aprovar && c.USUDEP == codUsuarioLogado))
                                           group new { c } by new { c.NUMREG } into grupo
                                           orderby grupo.Key
                                           select grupo.Key).ToList();
+
                     foreach (var reg in listaRegistros)
                     {
 
@@ -4041,8 +4276,10 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
                              "                               IPV.NUMNFV ORDER BY DATGER ASC";
 
                 OracleConnection conn = new OracleConnection(OracleStringConnection);
-                OracleCommand cmd = new OracleCommand(sql, conn);
-                cmd.CommandType = CommandType.Text;
+                OracleCommand cmd = new OracleCommand(sql, conn)
+                {
+                    CommandType = CommandType.Text
+                };
                 conn.Open();
 
                 OracleDataReader dr = cmd.ExecuteReader();
@@ -4052,14 +4289,16 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
                 decimal valorTotal = 0;
                 while (dr.Read())
                 {
-                    itemProtocolo = new ProtocolosAprovacaoModel();
-                    itemProtocolo.CodigoRegistro = Convert.ToInt64(dr["NUMREG"]);
-                    itemProtocolo.DataFechamento = dr["DATGER"].ToString();
-                    itemProtocolo.descMotivo = dr["DESCMDV"].ToString();
-                    itemProtocolo.DescOrigemOcorrencia = dr["DESCORI"].ToString();
-                    itemProtocolo.numeroNotaFiscal = dr["NUMNFV"].ToString();
-                    itemProtocolo.valorLiquido = dr["VALORLIQUIDO"].ToString();
-                    itemProtocolo.DescTipoAtendimento = dr["DESCATD"].ToString();
+                    itemProtocolo = new ProtocolosAprovacaoModel
+                    {
+                        CodigoRegistro = Convert.ToInt64(dr["NUMREG"]),
+                        DataFechamento = dr["DATGER"].ToString(),
+                        descMotivo = dr["DESCMDV"].ToString(),
+                        DescOrigemOcorrencia = dr["DESCORI"].ToString(),
+                        numeroNotaFiscal = dr["NUMNFV"].ToString(),
+                        valorLiquido = dr["VALORLIQUIDO"].ToString(),
+                        DescTipoAtendimento = dr["DESCATD"].ToString()
+                    };
                     valorTotal += Convert.ToDecimal(itemProtocolo.valorLiquido);
                     itemProtocolo.valorTotal = valorTotal;
                     listaProtocolosPendentes.Add(itemProtocolo);
@@ -4079,7 +4318,7 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
         /// </summary>
         /// <param name="numeroOCorrencia">Código de Ocorrência</param>
         /// <returns></returns>
-        public List<TimeLine> timeLine(long numeroOCorrencia)
+        public List<TimeLine> TimeLine(long numeroOCorrencia)
         {
 
             try
@@ -4134,8 +4373,10 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
 
 
                 OracleConnection conn = new OracleConnection(OracleStringConnection);
-                OracleCommand cmd = new OracleCommand(sql, conn);
-                cmd.CommandType = CommandType.Text;
+                OracleCommand cmd = new OracleCommand(sql, conn)
+                {
+                    CommandType = CommandType.Text
+                };
                 conn.Open();
 
                 OracleDataReader dr = cmd.ExecuteReader();
@@ -4145,15 +4386,17 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
 
                 while (dr.Read())
                 {
-                    itemTramite = new TimeLine();
-                    itemTramite.NUMREG = Convert.ToInt64(dr["NUMREG"]);
-                    itemTramite.DESTRA = dr["DESTRA"].ToString();
-                    itemTramite.DESCORITRA = dr["ORIGEMAPROVACAO"].ToString();
-                    itemTramite.DESCORIREG = dr["ORIGEMOCORRENCIA"].ToString();
-                    itemTramite.DATTRA = dr["DATTRA"].ToString();
-                    itemTramite.OBSTRA = dr["OBSTRA"].ToString();
-                    itemTramite.OBSREG = dr["OBSREG"].ToString();
-                    itemTramite.USUTRA = dr["LOGIN"].ToString();
+                    itemTramite = new TimeLine
+                    {
+                        NUMREG = Convert.ToInt64(dr["NUMREG"]),
+                        DESTRA = dr["DESTRA"].ToString(),
+                        DESCORITRA = dr["ORIGEMAPROVACAO"].ToString(),
+                        DESCORIREG = dr["ORIGEMOCORRENCIA"].ToString(),
+                        DATTRA = dr["DATTRA"].ToString(),
+                        OBSTRA = dr["OBSTRA"].ToString(),
+                        OBSREG = dr["OBSREG"].ToString(),
+                        USUTRA = dr["LOGIN"].ToString()
+                    };
                     listaTramite.Add(itemTramite);
                 }
 
@@ -4173,7 +4416,7 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
         /// <param name="dias">Dias</param>
         /// <param name="situacao">Situação</param>
         /// <returns></returns>
-        public List<N0204ORI> quantidadeProtocolosPorArea(int dias, int situacao)
+        public List<N0204ORI> QuantidadeProtocolosPorArea(int dias, int situacao)
         {
             try
             {
@@ -4207,8 +4450,10 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
 
                 sql += situacao == 0 ? " GROUP BY ORI.DESCORI" : " AND REG.SITREG = " + situacao + "  GROUP BY ORI.DESCORI";
                 OracleConnection conn = new OracleConnection(OracleStringConnection);
-                OracleCommand cmd = new OracleCommand(sql, conn);
-                cmd.CommandType = CommandType.Text;
+                OracleCommand cmd = new OracleCommand(sql, conn)
+                {
+                    CommandType = CommandType.Text
+                };
                 conn.Open();
 
                 OracleDataReader dr = cmd.ExecuteReader();
@@ -4217,9 +4462,11 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
                 N0204ORI itensOrigens = new N0204ORI();
                 while (dr.Read())
                 {
-                    itensOrigens = new N0204ORI();
-                    itensOrigens.DESCORI = dr["DESCORI"].ToString();
-                    itensOrigens.QTDORIVALOR = Convert.ToDecimal(dr["VALOR"]);
+                    itensOrigens = new N0204ORI
+                    {
+                        DESCORI = dr["DESCORI"].ToString(),
+                        QTDORIVALOR = Convert.ToDecimal(dr["VALOR"])
+                    };
                     listaItensOrigens.Add(itensOrigens);
                 }
                 dr.Close();
@@ -4238,7 +4485,7 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
         /// <param name="dias">Dias</param>
         /// <param name="situacao">Situação</param>
         /// <returns></returns>
-        public List<N0204ORI> quantidadeProtocolosPorAreaMeses(int dias, int situacao)
+        public List<N0204ORI> QuantidadeProtocolosPorAreaMeses(int dias, int situacao)
         {
             try
             {
@@ -4274,8 +4521,10 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
                 sql += situacao == 0 ? " GROUP BY ORI.DESCORI" : " AND REG.SITREG = " + situacao + "  GROUP BY ORI.DESCORI";
 
                 OracleConnection conn = new OracleConnection(OracleStringConnection);
-                OracleCommand cmd = new OracleCommand(sql, conn);
-                cmd.CommandType = CommandType.Text;
+                OracleCommand cmd = new OracleCommand(sql, conn)
+                {
+                    CommandType = CommandType.Text
+                };
                 conn.Open();
 
                 OracleDataReader dr = cmd.ExecuteReader();
@@ -4284,9 +4533,11 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
                 N0204ORI itensOrigens = new N0204ORI();
                 while (dr.Read())
                 {
-                    itensOrigens = new N0204ORI();
-                    itensOrigens.DESCORI = dr["DESCORI"].ToString();
-                    itensOrigens.QTDORI = Convert.ToInt32(dr["QUANTIDADE"]);
+                    itensOrigens = new N0204ORI
+                    {
+                        DESCORI = dr["DESCORI"].ToString(),
+                        QTDORI = Convert.ToInt32(dr["QUANTIDADE"])
+                    };
                     listaItensOrigens.Add(itensOrigens);
                 }
                 dr.Close();
@@ -4351,8 +4602,10 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
                 "    ORDER BY DATGER ASC";
 
                 OracleConnection conn = new OracleConnection(OracleStringConnection);
-                OracleCommand cmd = new OracleCommand(sql, conn);
-                cmd.CommandType = CommandType.Text;
+                OracleCommand cmd = new OracleCommand(sql, conn)
+                {
+                    CommandType = CommandType.Text
+                };
                 conn.Open();
 
                 OracleDataReader dr = cmd.ExecuteReader();
@@ -4362,15 +4615,17 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
                 decimal valorTotal = 0;
                 while (dr.Read())
                 {
-                    itemProtocolo = new ProtocolosAprovacaoModel();
-                    itemProtocolo.CodigoRegistro = Convert.ToInt64(dr["NUMREG"]);
-                    itemProtocolo.DataFechamento = dr["DATGER"].ToString();
-                    itemProtocolo.descMotivo = dr["DESCMDV"].ToString();
-                    itemProtocolo.DescOrigemOcorrencia = dr["DESCORI"].ToString();
-                    itemProtocolo.numeroNotaFiscal = dr["NUMNFV"].ToString();
-                    itemProtocolo.AREASAP = dr["AREASAP"].ToString();
-                    itemProtocolo.AREASPAP = dr["AREASPAP"].ToString();
-                    itemProtocolo.valorLiquido = dr["VALORLIQUIDO"].ToString();
+                    itemProtocolo = new ProtocolosAprovacaoModel
+                    {
+                        CodigoRegistro = Convert.ToInt64(dr["NUMREG"]),
+                        DataFechamento = dr["DATGER"].ToString(),
+                        descMotivo = dr["DESCMDV"].ToString(),
+                        DescOrigemOcorrencia = dr["DESCORI"].ToString(),
+                        numeroNotaFiscal = dr["NUMNFV"].ToString(),
+                        AREASAP = dr["AREASAP"].ToString(),
+                        AREASPAP = dr["AREASPAP"].ToString(),
+                        valorLiquido = dr["VALORLIQUIDO"].ToString()
+                    };
                     valorTotal += Convert.ToDecimal(itemProtocolo.valorLiquido);
                     itemProtocolo.valorTotal = valorTotal;
                     itemProtocolo.DescTipoAtendimento = dr["DESCATD"].ToString();
@@ -4398,8 +4653,10 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
                 string sql = "SELECT CODORI FROM NWMS_PRODUCAO.N0204DORI WHERE CODUSU = " + codigoUsuario + "";
 
                 OracleConnection conn = new OracleConnection(OracleStringConnection);
-                OracleCommand cmd = new OracleCommand(sql, conn);
-                cmd.CommandType = CommandType.Text;
+                OracleCommand cmd = new OracleCommand(sql, conn)
+                {
+                    CommandType = CommandType.Text
+                };
                 conn.Open();
 
                 OracleDataReader dr = cmd.ExecuteReader();
@@ -4472,8 +4729,10 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
                                           " TRA.DATTRA))" +
                 "                    ORDER BY DATGER ASC";
                 OracleConnection conn = new OracleConnection(OracleStringConnection);
-                OracleCommand cmd = new OracleCommand(sql, conn);
-                cmd.CommandType = CommandType.Text;
+                OracleCommand cmd = new OracleCommand(sql, conn)
+                {
+                    CommandType = CommandType.Text
+                };
                 conn.Open();
 
                 OracleDataReader dr = cmd.ExecuteReader();
@@ -4483,16 +4742,18 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
                 decimal valorTotal = 0;
                 while (dr.Read())
                 {
-                    itemProtocolo = new ProtocolosAprovacaoModel();
-                    itemProtocolo.CodigoRegistro = Convert.ToInt64(dr["NUMREG"]);
-                    itemProtocolo.DataFechamento = dr["DATGER"].ToString();
-                    itemProtocolo.descMotivo = dr["DESCMDV"].ToString();
-                    itemProtocolo.DescOrigemOcorrencia = dr["DESCORI"].ToString();
-                    itemProtocolo.numeroNotaFiscal = dr["NUMNFV"].ToString();
-                    itemProtocolo.AREASAP = dr["AREASAP"].ToString();
-                    itemProtocolo.AREASPAP = dr["AREASPAP"].ToString();
-                    itemProtocolo.valorLiquido = dr["VALORLIQUIDO"].ToString();
-                    itemProtocolo.DescTipoAtendimento = dr["DESCATD"].ToString();
+                    itemProtocolo = new ProtocolosAprovacaoModel
+                    {
+                        CodigoRegistro = Convert.ToInt64(dr["NUMREG"]),
+                        DataFechamento = dr["DATGER"].ToString(),
+                        descMotivo = dr["DESCMDV"].ToString(),
+                        DescOrigemOcorrencia = dr["DESCORI"].ToString(),
+                        numeroNotaFiscal = dr["NUMNFV"].ToString(),
+                        AREASAP = dr["AREASAP"].ToString(),
+                        AREASPAP = dr["AREASPAP"].ToString(),
+                        valorLiquido = dr["VALORLIQUIDO"].ToString(),
+                        DescTipoAtendimento = dr["DESCATD"].ToString()
+                    };
                     valorTotal += Convert.ToDecimal(itemProtocolo.valorLiquido);
                     itemProtocolo.valorTotal = valorTotal;
                     listaProtocolosPendentes.Add(itemProtocolo);
@@ -4556,8 +4817,10 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
                             "              MDV.DESCMDV" + "";
 
                 OracleConnection conn = new OracleConnection(OracleStringConnection);
-                OracleCommand cmd = new OracleCommand(sql, conn);
-                cmd.CommandType = CommandType.Text;
+                OracleCommand cmd = new OracleCommand(sql, conn)
+                {
+                    CommandType = CommandType.Text
+                };
                 conn.Open();
 
                 OracleDataReader dr = cmd.ExecuteReader();
@@ -4567,7 +4830,7 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
                 int cont = 0;
                 while (dr.Read())
                 {
-                    cont = cont + 1;
+                    cont += 1;
 
                 }
 
@@ -4616,8 +4879,10 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
                              "            ORDER BY TRA.DATTRA ASC)";
 
                 OracleConnection conn = new OracleConnection(OracleStringConnection);
-                OracleCommand cmd = new OracleCommand(sql, conn);
-                cmd.CommandType = CommandType.Text;
+                OracleCommand cmd = new OracleCommand(sql, conn)
+                {
+                    CommandType = CommandType.Text
+                };
                 conn.Open();
 
                 OracleDataReader dr = cmd.ExecuteReader();
@@ -4655,8 +4920,10 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
                        "                    AND TRA.CODORI = IPV.ORIOCO))";
 
                 OracleConnection con = new OracleConnection(OracleStringConnection);
-                OracleCommand cmd1 = new OracleCommand(sql1, con);
-                cmd1.CommandType = CommandType.Text;
+                OracleCommand cmd1 = new OracleCommand(sql1, con)
+                {
+                    CommandType = CommandType.Text
+                };
                 con.Open();
 
                 OracleDataReader dr1 = cmd1.ExecuteReader();
@@ -4685,15 +4952,17 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
         /// </summary>
         /// <param name="numreg">Código de Ocorrência</param>
         /// <returns></returns>
-        public string pesquisarObservacaoSAC(long numreg)
+        public string PesquisarObservacaoSAC(long numreg)
         {
             try
             {
                 string sql = "SELECT N0203REG.OBSREG FROM NWMS_PRODUCAO.N0203REG WHERE NUMREG = " + numreg + "";
 
                 OracleConnection conn = new OracleConnection(OracleStringConnection);
-                OracleCommand cmd = new OracleCommand(sql, conn);
-                cmd.CommandType = CommandType.Text;
+                OracleCommand cmd = new OracleCommand(sql, conn)
+                {
+                    CommandType = CommandType.Text
+                };
                 conn.Open();
                 OracleDataReader dr2 = cmd.ExecuteReader();
 
@@ -4744,8 +5013,10 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
                  "              AND REG.SITREG = 4 GROUP BY REG.NUMREG, REG.DATGER, MDV.DESCMDV, ORI.DESCORI, IPV.NUMNFV, ATD.DESCATD ORDER BY DATGER ASC";
 
                 OracleConnection conn = new OracleConnection(OracleStringConnection);
-                OracleCommand cmd = new OracleCommand(sql, conn);
-                cmd.CommandType = CommandType.Text;
+                OracleCommand cmd = new OracleCommand(sql, conn)
+                {
+                    CommandType = CommandType.Text
+                };
                 conn.Open();
 
                 OracleDataReader dr2 = cmd.ExecuteReader();
@@ -4755,14 +5026,16 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
                 decimal valorTotal = 0;
                 while (dr2.Read())
                 {
-                    itemProtocolo = new ProtocolosAprovacaoModel();
-                    itemProtocolo.CodigoRegistro = Convert.ToInt64(dr2["NUMREG"]);
-                    itemProtocolo.DataFechamento = dr2["DATGER"].ToString();
-                    itemProtocolo.descMotivo = dr2["DESCMDV"].ToString();
-                    itemProtocolo.DescOrigemOcorrencia = dr2["DESCORI"].ToString();
-                    itemProtocolo.numeroNotaFiscal = dr2["NUMNFV"].ToString();
-                    itemProtocolo.valorLiquido = dr2["VALORLIQUIDO"].ToString();
-                    itemProtocolo.DescTipoAtendimento = dr2["DESCATD"].ToString();
+                    itemProtocolo = new ProtocolosAprovacaoModel
+                    {
+                        CodigoRegistro = Convert.ToInt64(dr2["NUMREG"]),
+                        DataFechamento = dr2["DATGER"].ToString(),
+                        descMotivo = dr2["DESCMDV"].ToString(),
+                        DescOrigemOcorrencia = dr2["DESCORI"].ToString(),
+                        numeroNotaFiscal = dr2["NUMNFV"].ToString(),
+                        valorLiquido = dr2["VALORLIQUIDO"].ToString(),
+                        DescTipoAtendimento = dr2["DESCATD"].ToString()
+                    };
                     valorTotal += Convert.ToDecimal(itemProtocolo.valorLiquido);
                     itemProtocolo.valorTotal = valorTotal;
                     listaProtocolosPendentes.Add(itemProtocolo);
@@ -4900,7 +5173,7 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
         /// Busca informações para o relatório de Mês X Ocorrência
         /// </summary>
         /// <returns>Lista de Ocorrência</returns>
-        public List<MesXOcorrencia> mesXOcorrencia()
+        public List<MesXOcorrencia> MesXOcorrencia()
         {
             try
             {
@@ -4932,8 +5205,10 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
                                  ORDER BY TO_CHAR(REG.DATGER, 'RRRR'), TO_CHAR(REG.DATGER, 'MM') ASC";
 
                 OracleConnection conn = new OracleConnection(OracleStringConnection);
-                OracleCommand cmd = new OracleCommand(sql, conn);
-                cmd.CommandType = CommandType.Text;
+                OracleCommand cmd = new OracleCommand(sql, conn)
+                {
+                    CommandType = CommandType.Text
+                };
                 conn.Open();
 
                 OracleDataReader dr = cmd.ExecuteReader();
@@ -4942,9 +5217,11 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
                 MesXOcorrencia itens = new MesXOcorrencia();
                 while (dr.Read())
                 {
-                    itens = new MesXOcorrencia();
-                    itens.quantidade = Convert.ToInt32(dr["QUANTIDADE"]);
-                    itens.mes = dr["MES"].ToString();
+                    itens = new MesXOcorrencia
+                    {
+                        quantidade = Convert.ToInt32(dr["QUANTIDADE"]),
+                        mes = dr["MES"].ToString()
+                    };
                     lista.Add(itens);
                 }
 
@@ -4962,7 +5239,7 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
         /// Busca informações para o relatório Mês X Origem
         /// </summary>
         /// <returns>Lista de Ocorrências</returns>
-        public List<MesXOrigem> mesXOrigem()
+        public List<MesXOrigem> MesXOrigem()
         {
             try
             {
@@ -4995,8 +5272,10 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
                                               ORDER BY TO_CHAR(REG.DATGER, 'RRRR'), TO_CHAR(REG.DATGER, 'MM') ASC";
 
                 OracleConnection conn = new OracleConnection(OracleStringConnection);
-                OracleCommand cmd = new OracleCommand(sql, conn);
-                cmd.CommandType = CommandType.Text;
+                OracleCommand cmd = new OracleCommand(sql, conn)
+                {
+                    CommandType = CommandType.Text
+                };
                 conn.Open();
 
                 OracleDataReader dr = cmd.ExecuteReader();
@@ -5006,11 +5285,13 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
 
                 while (dr.Read())
                 {
-                    itens = new MesXOrigem();
-                    itens.quantidade = Convert.ToInt32(dr["QUANTIDADE"]);
-                    itens.mes = dr["MES"].ToString();
-                    itens.origem = dr["DESCORI"].ToString();
-                    itens.ano = dr["ANO"].ToString();
+                    itens = new MesXOrigem
+                    {
+                        quantidade = Convert.ToInt32(dr["QUANTIDADE"]),
+                        mes = dr["MES"].ToString(),
+                        origem = dr["DESCORI"].ToString(),
+                        ano = dr["ANO"].ToString()
+                    };
                     lista.Add(itens);
                 }
 
@@ -5027,7 +5308,7 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
         /// Retorna a Média de pre aprovados
         /// </summary>
         /// <returns></returns>
-        public int mediaPreAprovado()
+        public int MediaPreAprovado()
         {
             int media = 0;
             try
@@ -5048,8 +5329,10 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
                                          GROUP BY REG.NUMREG, REG.DATGER, TRA.DATTRA)";
 
                 OracleConnection conn = new OracleConnection(OracleStringConnection);
-                OracleCommand cmd = new OracleCommand(sql, conn);
-                cmd.CommandType = CommandType.Text;
+                OracleCommand cmd = new OracleCommand(sql, conn)
+                {
+                    CommandType = CommandType.Text
+                };
                 conn.Open();
 
                 OracleDataReader dr = cmd.ExecuteReader();
@@ -5075,7 +5358,7 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
         /// Retorna a média aprovado
         /// </summary>
         /// <returns>media</returns>
-        public int mediaAprovado()
+        public int MediaAprovado()
         {
             int media = 0;
             try
@@ -5096,8 +5379,10 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
                                              GROUP BY REG.NUMREG, REG.DATGER, TRA.DATTRA)";
 
                 OracleConnection conn = new OracleConnection(OracleStringConnection);
-                OracleCommand cmd = new OracleCommand(sql, conn);
-                cmd.CommandType = CommandType.Text;
+                OracleCommand cmd = new OracleCommand(sql, conn)
+                {
+                    CommandType = CommandType.Text
+                };
                 conn.Open();
 
                 OracleDataReader dr = cmd.ExecuteReader();
@@ -5129,7 +5414,7 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
         /// <param name="campoSituacao">Situação</param>
         /// <param name="campoDataFaturamento">Data Faturamento</param>
         /// <returns></returns>
-        public List<RelatorioAnalitico> imprimirRelatorioAnaliticoRegistroOcorrencia(string campoNumeroRegistro, string campoFilial, string campoEmbarque, string campoPlaca, string campoPeriodoInicial, string campoPeriodoFinal, string campoCliente, string campoSituacao, string campoDataFaturamento)
+        public List<RelatorioAnalitico> ImprimirRelatorioAnaliticoRegistroOcorrencia(string campoNumeroRegistro, string campoFilial, string campoEmbarque, string campoPlaca, string campoPeriodoInicial, string campoPeriodoFinal, string campoCliente, string campoSituacao, string campoDataFaturamento)
         {
             var campoPlacaFormatado = campoPlaca.Replace("-", "").ToUpper();
             decimal SomaTotalValorLiquido = 0;
@@ -5320,8 +5605,10 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
                                        ORDER BY IPV.SEQIPV";
                 DebugEmail email = new DebugEmail();
                 OracleConnection conn = new OracleConnection(OracleStringConnection);
-                OracleCommand cmd = new OracleCommand(sql, conn);
-                cmd.CommandType = CommandType.Text;
+                OracleCommand cmd = new OracleCommand(sql, conn)
+                {
+                    CommandType = CommandType.Text
+                };
                 conn.Open();
 
                 OracleDataReader dr = cmd.ExecuteReader();
@@ -5332,13 +5619,16 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
 
                 while (dr.Read())
                 {
-                    itens = new RelatorioAnalitico();
-                     itens.CodigoRegistro = Convert.ToInt64(dr["NUMREG"]);
-                    itens.CodTipoAtendimento = dr["CODATD"].ToString();
-                    itens.DescTipoAtendimento = dr["DESCATD"].ToString();
-                    itens.CodOrigemOcorrencia = dr["CODORI"].ToString();
-                    itens.DescOrigemOcorrencia =  dr["DESCORI"].ToString();
-                    itens.CodCliente = dr["CODCLI"].ToString(); ;
+                    itens = new RelatorioAnalitico
+                    {
+                        CodigoRegistro = Convert.ToInt64(dr["NUMREG"]),
+                        CodTipoAtendimento = dr["CODATD"].ToString(),
+                        DescTipoAtendimento = dr["DESCATD"].ToString(),
+                        CodOrigemOcorrencia = dr["CODORI"].ToString(),
+                        DescOrigemOcorrencia = dr["DESCORI"].ToString(),
+                        CodCliente = dr["CODCLI"].ToString()
+                    };
+                    ;
                     itens.NomeCliente = dr["NOMCLI"].ToString();
                     itens.CodMotorista = dr["CODMOT"].ToString();
                     itens.CodPlaca = dr["PLAVEI"].ToString();
@@ -5382,6 +5672,9 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
                             break;
                         case "11":
                             itens.DescSituacaoRegistro = "Indenizado";
+                            break;
+                        case "12":
+                            itens.DescSituacaoRegistro = "Aprovar";
                             break;
                     }
                     
@@ -5434,7 +5727,7 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
                     itens.ValorLiquido = (itens.QtdeDevolucao * decimal.Parse(itens.PrecoUnitario.ToString())) + itens.ValorIpi + itens.ValorSt + itens.valorFrete - itens.Suframa;
                     itens.ValorLiquidoS = itens.ValorLiquido.ToString("###,###,##0.00");
 
-                    SomaTotalValorLiquido = SomaTotalValorLiquido + itens.ValorLiquido;
+                    SomaTotalValorLiquido += itens.ValorLiquido;
                     itens.TotalValorLiquido = SomaTotalValorLiquido;
                     contado++;
                     lista.Add(itens);
@@ -5466,7 +5759,7 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
         /// <param name="tipo">Tipo</param>
         /// <param name="operacao">Operação</param>
         /// <returns></returns>
-        public List<Ocorrencia> pesquisaOcorrencia(string campoNumeroRegistro, string campoFilial, string campoEmbarque, string campoPlaca, string campoPeriodoInicial, string campoPeriodoFinal, string campoCliente, string campoSituacao, string campoDataFaturamento, long codigoUsuario, string tipo, string operacao)
+        public List<Ocorrencia> PesquisaOcorrencia(string campoNumeroRegistro, string campoFilial, string campoEmbarque, string campoPlaca, string campoPeriodoInicial, string campoPeriodoFinal, string campoCliente, string campoSituacao, string campoDataFaturamento, long codigoUsuario, string tipo, string operacao)
         {
             double SomaTotalValorLiquido = 0;
             var campoPlacaFormatado = campoPlaca.Replace("-", "").ToUpper();
@@ -5543,8 +5836,10 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
                              ORDER BY REG.DATGER ASC";
 
             OracleConnection conn = new OracleConnection(OracleStringConnection);
-            OracleCommand cmd = new OracleCommand(sql, conn);
-            cmd.CommandType = CommandType.Text;
+            OracleCommand cmd = new OracleCommand(sql, conn)
+            {
+                CommandType = CommandType.Text
+            };
             conn.Open();
             OracleDataReader dr = cmd.ExecuteReader();
 
@@ -5555,18 +5850,20 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
 
             while (dr.Read())
             {
-                itens = new Ocorrencia();
-                itens.CodigoRegistro = Convert.ToInt64(dr["NUMREG"]); //Ocorrência
-                itens.DescTipoAtendimento = dr["DESCATD"].ToString(); //Atendimento
-                itens.DescOrigemOcorrencia = dr["DESCORI"].ToString(); //Origem
-                itens.CodCliente = dr["CODCLI"].ToString();
-                itens.NomeCliente = dr["NOMCLI"].ToString();
-                itens.ValorLiquido = decimal.Parse(dr["VLRLIQ"].ToString());
-                itens.DataHrGeracao = dr["DATGER"].ToString(); //Emissão
-                itens.CodSituacaoRegistro = dr["SITREG"].ToString();
-                itens.DescMotivoDevolucao = dr["DESCMDV"].ToString(); //Motivo
-                itens.NumeroNota = dr["NUMNFV"].ToString(); //NF
-                itens.CodPlaca = dr["PLACA"].ToString();
+                itens = new Ocorrencia
+                {
+                    CodigoRegistro = Convert.ToInt64(dr["NUMREG"]), //Ocorrência
+                    DescTipoAtendimento = dr["DESCATD"].ToString(), //Atendimento
+                    DescOrigemOcorrencia = dr["DESCORI"].ToString(), //Origem
+                    CodCliente = dr["CODCLI"].ToString(),
+                    NomeCliente = dr["NOMCLI"].ToString(),
+                    ValorLiquido = decimal.Parse(dr["VLRLIQ"].ToString()),
+                    DataHrGeracao = dr["DATGER"].ToString(), //Emissão
+                    CodSituacaoRegistro = dr["SITREG"].ToString(),
+                    DescMotivoDevolucao = dr["DESCMDV"].ToString(), //Motivo
+                    NumeroNota = dr["NUMNFV"].ToString(), //NF
+                    CodPlaca = dr["PLACA"].ToString()
+                };
 
                 if (Convert.ToDateTime(itens.DataHrGeracao) < dateForButton)
                 {
@@ -5615,6 +5912,9 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
                     case "11":
                         itens.DescSituacaoRegistro = "Indenizado";
                         break;
+                    case "12":
+                        itens.DescSituacaoRegistro = "Aprovar";
+                        break;
                 }
                 
                 SomaTotalValorLiquido += Convert.ToDouble(dr["VALORLIQUIDO"].ToString());
@@ -5627,13 +5927,15 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
             return lista;
         }
 
-        public int pedidosFaturarIndenizacao()
+        public int PedidosFaturarIndenizacao()
         {
             string sql = "SELECT COUNT(DISTINCT(REG.NUMREG)) AS CONTADOR FROM N0203REG REG, N0203IPV IPV WHERE REG.NUMREG = IPV.NUMREG AND REG.SITREG = 11 AND IPV.ORIOCO = 8";
 
             OracleConnection conn = new OracleConnection(OracleStringConnection);
-            OracleCommand cmd = new OracleCommand(sql, conn);
-            cmd.CommandType = CommandType.Text;
+            OracleCommand cmd = new OracleCommand(sql, conn)
+            {
+                CommandType = CommandType.Text
+            };
             conn.Open();
             OracleDataReader dr = cmd.ExecuteReader();
             int contador = 0;
@@ -5644,9 +5946,9 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
             return contador;
         }
 
-        public List<RelatorioGraficoOcorrencia> relatorioGraficoOcorrencias(string mes, string ano, string indicador)
+        public List<RelatorioGraficoOcorrencia> RelatorioGraficoOcorrencias(string mes, string ano, string indicador)
         {
-            string origem = tratarOrigem(indicador);
+            string origem = TratarOrigem(indicador);
             string sql = "SELECT REG.NUMREG," +
                       "                 ATD.DESCATD," +
                       "                 to_char(IPV.DATEMI, 'dd/mm/yyyy') AS DATEMI," +
@@ -5686,8 +5988,10 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
                       "                    IPV.NUMNFV";
 
             OracleConnection conn = new OracleConnection(OracleStringConnection);
-            OracleCommand cmd = new OracleCommand(sql, conn);
-            cmd.CommandType = CommandType.Text;
+            OracleCommand cmd = new OracleCommand(sql, conn)
+            {
+                CommandType = CommandType.Text
+            };
             conn.Open();
             OracleDataReader dr = cmd.ExecuteReader();
 
@@ -5696,14 +6000,16 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
 
             while (dr.Read())
             {
-                itens = new RelatorioGraficoOcorrencia();
-                itens.NUMREG = Convert.ToInt32(dr["NUMREG"]);
-                itens.DESCATD = dr["DESCATD"].ToString();
-                itens.DESCORI = dr["DESCORI"].ToString();
-                itens.DATGER = dr["DATEMI"].ToString();
-                itens.DESCMDV = dr["DESCMDV"].ToString();
-                itens.NUMNFV = dr["NUMNFV"].ToString();
-                itens.VALORLIQUIDO = decimal.Parse(dr["VLRLIQ"].ToString());
+                itens = new RelatorioGraficoOcorrencia
+                {
+                    NUMREG = Convert.ToInt32(dr["NUMREG"]),
+                    DESCATD = dr["DESCATD"].ToString(),
+                    DESCORI = dr["DESCORI"].ToString(),
+                    DATGER = dr["DATEMI"].ToString(),
+                    DESCMDV = dr["DESCMDV"].ToString(),
+                    NUMNFV = dr["NUMNFV"].ToString(),
+                    VALORLIQUIDO = decimal.Parse(dr["VLRLIQ"].ToString())
+                };
                 lista.Add(itens);
             }
 
@@ -5723,7 +6029,7 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
         public List<Ocorrencia> CarregarIndicadorSetores(string status, string mes, string indicador, string ano)
         {
             double SomaTotalValorLiquido = 0;
-            string origem = tratarOrigem(indicador);
+            string origem = TratarOrigem(indicador);
 
             string sql = @" SELECT DISTINCT AGP.DESAGP, ROUND(SUM((IPV.VLRLIQ / IPV.QTDFAT) * IPV.QTDDEV), 2) VALORLIQUIDO
                               FROM NWMS_PRODUCAO.N0203REG REG
@@ -5746,8 +6052,10 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
                    "          GROUP BY AGP.DESAGP ORDER BY VALORLIQUIDO DESC";
 
             OracleConnection conn = new OracleConnection(OracleStringConnection);
-            OracleCommand cmd = new OracleCommand(sql, conn);
-            cmd.CommandType = CommandType.Text;
+            OracleCommand cmd = new OracleCommand(sql, conn)
+            {
+                CommandType = CommandType.Text
+            };
             conn.Open();
             OracleDataReader dr = cmd.ExecuteReader();
 
@@ -5756,9 +6064,11 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
 
             while (dr.Read())
             {
-                itens = new Ocorrencia();
-                itens.DescAgrupamento = dr["DESAGP"].ToString();
-                itens.TotalValorLiquidoD = dr["VALORLIQUIDO"].ToString();
+                itens = new Ocorrencia
+                {
+                    DescAgrupamento = dr["DESAGP"].ToString(),
+                    TotalValorLiquidoD = dr["VALORLIQUIDO"].ToString()
+                };
                 SomaTotalValorLiquido += Convert.ToDouble(dr["VALORLIQUIDO"].ToString());
                 itens.TotalValorLiquidoS = SomaTotalValorLiquido.ToString("###,###,##0.00"); ;
                 lista.Add(itens);
@@ -5774,7 +6084,7 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
         /// </summary>
         /// <param name="numreg">Código de Ocorrência</param>
         /// <returns></returns>
-        public List<String> listarObservacoes(string numreg)
+        public List<String> ListarObservacoes(string numreg)
         {
             string sql = @"SELECT DISTINCT REG.OBSREG SAC, TRA.OBSTRA APROVADOR
                              FROM NWMS_PRODUCAO.N0203REG REG
@@ -5784,19 +6094,21 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
                  "   GROUP BY REG.OBSREG,TRA.OBSTRA";
 
             OracleConnection conn = new OracleConnection(OracleStringConnection);
-            OracleCommand cmd = new OracleCommand(sql, conn);
-            cmd.CommandType = CommandType.Text;
+            OracleCommand cmd = new OracleCommand(sql, conn)
+            {
+                CommandType = CommandType.Text
+            };
             conn.Open();
             OracleDataReader dr = cmd.ExecuteReader();
 
             List<String> lista = new List<String>();
-            var SAC = "";
-            var APROVADOR = "";
+            //var SAC = "";
+            //var APROVADOR = "";
 
             while (dr.Read())
             {
-                SAC = dr["SAC"].ToString();
-                APROVADOR = dr["APROVADOR"].ToString();
+                var SAC = dr["SAC"].ToString();
+                var APROVADOR = dr["APROVADOR"].ToString();
                 lista.Add(SAC);
                 lista.Add(APROVADOR);
             }
@@ -5811,7 +6123,7 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
         /// </summary>
         /// <param name="indicador">Indicador</param>
         /// <returns></returns>
-        public String tratarOrigem(string indicador)
+        public String TratarOrigem(string indicador)
         {
             switch (indicador)
             {
@@ -5843,9 +6155,9 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
         /// <param name="indicador">Indicador</param>
         /// <param name="ano">Ano</param>
         /// <returns></returns>
-        public List<Ocorrencia> ocorrenciaDrill(string status, string mes, string filtroAgrup, string indicador, string ano)
+        public List<Ocorrencia> OcorrenciaDrill( string mes, string indicador, string ano)
         {
-            string origem = tratarOrigem(indicador);
+            string origem = TratarOrigem(indicador);
             try
             {
                 string sql = "SELECT REG.NUMREG," +
@@ -5887,8 +6199,10 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
                       "                    IPV.NUMNFV";
 
                 OracleConnection conn = new OracleConnection(OracleStringConnection);
-                OracleCommand cmd = new OracleCommand(sql, conn);
-                cmd.CommandType = CommandType.Text;
+                OracleCommand cmd = new OracleCommand(sql, conn)
+                {
+                    CommandType = CommandType.Text
+                };
                 conn.Open();
 
                 OracleDataReader dr = cmd.ExecuteReader();
@@ -5897,14 +6211,16 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
                 Ocorrencia itens = new Ocorrencia();
                 while (dr.Read())
                 {
-                    itens = new Ocorrencia();
-                    itens.CodigoRegistro = Convert.ToInt64(dr["NUMREG"]);
-                    itens.DescTipoAtendimento = dr["DESCATD"].ToString();
-                    itens.DATAEMISSAO = dr["DATEMI"].ToString();
-                    itens.DescOrigemOcorrencia = dr["DESCORI"].ToString();
-                    itens.DescMotivoDevolucao = dr["DESCMDV"].ToString();
-                    itens.NumeroNota = dr["NUMNFV"].ToString();
-                    itens.ValorLiquido = Convert.ToInt64(dr["VLRLIQ"]);
+                    itens = new Ocorrencia
+                    {
+                        CodigoRegistro = Convert.ToInt64(dr["NUMREG"]),
+                        DescTipoAtendimento = dr["DESCATD"].ToString(),
+                        DATAEMISSAO = dr["DATEMI"].ToString(),
+                        DescOrigemOcorrencia = dr["DESCORI"].ToString(),
+                        DescMotivoDevolucao = dr["DESCMDV"].ToString(),
+                        NumeroNota = dr["NUMNFV"].ToString(),
+                        ValorLiquido = Convert.ToInt64(dr["VLRLIQ"])
+                    };
                     itens.ValorLiquidoS = itens.ValorLiquido.ToString("###,###,##0.00");
                     lista.Add(itens);
                 }
@@ -5923,7 +6239,7 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
         /// Busca as ocorrências com faturamento atrasado
         /// </summary>
         /// <returns>Lista</returns>
-        public List<Ocorrencia> carregarOcorrenciaFaturamentoAtrasado()
+        public List<Ocorrencia> CarregarOcorrenciaFaturamentoAtrasado()
         {
             try
             {
@@ -5970,8 +6286,10 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
                          ORDER BY REG.NUMREG DESC";
 
                 OracleConnection conn = new OracleConnection(OracleStringConnection);
-                OracleCommand cmd = new OracleCommand(sql, conn);
-                cmd.CommandType = CommandType.Text;
+                OracleCommand cmd = new OracleCommand(sql, conn)
+                {
+                    CommandType = CommandType.Text
+                };
                 conn.Open();
 
                 OracleDataReader dr = cmd.ExecuteReader();
@@ -5980,15 +6298,17 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
                 Ocorrencia itens = new Ocorrencia();
                 while (dr.Read())
                 {
-                    itens = new Ocorrencia();
-                    itens.CodigoRegistro = Convert.ToInt64(dr["NUMREG"]);
-                    itens.DescTipoAtendimento = dr["DESCATD"].ToString();
-                    itens.DATAEMISSAO = dr["DATEMI"].ToString();
-                    itens.DescOrigemOcorrencia = dr["DESCORI"].ToString();
-                    itens.DescMotivoDevolucao = dr["DESCMDV"].ToString();
-                    itens.NumeroNota = dr["NUMNFV"].ToString();
-                    itens.ValorLiquido = Convert.ToDecimal(dr["VLRLIQ"]);
-                    itens.DataSituacao = dr["DATASIT"].ToString();
+                    itens = new Ocorrencia
+                    {
+                        CodigoRegistro = Convert.ToInt64(dr["NUMREG"]),
+                        DescTipoAtendimento = dr["DESCATD"].ToString(),
+                        DATAEMISSAO = dr["DATEMI"].ToString(),
+                        DescOrigemOcorrencia = dr["DESCORI"].ToString(),
+                        DescMotivoDevolucao = dr["DESCMDV"].ToString(),
+                        NumeroNota = dr["NUMNFV"].ToString(),
+                        ValorLiquido = Convert.ToDecimal(dr["VLRLIQ"]),
+                        DataSituacao = dr["DATASIT"].ToString()
+                    };
                     itens.ValorLiquidoS = itens.ValorLiquido.ToString("###,###,##0.00");
                     lista.Add(itens);
                 }
@@ -6007,7 +6327,7 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
         /// Carrega as Ocorrências com faturameto em dia 
         /// </summary>
         /// <returns></returns>
-        public List<Ocorrencia> carregarOcorrenciaFaturamentoEmDia()
+        public List<Ocorrencia> CarregarOcorrenciaFaturamentoEmDia()
         {
             try
             {
@@ -6053,8 +6373,10 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
                          ORDER BY REG.NUMREG DESC";
 
                 OracleConnection conn = new OracleConnection(OracleStringConnection);
-                OracleCommand cmd = new OracleCommand(sql, conn);
-                cmd.CommandType = CommandType.Text;
+                OracleCommand cmd = new OracleCommand(sql, conn)
+                {
+                    CommandType = CommandType.Text
+                };
                 conn.Open();
 
                 OracleDataReader dr = cmd.ExecuteReader();
@@ -6063,15 +6385,17 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
                 Ocorrencia itens = new Ocorrencia();
                 while (dr.Read())
                 {
-                    itens = new Ocorrencia();
-                    itens.CodigoRegistro = Convert.ToInt64(dr["NUMREG"]);
-                    itens.DescTipoAtendimento = dr["DESCATD"].ToString();
-                    itens.DATAEMISSAO = dr["DATEMI"].ToString();
-                    itens.DescOrigemOcorrencia = dr["DESCORI"].ToString();
-                    itens.DescMotivoDevolucao = dr["DESCMDV"].ToString();
-                    itens.NumeroNota = dr["NUMNFV"].ToString();
-                    itens.ValorLiquido = Convert.ToDecimal(dr["VLRLIQ"]);
-                    itens.DataSituacao = dr["DATASIT"].ToString();
+                    itens = new Ocorrencia
+                    {
+                        CodigoRegistro = Convert.ToInt64(dr["NUMREG"]),
+                        DescTipoAtendimento = dr["DESCATD"].ToString(),
+                        DATAEMISSAO = dr["DATEMI"].ToString(),
+                        DescOrigemOcorrencia = dr["DESCORI"].ToString(),
+                        DescMotivoDevolucao = dr["DESCMDV"].ToString(),
+                        NumeroNota = dr["NUMNFV"].ToString(),
+                        ValorLiquido = Convert.ToDecimal(dr["VLRLIQ"]),
+                        DataSituacao = dr["DATASIT"].ToString()
+                    };
                     itens.ValorLiquidoS = itens.ValorLiquido.ToString("###,###,##0.00");
                     lista.Add(itens);
                 }
@@ -6095,11 +6419,11 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
         /// <param name="indicador">Indicador</param>
         /// <param name="ano">Ano</param>
         /// <returns></returns>
-        public List<Ocorrencia> CarregarIndicadorIndustria(string status, string mes, string filtroAgrup, string indicador, string ano)
+        public List<Ocorrencia> CarregarIndicadorIndustria( string mes, string filtroAgrup, string indicador, string ano)
         {
             double SomaTotalValorLiquido = 0;
             double SomaTotalValorLiquido1 = 0;
-            string origem = tratarOrigem(indicador);
+            string origem = TratarOrigem(indicador);
 
             string sql = @" SELECT DISTINCT REG.NUMREG,
                                             AGP.DESAGP,
@@ -6140,8 +6464,10 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
 
             
             OracleConnection conn = new OracleConnection(OracleStringConnection);
-            OracleCommand cmd = new OracleCommand(sql, conn);
-            cmd.CommandType = CommandType.Text;
+            OracleCommand cmd = new OracleCommand(sql, conn)
+            {
+                CommandType = CommandType.Text
+            };
             conn.Open();
             OracleDataReader dr = cmd.ExecuteReader();
 
@@ -6150,16 +6476,18 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
 
             while (dr.Read())
             {
-                itens = new Ocorrencia();
-                itens.CodigoRegistro = Convert.ToInt64(dr["NUMREG"]);
-                itens.DescAgrupamento = dr["DESAGP"].ToString();
-                itens.CodPro = dr["CODPRO"].ToString();
-                itens.DescPro = dr["DESPRO"].ToString();
-                itens.DesDer = dr["DESDER"].ToString();
-                itens.CodCliente = dr["CODCLI"].ToString();
-                itens.DescOrigemOcorrencia = dr["DESCORI"].ToString();
-                itens.DescMotivoDevolucao = dr["DESCMDV"].ToString();
-                itens.QtdeDevolucao = Convert.ToInt64(dr["QTDDEV"]);
+                itens = new Ocorrencia
+                {
+                    CodigoRegistro = Convert.ToInt64(dr["NUMREG"]),
+                    DescAgrupamento = dr["DESAGP"].ToString(),
+                    CodPro = dr["CODPRO"].ToString(),
+                    DescPro = dr["DESPRO"].ToString(),
+                    DesDer = dr["DESDER"].ToString(),
+                    CodCliente = dr["CODCLI"].ToString(),
+                    DescOrigemOcorrencia = dr["DESCORI"].ToString(),
+                    DescMotivoDevolucao = dr["DESCMDV"].ToString(),
+                    QtdeDevolucao = Convert.ToInt64(dr["QTDDEV"])
+                };
                 SomaTotalValorLiquido1 = Convert.ToDouble(dr["VALORLIQUIDO"].ToString());
                 itens.TotalValorLiquidoD = SomaTotalValorLiquido1.ToString("###,###,##0.00");
 
@@ -6174,11 +6502,11 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
             return lista;
         }
 
-        public List<RelatorioGraficoItens> RelatorioGraficoItens(string status, string mes, string filtroAgrup, string indicador, string ano)
+        public List<RelatorioGraficoItens> RelatorioGraficoItens( string mes, string filtroAgrup, string indicador, string ano)
         {
             double SomaTotalValorLiquido = 0;
             double SomaTotalValorLiquido1 = 0;
-            string origem = tratarOrigem(indicador);
+            string origem = TratarOrigem(indicador);
 
             string sql = @" SELECT DISTINCT REG.NUMREG,
                                             AGP.DESAGP,
@@ -6218,8 +6546,10 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
                                       MDV.DESCMDV ORDER BY NUMREG";
             
             OracleConnection conn = new OracleConnection(OracleStringConnection);
-            OracleCommand cmd = new OracleCommand(sql, conn);
-            cmd.CommandType = CommandType.Text;
+            OracleCommand cmd = new OracleCommand(sql, conn)
+            {
+                CommandType = CommandType.Text
+            };
             conn.Open();
             OracleDataReader dr = cmd.ExecuteReader();
 
@@ -6228,16 +6558,18 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
 
             while (dr.Read())
             {
-                itens = new RelatorioGraficoItens();
-                itens.NUMREG = Convert.ToInt32(dr["NUMREG"]);
-                itens.DESAGP = dr["DESAGP"].ToString();
-                itens.CODPRO = dr["CODPRO"].ToString();
-                itens.DESPRO = dr["DESPRO"].ToString();
-                itens.DESDER = dr["DESDER"].ToString();
-                itens.CODCLI = dr["CODCLI"].ToString();
-                itens.DESCORI = dr["DESCORI"].ToString();
-                itens.DESCMDV = dr["DESCMDV"].ToString();
-                itens.QTDDEV = Convert.ToInt32(dr["QTDDEV"]);
+                itens = new RelatorioGraficoItens
+                {
+                    NUMREG = Convert.ToInt32(dr["NUMREG"]),
+                    DESAGP = dr["DESAGP"].ToString(),
+                    CODPRO = dr["CODPRO"].ToString(),
+                    DESPRO = dr["DESPRO"].ToString(),
+                    DESDER = dr["DESDER"].ToString(),
+                    CODCLI = dr["CODCLI"].ToString(),
+                    DESCORI = dr["DESCORI"].ToString(),
+                    DESCMDV = dr["DESCMDV"].ToString(),
+                    QTDDEV = Convert.ToInt32(dr["QTDDEV"])
+                };
                 SomaTotalValorLiquido1 = Convert.ToDouble(dr["VALORLIQUIDO"].ToString());
                 itens.VALORLIQUIDO = SomaTotalValorLiquido1.ToString("###,###,##0.00");
 
@@ -6265,7 +6597,7 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
         /// <param name="campoSituacao">Situação</param>
         /// <param name="campoDataFaturamento">Data Faturamento</param>
         /// <returns></returns>
-        public List<RelatorioAnalitico> imprimirRelatorioSinteticoRegistroOcorrencia(string campoNumeroRegistro, string campoFilial, string campoEmbarque, string campoPlaca, string campoPeriodoInicial, string campoPeriodoFinal, string campoCliente, string campoSituacao, string campoDataFaturamento)
+        public List<RelatorioAnalitico> ImprimirRelatorioSinteticoRegistroOcorrencia(string campoNumeroRegistro, string campoFilial, string campoEmbarque, string campoPlaca, string campoPeriodoInicial, string campoPeriodoFinal, string campoCliente, string campoSituacao, string campoDataFaturamento)
         {
             var campoPlacaFormatado = campoPlaca.Replace("-", "").ToUpper();
             decimal SomaTotalValorLiquido = 0;
@@ -6382,8 +6714,10 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
                 sql += campoDataFaturamento != "" ? "AND IPV.DATEMI ='" + campoDataFaturamento + "'" : "";
 
                 OracleConnection conn = new OracleConnection(OracleStringConnection);
-                OracleCommand cmd = new OracleCommand(sql, conn);
-                cmd.CommandType = CommandType.Text;
+                OracleCommand cmd = new OracleCommand(sql, conn)
+                {
+                    CommandType = CommandType.Text
+                };
                 conn.Open();
 
                 OracleDataReader dr = cmd.ExecuteReader();
@@ -6393,21 +6727,23 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
 
                 while (dr.Read())
                 {
-                    itens = new RelatorioAnalitico();
-                    itens.CodigoRegistro = Convert.ToInt64(dr["NUMREG"]);
-                    itens.CodTipoAtendimento = dr["CODATD"].ToString();
-                    itens.DescTipoAtendimento = dr["DESCATD"].ToString();
-                    itens.CodOrigemOcorrencia = dr["CODORI"].ToString();
-                    itens.DescOrigemOcorrencia = dr["DESCORI"].ToString();
-                    itens.CodCliente = dr["CODCLI"].ToString();
-                    itens.NomeCliente = dr["NOMCLI"].ToString();
-                    itens.CodMotorista = dr["CODMOT"].ToString();
-                    itens.CodPlaca = dr["PLACA"].ToString();
-                    itens.NomeMotorista = dr["NOMMOT"].ToString();
-                    itens.DataHrGeracao = dr["DATGER"].ToString();
-                    itens.NomeUsuarioGeracao = dr["NOMCOM"].ToString();
-                    itens.UsuarioGeracao = dr["CODUSUGER"].ToString();
-                    itens.CodSituacaoRegistro = dr["SITREG"].ToString();
+                    itens = new RelatorioAnalitico
+                    {
+                        CodigoRegistro = Convert.ToInt64(dr["NUMREG"]),
+                        CodTipoAtendimento = dr["CODATD"].ToString(),
+                        DescTipoAtendimento = dr["DESCATD"].ToString(),
+                        CodOrigemOcorrencia = dr["CODORI"].ToString(),
+                        DescOrigemOcorrencia = dr["DESCORI"].ToString(),
+                        CodCliente = dr["CODCLI"].ToString(),
+                        NomeCliente = dr["NOMCLI"].ToString(),
+                        CodMotorista = dr["CODMOT"].ToString(),
+                        CodPlaca = dr["PLACA"].ToString(),
+                        NomeMotorista = dr["NOMMOT"].ToString(),
+                        DataHrGeracao = dr["DATGER"].ToString(),
+                        NomeUsuarioGeracao = dr["NOMCOM"].ToString(),
+                        UsuarioGeracao = dr["CODUSUGER"].ToString(),
+                        CodSituacaoRegistro = dr["SITREG"].ToString()
+                    };
 
                     switch (itens.CodSituacaoRegistro)
                     {
@@ -6443,6 +6779,9 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
                             break;
                         case "11":
                             itens.DescSituacaoRegistro = "Indenizado";
+                            break;
+                        case "12":
+                            itens.DescSituacaoRegistro = "Aprovar";
                             break;
                     }
 
@@ -6490,7 +6829,7 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
                     itens.ValorLiquido = (itens.QtdeDevolucao * decimal.Parse(itens.PrecoUnitario.ToString())) + itens.ValorIpi + itens.ValorSt;
                     itens.ValorLiquidoS = itens.ValorLiquido.ToString("###,###,##0.00");
 
-                    SomaTotalValorLiquido = SomaTotalValorLiquido + itens.ValorLiquido;
+                    SomaTotalValorLiquido += itens.ValorLiquido;
                     itens.TotalValorLiquido = SomaTotalValorLiquido;
 
                     lista.Add(itens);

@@ -297,6 +297,7 @@
     <Compile Include="Models\ConsultaSituacaoNotaViewModel.cs" />
     <Compile Include="Models\InformacoesProtocoloViewModel.cs" />
     <Compile Include="Models\ListaN0203TRAPesquisa.cs" />
+    <Compile Include="Models\ListaN0204PPU.cs" />
     <Compile Include="Models\ListaN0204PPUPesquisa.cs" />
     <Compile Include="Models\listaTransportadora.cs" />
     <Compile Include="Models\RelAnaliticoOcorrenciaViewModel.cs" />

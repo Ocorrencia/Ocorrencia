@@ -20,7 +20,7 @@ namespace NWORKFLOW_WEB.MVC_4_BS.Controllers
                 return this.Json(new { campos }, JsonRequestBehavior.AllowGet);
             }
             N0203REGBusiness N0203REGBusiness = new N0203REGBusiness();
-            var resposta = N0203REGBusiness.consultarPlacaPOC(NUMREG);
+            var resposta = N0203REGBusiness.ConsultarPlacaPOC(NUMREG);
             return this.Json(new { resposta }, JsonRequestBehavior.AllowGet);
         }
 
@@ -34,7 +34,7 @@ namespace NWORKFLOW_WEB.MVC_4_BS.Controllers
                 return this.Json(new { campos }, JsonRequestBehavior.AllowGet);
             }
             N0203REGBusiness N0203REGBusiness = new N0203REGBusiness();
-            var resposta = N0203REGBusiness.confirmarRecebimento(NUMREG, PLACA.ToUpper(), Convert.ToInt64(this.CodigoUsuarioLogado));
+            var resposta = N0203REGBusiness.ConfirmarRecebimento(NUMREG, PLACA.ToUpper(), Convert.ToInt64(this.CodigoUsuarioLogado));
             return this.Json(new { resposta }, JsonRequestBehavior.AllowGet);
         }
 

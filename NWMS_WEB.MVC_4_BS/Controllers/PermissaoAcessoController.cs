@@ -10,7 +10,7 @@ namespace NWORKFLOW_WEB.MVC_4_BS.Controllers
 {
     public class PermissaoAcessoController : BaseController
     {
-        public PermissaoAcessoViewModel permissaoAcesso { get; set; }
+        public PermissaoAcessoViewModel PermissaoAcesso { get; set; }
 
         /// <summary>
         /// Carregar a tela de permissão
@@ -39,7 +39,7 @@ namespace NWORKFLOW_WEB.MVC_4_BS.Controllers
                 this.InicializaView();
                 this.PermissoesDeAcessoGerenciamento = null;
 
-                return this.View("Permissao", this.permissaoAcesso);
+                return this.View("Permissao", this.PermissaoAcesso);
             }
             catch (Exception ex)
             {
@@ -66,7 +66,7 @@ namespace NWORKFLOW_WEB.MVC_4_BS.Controllers
             {
                 this.InicializaView();
 
-                permissaoAcesso = modelo;
+                PermissaoAcesso = modelo;
                 modelo.LoginUsuario = modelo.LoginUsuario.ToLower();
 
                 var N9999USUBusiness = new N9999USUBusiness();
@@ -91,25 +91,25 @@ namespace NWORKFLOW_WEB.MVC_4_BS.Controllers
                 // Id dos itens da treeview que o usuário já possuí acesso para "checkagem" após o load da treeview;
                 foreach (MenuModel item in lista.Where(p => p.PERMEN == ((char)Enums.Operacao.Pesquisar).ToString()).ToList())
                 {
-                    permissaoAcesso.menusOperacaoUser = permissaoAcesso.menusOperacaoUser + "#" + item.CODMEN.ToString() + item.PERMEN + "-";
+                    PermissaoAcesso.menusOperacaoUser = PermissaoAcesso.menusOperacaoUser + "#" + item.CODMEN.ToString() + item.PERMEN + "-";
 
                     if (item.INSMEN == ((char)Enums.Operacao.Inserir).ToString())
                     {
-                        permissaoAcesso.menusOperacaoUser = permissaoAcesso.menusOperacaoUser + "#" + item.CODMEN.ToString() + item.INSMEN + "-";
+                        PermissaoAcesso.menusOperacaoUser = PermissaoAcesso.menusOperacaoUser + "#" + item.CODMEN.ToString() + item.INSMEN + "-";
                     }
                     if (item.ALTMEN == ((char)Enums.Operacao.Alterar).ToString())
                     {
-                        permissaoAcesso.menusOperacaoUser = permissaoAcesso.menusOperacaoUser + "#" + item.CODMEN.ToString() + item.ALTMEN + "-";
+                        PermissaoAcesso.menusOperacaoUser = PermissaoAcesso.menusOperacaoUser + "#" + item.CODMEN.ToString() + item.ALTMEN + "-";
                     }
                     if (item.EXCMEN == ((char)Enums.Operacao.Excluir).ToString())
                     {
-                        permissaoAcesso.menusOperacaoUser = permissaoAcesso.menusOperacaoUser + "#" + item.CODMEN.ToString() + item.EXCMEN + "-";
+                        PermissaoAcesso.menusOperacaoUser = PermissaoAcesso.menusOperacaoUser + "#" + item.CODMEN.ToString() + item.EXCMEN + "-";
                     }
                 }
 
                 this.PermissoesDeAcessoGerenciamento = lista;
 
-                return this.View("Permissao", this.permissaoAcesso);
+                return this.View("Permissao", this.PermissaoAcesso);
             }
             catch (Exception ex)
             {
@@ -245,7 +245,7 @@ namespace NWORKFLOW_WEB.MVC_4_BS.Controllers
                     }
                 }
 
-                return this.Json(new { msgRetorno = msgRetorno, RetornoOk = retorno }, JsonRequestBehavior.AllowGet);
+                return this.Json(new { msgRetorno, RetornoOk = retorno }, JsonRequestBehavior.AllowGet);
 
             }
             catch (Exception ex)
@@ -260,9 +260,9 @@ namespace NWORKFLOW_WEB.MVC_4_BS.Controllers
         /// </summary>
         private void InicializaView()
         {
-            if (this.permissaoAcesso == null)
+            if (this.PermissaoAcesso == null)
             {
-                this.permissaoAcesso = new PermissaoAcessoViewModel();
+                this.PermissaoAcesso = new PermissaoAcessoViewModel();
             }
         }
 

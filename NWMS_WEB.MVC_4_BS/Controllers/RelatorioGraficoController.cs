@@ -53,7 +53,7 @@ namespace NWORKFLOW_WEB.MVC_4_BS.Controllers
                 N0203REGBusiness n0203REGBusiness = new N0203REGBusiness();
                // string msgRetorno = "Nenhum Registro Encontrado.";
 
-                ListaRelatorioItens = n0203REGBusiness.RelatorioGraficoItens("", "12", "", "myBarChartIndustrial", "2018");
+                ListaRelatorioItens = n0203REGBusiness.RelatorioGraficoItens("12", "", "myBarChartIndustrial", "2018");
 
                 List<RelatorioGraficoOcorrencia> ListaRelatorioOcorrencia = new List<RelatorioGraficoOcorrencia>();
                 //ListaRelatorioOcorrencia = n0203REGBusiness.relatorioGraficoOcorrencias();
@@ -117,7 +117,7 @@ namespace NWORKFLOW_WEB.MVC_4_BS.Controllers
                 N0203REGBusiness n0203REGBusiness = new N0203REGBusiness();
                 //string msgRetorno = "Nenhum Registro Encontrado.";
 
-                ListaRelatorioItens = n0203REGBusiness.RelatorioGraficoItens("", "12", "", "myBarChartIndustrial", "2018");
+                ListaRelatorioItens = n0203REGBusiness.RelatorioGraficoItens("12", "", "myBarChartIndustrial", "2018");
 
                 List<RelatorioGraficoOcorrencia> ListaRelatorioOcorrencia = new List<RelatorioGraficoOcorrencia>();
                 //ListaRelatorioOcorrencia = n0203REGBusiness.relatorioGraficoOcorrencias(mes,);
