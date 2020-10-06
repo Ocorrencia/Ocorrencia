@@ -102,7 +102,7 @@ namespace NWORKFLOW_WEB.MVC_4_BS.Controllers
                 return 1;
             }
             var N0203REGBusiness = new N0203REGBusiness();
-            listaAprovacao = N0203REGBusiness.PesquisaProtocolosPendentesAprovacaoNotificacao(Convert.ToInt64(this.CodigoUsuarioLogado));
+            listaAprovacao = N0203REGBusiness.PesquisaProtocolosPendentesAprovacaoNotificacao(Convert.ToInt64(this.CodigoUsuarioLogado), 0);
             this.ProtocolosPendentes = listaAprovacao;
             return 2;
         }

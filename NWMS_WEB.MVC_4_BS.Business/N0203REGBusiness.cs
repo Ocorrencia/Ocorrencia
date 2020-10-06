@@ -35,6 +35,13 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.Business
             }
         }
 
+        public long pegarUsuarioAprovador(long Numreg)
+        {
+            var N0203REGDataAccess = new N0203REGDataAccess();
+            long usuario = N0203REGDataAccess.pegarUsuarioAprovador(Numreg);
+            return usuario;
+        }
+
         public bool ConsultarOrigem(int Ocorrencia)
         {
             var N0203REGDataAccess = new N0203REGDataAccess();
@@ -709,7 +716,7 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.Business
         /// </summary>
         /// <param name="codUsuarioLogado">Código do Usuário logado</param>
         /// <returns></returns>
-        public List<ProtocolosAprovacaoModel> PesquisaProtocolosPendentesAprovacaoNotificacao(long codUsuarioLogado)
+        public List<ProtocolosAprovacaoModel> PesquisaProtocolosPendentesAprovacaoNotificacao(long codUsuarioLogado, long NumReg)
         {
             try
             {
@@ -718,7 +725,7 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.Business
                 var itemAprovacao = new ProtocolosAprovacaoModel();
                 var listaRegistros = new List<N0203REG>();
 
-                listaRegistros = N0203REGDataAccess.PesquisaProtocolosPendentesAprovacao(codUsuarioLogado);
+                listaRegistros = N0203REGDataAccess.PesquisaProtocolosPendentesAprovacao(codUsuarioLogado, NumReg);
                 
                 if (listaRegistros.Count > 0)
                 {
@@ -1141,7 +1148,7 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.Business
         /// </summary>
         /// <param name="codUsuarioLogado">Código do Usuário logado</param>
         /// <returns>listaAprovacao</returns>
-        public List<ProtocolosAprovacaoModel> PesquisaProtocolosPendentesAprovacao(long codUsuarioLogado)
+        public List<ProtocolosAprovacaoModel> PesquisaProtocolosPendentesAprovacao(long codUsuarioLogado, long NumReg)
         {
             try
             {
@@ -1153,7 +1160,7 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.Business
 
                 var listaRegistros = new List<N0203REG>();
 
-                listaRegistros = N0203REGDataAccess.PesquisaProtocolosPendentesAprovacao(codUsuarioLogado);
+                listaRegistros = N0203REGDataAccess.PesquisaProtocolosPendentesAprovacao(codUsuarioLogado, NumReg);
 
                 if (listaRegistros.Count > 0)
                 {
@@ -1501,12 +1508,12 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.Business
         /// <param name="campoSituacao">Situação</param>
         /// <param name="campoDataFaturamento">Data de Faturamento</param>
         /// <returns></returns>
-        public List<RelatorioAnalitico> ImprimirRelatorioAnaliticoRegistroOcorrencia(string campoNumeroRegistro, string campoFilial, string campoEmbarque, string campoPlaca, string campoPeriodoInicial, string campoPeriodoFinal, string campoCliente, string campoSituacao, string campoDataFaturamento)
+        public List<RelatorioAnalitico> ImprimirRelatorioAnaliticoRegistroOcorrencia(string campoNumeroRegistro, string campoFilial, string campoEmbarque, string campoPlaca, string campoPeriodoInicial, string campoPeriodoFinal, string campoCliente, string campoSituacao, string campoDataFaturamento, string campoNotaFiscal)
         {
             try
             {
                 var N0203REGDataAccess = new N0203REGDataAccess();
-                return N0203REGDataAccess.ImprimirRelatorioAnaliticoRegistroOcorrencia(campoNumeroRegistro, campoFilial, campoEmbarque, campoPlaca, campoPeriodoInicial, campoPeriodoFinal, campoCliente, campoSituacao, campoDataFaturamento);
+                return N0203REGDataAccess.ImprimirRelatorioAnaliticoRegistroOcorrencia(campoNumeroRegistro, campoFilial, campoEmbarque, campoPlaca, campoPeriodoInicial, campoPeriodoFinal, campoCliente, campoSituacao, campoDataFaturamento, campoNotaFiscal);
             }
             catch (Exception ex)
             {

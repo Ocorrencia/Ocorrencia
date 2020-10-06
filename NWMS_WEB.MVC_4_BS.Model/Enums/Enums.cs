@@ -305,7 +305,7 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.Model
             [Attributes.KeyValue("Descricao", "Indenizado")]
             Indenizado = 11,
 
-            [Attributes.KeyValue("Descricao", "Aprovar")]
+            [Attributes.KeyValue("Descricao", "Auitoria Controladoria")]
             Aprovar = 12,
         }
 

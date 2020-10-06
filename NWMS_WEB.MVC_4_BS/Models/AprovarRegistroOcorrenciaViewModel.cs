@@ -4,6 +4,8 @@ using System.Linq;
 using System.Web;
 using NUTRIPLAN_WEB.MVC_4_BS.Model;
 using System.ComponentModel.DataAnnotations;
+using Newtonsoft.Json;
+using System.Web.Http.ModelBinding;
 
 namespace NWORKFLOW_WEB.MVC_4_BS.Models
 {
@@ -12,6 +14,10 @@ namespace NWORKFLOW_WEB.MVC_4_BS.Models
         [Required(ErrorMessage = "O campo Nº de Registro deve ser preenchido.")]
         [Display(Name = "Nº Ocorrência/Nº Agrupador")]
         public string NumRegistro { get; set; }
+
+        [Required(ErrorMessage = "O campo Nº de regitro deve ser preenchido")]
+        [Display(Name = "Ocorrência")]
+        public long Origem { get; set;}
 
         //[Required(ErrorMessage = "O campo de Observações deve ser preenchido.")]
         [StringLength(400, MinimumLength = 0)]

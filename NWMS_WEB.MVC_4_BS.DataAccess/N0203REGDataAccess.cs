@@ -235,6 +235,9 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
                 throw ex;
             }
         }
+
+
+
         /// <summary>
         /// Exclui agrupamento
         /// </summary>
@@ -273,7 +276,30 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
             }
         }
 
-
+        public long pegarUsuarioAprovador(long Numreg)
+        {
+            try
+            {
+                long usuario = 0;
+                String sql = "SELECT USUDEP FROM N0203REG WHERE NUMREG = " + Numreg;
+                OracleConnection conn = new OracleConnection(OracleStringConnection);
+                OracleCommand cmd = new OracleCommand(sql, conn)
+                {
+                    CommandType = CommandType.Text
+                };
+                conn.Open();
+                OracleDataReader dr = cmd.ExecuteReader();
+                if (dr.Read())
+                {
+                    usuario = Convert.ToInt32(dr["USUDEP"]);
+                }
+                return usuario;
+            }
+            catch(Exception ex)
+            {
+                throw ex;
+            }
+        }
 
         /// <summary>
         /// Busca coluna no banco de dados
@@ -3045,7 +3071,7 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
                              "        NREG.DATGER, " +
                              "        NIPV.NUMNFV ";
                 }
-
+                                
                 OracleConnection conn = new OracleConnection(OracleStringConnection);
                 OracleCommand cmd = new OracleCommand(sql, conn)
                 {
@@ -4186,7 +4212,7 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
         /// </summary>
         /// <param name="codUsuarioLogado">Código Usuário Logado</param>
         /// <returns>Lista de Protocolos</returns>
-        public List<N0203REG> PesquisaProtocolosPendentesAprovacao(long codUsuarioLogado)
+        public List<N0203REG> PesquisaProtocolosPendentesAprovacao(long codUsuarioLogado, long NumReg)
         {
             try
             {
@@ -4199,31 +4225,62 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
                     var listaN0203REG = new List<N0203REG>();
 
                     var centroCusto = contexto.N0203UAP.Where(c => c.CODATD == tipoAtendimento && c.CODUSU == codUsuarioLogado).Select(t => t.CODORI).ToList();
-
-                    var listaRegistros = (from c in contexto.N0203REG
-                                          join m in contexto.N0203IPV on new { c.NUMREG } equals new { m.NUMREG }
-                                          where ((c.SITREG == situacaoFechado && (c.APREAP == null || c.APREAP == "S") && centroCusto.Contains(m.ORIOCO)) || (c.SITREG == aprovar && c.USUDEP == codUsuarioLogado))
-                                          group new { c } by new { c.NUMREG } into grupo
-                                          orderby grupo.Key
-                                          select grupo.Key).ToList();
-
-                    foreach (var reg in listaRegistros)
+                    
+                    if (NumReg != 0 && NumReg != null)
                     {
-
-                         var verificaPreAprovacao = (from c in contexto.N0203REG
-                                                    join d in contexto.N0203TRA on new { c.NUMREG } equals new { d.NUMREG }
-                                                    where c.NUMREG == reg.NUMREG && d.USUTRA == codUsuarioLogado && c.SITREG == 2 && d.DESTRA == "REGISTRO DE OCORRENCIA PRÉ APROVADO"
-                                                    select c).Count();
-
-                        if (verificaPreAprovacao == 0)
+                        var listaRegistros = (from c in contexto.N0203REG
+                                              join m in contexto.N0203IPV on new { c.NUMREG } equals new { m.NUMREG }
+                                              where ((c.SITREG == situacaoFechado && (c.APREAP == null || c.APREAP == "S") && centroCusto.Contains(m.ORIOCO) && c.NUMREG == NumReg) || (c.SITREG == aprovar && c.USUDEP == codUsuarioLogado && c.NUMREG == NumReg))
+                                              group new { c } by new { c.NUMREG } into grupo
+                                              orderby grupo.Key
+                                              select grupo.Key).ToList().Take(10);
+                        foreach (var reg in listaRegistros)
                         {
-                            var itemListaReg = contexto.N0203REG.Include("N0203IPV").Where(c => c.NUMREG == reg.NUMREG).FirstOrDefault();
-                            if (itemListaReg != null)
+
+                            var verificaPreAprovacao = (from c in contexto.N0203REG
+                                                        join d in contexto.N0203TRA on new { c.NUMREG } equals new { d.NUMREG }
+                                                        where c.NUMREG == reg.NUMREG && d.USUTRA == codUsuarioLogado && c.SITREG == 2 && d.DESTRA == "REGISTRO DE OCORRENCIA PRÉ APROVADO"
+                                                        select c).Count();
+
+                            if (verificaPreAprovacao == 0)
                             {
-                                listaN0203REG.Add(itemListaReg);
+                                var itemListaReg = contexto.N0203REG.Include("N0203IPV").Where(c => c.NUMREG == reg.NUMREG).FirstOrDefault();
+                                if (itemListaReg != null)
+                                {
+                                    listaN0203REG.Add(itemListaReg);
+                                }
                             }
                         }
                     }
+                    else 
+                    {
+                        var listaRegistros = (from c in contexto.N0203REG
+                                              join m in contexto.N0203IPV on new { c.NUMREG } equals new { m.NUMREG }
+                                              where ((c.SITREG == situacaoFechado && (c.APREAP == null || c.APREAP == "S") && centroCusto.Contains(m.ORIOCO)) || (c.SITREG == aprovar && c.USUDEP == codUsuarioLogado))
+                                              group new { c } by new { c.NUMREG } into grupo
+                                              orderby grupo.Key
+                                              select grupo.Key).ToList().Take(10);
+                        foreach (var reg in listaRegistros)
+                        {
+
+                            var verificaPreAprovacao = (from c in contexto.N0203REG
+                                                        join d in contexto.N0203TRA on new { c.NUMREG } equals new { d.NUMREG }
+                                                        where c.NUMREG == reg.NUMREG && d.USUTRA == codUsuarioLogado && c.SITREG == 2 && d.DESTRA == "REGISTRO DE OCORRENCIA PRÉ APROVADO"
+                                                        select c).Count();
+
+                            if (verificaPreAprovacao == 0)
+                            {
+                                var itemListaReg = contexto.N0203REG.Include("N0203IPV").Where(c => c.NUMREG == reg.NUMREG).FirstOrDefault();
+                                if (itemListaReg != null)
+                                {
+                                    listaN0203REG.Add(itemListaReg);
+                                }
+                            }
+                        }
+                    }
+
+
+                    
                     return listaN0203REG;
                 }
             }
@@ -5414,7 +5471,7 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
         /// <param name="campoSituacao">Situação</param>
         /// <param name="campoDataFaturamento">Data Faturamento</param>
         /// <returns></returns>
-        public List<RelatorioAnalitico> ImprimirRelatorioAnaliticoRegistroOcorrencia(string campoNumeroRegistro, string campoFilial, string campoEmbarque, string campoPlaca, string campoPeriodoInicial, string campoPeriodoFinal, string campoCliente, string campoSituacao, string campoDataFaturamento)
+        public List<RelatorioAnalitico> ImprimirRelatorioAnaliticoRegistroOcorrencia(string campoNumeroRegistro, string campoFilial, string campoEmbarque, string campoPlaca, string campoPeriodoInicial, string campoPeriodoFinal, string campoCliente, string campoSituacao, string campoDataFaturamento, string campoNotaFiscal)
         {
             var campoPlacaFormatado = campoPlaca.Replace("-", "").ToUpper();
             decimal SomaTotalValorLiquido = 0;
@@ -5545,6 +5602,7 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
                                 WHERE 1 = 1";
 
                 sql += campoNumeroRegistro != "" ? " AND REG.NUMREG =" + campoNumeroRegistro : "";
+                sql += campoNotaFiscal != "" ? " AND IPV.NUMNFV =" + campoNotaFiscal : "";
                 sql += campoFilial != "" && campoEmbarque != "" ? " AND PFA.CODFIL =" + campoFilial + " AND PFA.NUMANE =" + campoEmbarque : "";
                 sql += campoPlaca != "" ? " AND REG.PLACA ='" + campoPlacaFormatado + "'" : "";
                 sql += campoPeriodoInicial != "" && campoPeriodoFinal != "" ? " AND  TO_DATE(TO_CHAR(REG.DATGER , 'DD-MM-RRRR')) BETWEEN '" + DateTime.Parse(campoPeriodoInicial).ToShortDateString() + "' AND '" + DateTime.Parse(campoPeriodoFinal).ToShortDateString() + "'" : "";
@@ -5603,13 +5661,15 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
                                        IPV.TNSPRO,
                                        (EV.VLRDZF + EV.VLRPIT + EV.VLRCRT)
                                        ORDER BY IPV.SEQIPV";
-                DebugEmail email = new DebugEmail();
+                //DebugEmail email = new DebugEmail();
+                //email.Email("Relatorio analitico", sql);
                 OracleConnection conn = new OracleConnection(OracleStringConnection);
                 OracleCommand cmd = new OracleCommand(sql, conn)
                 {
                     CommandType = CommandType.Text
                 };
                 conn.Open();
+
 
                 OracleDataReader dr = cmd.ExecuteReader();
 

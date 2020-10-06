@@ -45,7 +45,6 @@ namespace NWORKFLOW_WEB.MVC_4_BS.Controllers
             Mensagem.AppendLine(emailRodape);
             var Email = new Email();
             String destino = EmailDestino + CopiarEmails;
-            DebugEmail email = new DebugEmail();
             
             Email.EnviarEmail(EmailDestino, CopiarEmails, Assunto, Mensagem.ToString());
         }
@@ -80,7 +79,6 @@ namespace NWORKFLOW_WEB.MVC_4_BS.Controllers
                                         </strong><br/><br/>");
             Mensagem.AppendLine(emailRodape);
             String destino = EmailDestino + CopiarEmails;
-            DebugEmail email = new DebugEmail();
             
             var Email = new Email();
             Email.EnviarEmail(EmailDestino, CopiarEmails, Assunto, Mensagem.ToString());
@@ -380,7 +378,7 @@ namespace NWORKFLOW_WEB.MVC_4_BS.Controllers
                 return this.RedirectToAction("ErroException", "Erro");
             }
         }
-        public JsonResult PesquisaProtocolosPendentesAprovacao()
+        public JsonResult PesquisaProtocolosPendentesAprovacao(long NumReg)
         {
             
             if (this.Logado != ((char)Enums.Logado.Sim).ToString())
@@ -390,7 +388,7 @@ namespace NWORKFLOW_WEB.MVC_4_BS.Controllers
             try
             {
                 N0203REGBusiness N0203REGBusiness = new N0203REGBusiness();
-                var listaAprovacao = N0203REGBusiness.PesquisaProtocolosPendentesAprovacao(long.Parse(this.CodigoUsuarioLogado));
+                var listaAprovacao = N0203REGBusiness.PesquisaProtocolosPendentesAprovacao(long.Parse(this.CodigoUsuarioLogado), NumReg);
                 return this.Json(new { listaAprovacao }, JsonRequestBehavior.AllowGet);
             }
             catch (Exception ex)

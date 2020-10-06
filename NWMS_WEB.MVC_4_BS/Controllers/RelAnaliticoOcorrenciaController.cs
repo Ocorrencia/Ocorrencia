@@ -41,12 +41,12 @@ namespace NWORKFLOW_WEB.MVC_4_BS.Controllers
             }
         }
 
-        public JsonResult ImprimirRelatorioRegistroOCorrencia(string campoNumeroRegistro, string campoFilial, string campoEmbarque, string campoPlaca, string campoPeriodoInicial, string campoPeriodoFinal, string campoCliente, string campoSituacao, string campoDataFaturamento)
+        public JsonResult ImprimirRelatorioRegistroOCorrencia(string campoNumeroRegistro, string campoFilial, string campoEmbarque, string campoPlaca, string campoPeriodoInicial, string campoPeriodoFinal, string campoCliente, string campoSituacao, string campoDataFaturamento, string campoNotaFiscal)
         {
             try
             {
                 var N0203REGBusiness = new N0203REGBusiness();
-                var listaRegistros = N0203REGBusiness.ImprimirRelatorioAnaliticoRegistroOcorrencia(campoNumeroRegistro, campoFilial, campoEmbarque, campoPlaca, campoPeriodoInicial, campoPeriodoFinal, campoCliente, campoSituacao, campoDataFaturamento);
+                var listaRegistros = N0203REGBusiness.ImprimirRelatorioAnaliticoRegistroOcorrencia(campoNumeroRegistro, campoFilial, campoEmbarque, campoPlaca, campoPeriodoInicial, campoPeriodoFinal, campoCliente, campoSituacao, campoDataFaturamento, campoNotaFiscal);
 
 
                 if (listaRegistros.Count == 0)

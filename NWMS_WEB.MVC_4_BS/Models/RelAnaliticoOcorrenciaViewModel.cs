@@ -23,6 +23,10 @@ namespace NWORKFLOW_WEB.MVC_4_BS.Models
         [Range(1, 999, ErrorMessage = "O Tipo de Situção deve ser selecionado")]
         public string campoSituacao { get; set; }
 
+        [Required]
+        [Display(Name = "Nota Fiscal")]
+        [Range(1, 999, ErrorMessage = "Nota Fiscal deve ser selecionado")]
+        public string NotaFiscal { get; set; }
 
         [Required(ErrorMessage = "Digite a Data Inicial")]
         [Display(Name = "Período OCR.")]

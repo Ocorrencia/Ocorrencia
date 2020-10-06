@@ -45,9 +45,10 @@
         var campoCliente = $("#CodClienteTextBox").val();
         var campoSituacao = $("#campoSituacao option:selected").val();
         var campoDataFaturamento = $("#campoDataFaturamento").val();
+        var campoNotaFiscal = $("#notaFiscal").val();
 
         $.getJSON("@Url.Action("ImprimirRelatorioRegistroOCorrencia")",
-               { campoNumeroRegistro: campoNumeroRegistro, campoFilial: campoFilial, campoEmbarque: campoEmbarque, campoPlaca: campoPlaca, campoPeriodoInicial: campoPeriodoInicial, campoPeriodoFinal: campoPeriodoFinal, campoCliente: campoCliente, campoSituacao: campoSituacao, campoDataFaturamento: campoDataFaturamento }, function (data) {
+            { campoNumeroRegistro: campoNumeroRegistro, campoFilial: campoFilial, campoEmbarque: campoEmbarque, campoPlaca: campoPlaca, campoPeriodoInicial: campoPeriodoInicial, campoPeriodoFinal: campoPeriodoFinal, campoCliente: campoCliente, campoSituacao: campoSituacao, campoDataFaturamento: campoDataFaturamento, campoNotaFiscal, campoNotaFiscal }, function (data) {
 
                    if (data.Logado || data.ErroExcecao) {
                        window.location.href = data.redirectUrl;
@@ -378,8 +379,8 @@
                                         <a style='color:#333333' href="#" id="PesquisarClienteButton"><span class="glyphicon glyphicon-search" title="Pesquisar cliente"></span></a>
                                     </span>
                                     @*<span class="input-group-btn">
-                                            <button class="btn btn-default btn-sm" id="PesquisarClienteButton" type="button">Pesquisar</button>
-                                        </span>*@
+                        <button class="btn btn-default btn-sm" id="PesquisarClienteButton" type="button">Pesquisar</button>
+                    </span>*@
                                 </div>
                             </div>
                             <div class="col-lg-4">
@@ -392,7 +393,7 @@
                             <div class="row">
                                 <div class="col-md-2">
                                     @Html.DropDownListFor(m => m.campoSituacao,
-                                    new List<SelectListItem> {
+                                         new List<SelectListItem> {
                                     new SelectListItem { Value = "0" , Text = "Selecione...", Selected = true},
                                     new SelectListItem { Value = "1" , Text = "Rascunho"},
                                     new SelectListItem { Value = "2" , Text = "Aguardando Aprovação"},
@@ -404,11 +405,21 @@
                                     new SelectListItem { Value = "9" , Text = "Conferido"},
                                     new SelectListItem { Value = "10" , Text = "Faturado"},
                                     new SelectListItem { Value = "11" , Text = "Indenizado"},
-                                    new SelectListItem { Value = "7" , Text = "Cancelado" } }, new { @class = "form-control input-sm", @id = "campoSituacao" })
+                                    new SelectListItem { Value = "7" , Text = "Cancelado" },
+                                    new SelectListItem { Value = "12", Text = "Auditoria Controladoria" }}, new { @class = "form-control input-sm", @id = "campoSituacao" })
                                 </div>
                                 @Html.ValidationMessageFor(m => m.campoSituacao)
                             </div>
                         </div>
+
+                        <div class="form-group">
+                            @Html.LabelFor(m => m.NotaFiscal, new { @class = "col-md-2 control-label" })
+                            <div class="col-sm-2">
+                                @Html.TextBoxFor(m => m.NotaFiscal, new { @class = "form-control input-sm", @id = "notaFiscal" })
+                            </div>
+                            @Html.ValidationMessageFor(m => m.NotaFiscal)
+                        </div>
+
                         <div class="form-group">
                             @Html.LabelFor(m => m.campoDataInicial, new { @class = "col-md-2 control-label" })
                             <div class="row">
@@ -430,7 +441,7 @@
                             <div class="row">
                                 <div class="col-md-2">
                                     @Html.DropDownListFor(m => m.campoFilial,
-                                    new List<SelectListItem> {
+                                         new List<SelectListItem> {
                                     new SelectListItem { Value = "0" , Text = "Selecione", Selected = true},
                                     new SelectListItem { Value = "1" , Text = "1"},
                                     new SelectListItem { Value = "101" , Text = "101"}}, new { @class = "form-control input-smgroup", @id = "campoFilial" })

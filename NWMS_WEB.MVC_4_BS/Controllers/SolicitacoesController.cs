@@ -31,11 +31,21 @@ namespace NWORKFLOW_WEB.MVC_4_BS.Controllers
             string Assunto = "APROVAÇÃO DE OCORRÊNCIA DE DEVOLUÇÃO - PENDENTE";
             string tipoAtd = "DEVOLUÇÃO";
 
+            N0203REGBusiness N0203REGBusiness = new N0203REGBusiness();
+            long usuario = N0203REGBusiness.pegarUsuarioAprovador(Int64.Parse(codProtocolo));
+
+            if(usuario != 0 && usuario != null)
+            {
+                copiarEmails = "coord.controladoria@nutriplan.com.br";
+            }
+
             if (tipoAtendimento == Enums.TipoAtendimento.TrocaMercadorias)
             {
                 Assunto = "APROVAÇÃO DE OCORRÊNCIA DE TROCA - PENDENTE";
                 tipoAtd = "TROCA";
             }
+
+
 
             var emailCabecalho = Attributes.KeyValueAttribute.GetFirst("Descricao", Enums.Email.Cabecalho).GetValue<string>();
             var emailCorpo = Attributes.KeyValueAttribute.GetFirst("Descricao", Enums.Email.Corpo).GetValue<string>();
@@ -267,10 +277,10 @@ namespace NWORKFLOW_WEB.MVC_4_BS.Controllers
                         if ((int)tipoAtend == (int)Enums.TipoAtendimento.TrocaMercadorias)
                             tipoAtend = Enums.TipoAtendimento.TrocaMercadorias;
                         //GRAVANDO REGISTRO
-                        if (!string.IsNullOrEmpty(notasEmail))
-                        {
+                        //if (!string.IsNullOrEmpty(notasEmail))
+                        //{
                             //this.MontarEmailFinanceiroNotasBoleto(N0203REG.NUMREG.ToString(), notasEmail, cliente, tipoAtend);
-                        }
+                        //}
 
                         N0203REGBusiness n0203REGBusiness = new N0203REGBusiness();
                         n0203REGBusiness.InserirTransporteIndenizado(N0203REG.NUMREG, modelo.CodTra);

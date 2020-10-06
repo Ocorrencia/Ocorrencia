@@ -66,8 +66,9 @@
         function PesquisaProtocolosPendentesAprovacao() {
             $('#progressBar').show();
             $("#gridTableRegistro").hide();
+            var NumReg = $("#OrigemTextBox").val();
             $.ajaxSetup({ cache: false });
-            $.getJSON("@Url.Action("PesquisaProtocolosPendentesAprovacao")", {}, function (data) {
+            $.getJSON("@Url.Action("PesquisaProtocolosPendentesAprovacao")", { NumReg: NumReg }, function (data) {
 
                 if (data.Logado || data.ErroExcecao) {
                     window.location.href = data.redirectUrl;
@@ -389,6 +390,10 @@
             }, 800);
         }
 
+        $('#SalvarButton').click(function () {
+            PesquisaProtocolosPendentesAprovacao();
+        });
+        
         function DialogPadrao(tipoPanel, tituloDialog, tipoLabel, msgErro, idBotao, nomeBotao, focus) {
 
             var html_Dialog = ""
@@ -448,13 +453,24 @@
     <hr />
     <div class="row" style="margin-left:auto">
         <div class="panel panel-default">
-            <legend>&nbsp;&nbsp;Ocorrência 
+            <legend>
+                &nbsp;&nbsp;Ocorrência
             </legend>
+            @Html.LabelFor(m => m.Origem, new { @class = "col-md-1 control-label" })
+            <div class="col-md-2">
+                @Html.TextBoxFor(m => m.Origem, new { @class = "form-control input-sm", @id = "OrigemTextBox" })
+            </div>
+            <div class="col-md-1" id="DivSalvarButton">
+                <input type="button" value="Pesquisar" id="SalvarButton" style="margin-top:0px" class="btn btn-primary btn-sm" />
+            </div>
+            <p> 
             <div id="gridTableRegistro" style="display:none">
                 <table id="TableRegistro" class="display compact" cellspacing="0"></table>
             </div>
         </div>
+        
     </div>
+    
     <div class="row" style="margin-left:auto">
         <div class="panel panel-default" id="DivPanelItens" style="display:none">
             <p></p>
