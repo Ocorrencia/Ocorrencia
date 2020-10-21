@@ -87,6 +87,7 @@ namespace NWORKFLOW_WEB.MVC_4_BS.Controllers
         {
             string EmailDestino = "sistema02@nutriplan.com.br";
             string CopiarEmails = "sistema02@nutriplan.com.br";
+
             string Assunto = "REGISTRO DE DEVOLUÇÃO - ERRO DE INTEGRAÇÃO SAPIENS";
             string tipoAtd = "Devolução";
             if (tipoAtendimento == Enums.TipoAtendimento.TrocaMercadorias)

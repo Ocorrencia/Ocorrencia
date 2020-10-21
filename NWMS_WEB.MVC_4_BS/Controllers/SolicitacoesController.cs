@@ -586,7 +586,7 @@ namespace NWORKFLOW_WEB.MVC_4_BS.Controllers
 
                 string protocolosAbertos = string.Empty;
                 N0203REGBusiness N0203REGBusiness = new N0203REGBusiness();
-                if (N0203REGBusiness.VerificarProtocolosAberto(long.Parse(this.CodigoUsuarioLogado), out protocolosAbertos))
+                if (N0203REGBusiness.VerificaProtocoloReprovado(long.Parse(this.CodigoUsuarioLogado), out protocolosAbertos))
                 {
                     this.CadLancRegistroOcorrencia.MensagemRetorno = "As ocorrências apresentadas abaixo se encontram com situação Pendente ou Reprovado. Para poder gerar outras ocorrências, finalize a edição dos mesmos. Registro(s): " + protocolosAbertos + ".";
                 }

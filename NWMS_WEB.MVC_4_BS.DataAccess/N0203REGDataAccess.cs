@@ -2039,6 +2039,80 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
             }
         }
         
+        public bool VerificaProtocoloReprovado(long codigoUsuario, out string protocolosAbertos)
+        {
+            try
+            {
+                TimeSpan hora = new TimeSpan(24, 0, 0);
+                DateTime data = DateTime.Now.Subtract(hora);
+                protocolosAbertos = string.Empty;
+
+                string sql = "SELECT REG.NUMREG AS REGISTRO FROM N0203REG REG " +
+                             "WHERE REG.SITREG = 1 " +
+                             "AND REG.USUGER = " + codigoUsuario +
+                             "AND REG.NUMREG IN(" +
+                             "SELECT TRA.NUMREG FROM N0203TRA TRA " +
+                            "WHERE TRA.DESTRA = 'REGISTRO DE OCORRENCIA REPROVADO' " +
+                            " AND TRA.DATTRA < " + "'" + data.ToString() + "'" +
+                            ")";
+
+                OracleConnection conn = new OracleConnection(OracleStringConnection);
+                OracleCommand cmd = new OracleCommand(sql, conn)
+                {
+                    CommandType = CommandType.Text
+                };
+                conn.Open();
+                OracleDataReader dr = cmd.ExecuteReader();
+                                
+                while (dr.Read())
+                {
+                    protocolosAbertos += dr["REGISTRO"].ToString() +",";
+                }
+
+                dr.Close();
+                conn.Close();
+
+                sql = "SELECT REG.NUMREG AS REGISTRO FROM N0203REG REG " +
+                      "WHERE REG.SITREG = 1 " +
+                      "AND REG.USUGER = " + codigoUsuario +
+                      " AND REG.DATGER < " + "'" + data.ToString() + "' " + 
+                      " AND REG.NUMREG NOT IN(" +
+                      "SELECT TRA.NUMREG FROM N0203TRA TRA WHERE TRA.DESTRA = 'REGISTRO DE OCORRENCIA REPROVADO' " + 
+                      ")";
+
+                OracleConnection conn1 = new OracleConnection(OracleStringConnection);
+                OracleCommand cmd1 = new OracleCommand(sql, conn1)
+                {
+                    CommandType = CommandType.Text
+                };
+                conn1.Open();
+
+                OracleDataReader dr1 = cmd1.ExecuteReader();
+
+                while (dr1.Read())
+                {
+                    protocolosAbertos += dr1["REGISTRO"].ToString() + ",";
+                }
+
+                dr1.Close();
+                conn1.Close();
+
+                if (protocolosAbertos != null && protocolosAbertos != "")
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
         /// <summary>
         /// Verifica se existem protocolos com situação "Pendente" gerados anteriormente as últimas 24 horas corridas atrelados ao usuário logado
         /// </summary>
@@ -3071,7 +3145,10 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
                              "        NREG.DATGER, " +
                              "        NIPV.NUMNFV ";
                 }
-                                
+
+                DebugEmail email = new DebugEmail();
+                email.Email("Troca", sql);
+
                 OracleConnection conn = new OracleConnection(OracleStringConnection);
                 OracleCommand cmd = new OracleCommand(sql, conn)
                 {

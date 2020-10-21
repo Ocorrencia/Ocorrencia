@@ -438,6 +438,20 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.Business
                 throw ex;
             }
         }
+
+        public bool VerificaProtocoloReprovado(long codigoUsuario, out string protocolosAbertos)
+        {
+            try
+            {
+                N0203REGDataAccess N0203REGDataAccess = new N0203REGDataAccess();
+                return N0203REGDataAccess.VerificaProtocoloReprovado(codigoUsuario, out protocolosAbertos);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
         /// <summary>
         /// Chama a classe para verificar todos os protocolos abertos 
         /// </summary>
