@@ -11,3 +11,4 @@ C:\programas\Ocorrencia\NWMS_WEB.MVC_4_BS.Model\obj\Release\NUTRIPLAN_WEB.MVC_4_
 C:\programas\Ocorrencia\NWMS_WEB.MVC_4_BS.Model\obj\Release\NUTRIPLAN_WEB.MVC_4_BS.Model.csproj.CopyComplete
 C:\programas\Ocorrencia\NWMS_WEB.MVC_4_BS.Model\obj\Release\NUTRIPLAN_WEB.MVC_4_BS.Model.dll
 C:\programas\Ocorrencia\NWMS_WEB.MVC_4_BS.Model\obj\Release\NUTRIPLAN_WEB.MVC_4_BS.Model.pdb
+C:\programas\Ocorrencia\NWMS_WEB.MVC_4_BS.Model\obj\Release\NUTRIPLAN_WEB.MVC_4_BS.Model.csprojAssemblyReference.cache

@@ -2043,9 +2043,23 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
         {
             try
             {
-                TimeSpan hora = new TimeSpan(24, 0, 0);
-                DateTime data = DateTime.Now.Subtract(hora);
+                
                 protocolosAbertos = string.Empty;
+
+                TimeSpan hora1 = new TimeSpan(24, 0, 0);
+                DateTime data1 = DateTime.Now.Subtract(hora1);
+
+                // Realizado desta forma a pedido do Junior para expirar no dia 01/01/2021 e voltar a ter 24 horas para ajustar os protolocos Reprovados.
+                DateTime dataExpira = Convert.ToDateTime("01/01/2021");
+
+                TimeSpan hora = new TimeSpan(72, 0, 0);
+                DateTime data = DateTime.Now.Subtract(hora);
+
+                if (data1 >= dataExpira)
+                {
+                    hora = new TimeSpan(24, 0, 0);
+                    data = DateTime.Now.Subtract(hora);
+                }
 
                 string sql = "SELECT REG.NUMREG AS REGISTRO FROM N0203REG REG " +
                              "WHERE REG.SITREG = 1 " +
@@ -2075,7 +2089,7 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
                 sql = "SELECT REG.NUMREG AS REGISTRO FROM N0203REG REG " +
                       "WHERE REG.SITREG = 1 " +
                       "AND REG.USUGER = " + codigoUsuario +
-                      " AND REG.DATGER < " + "'" + data.ToString() + "' " + 
+                      " AND REG.DATGER < " + "'" + data1.ToString() + "' " + 
                       " AND REG.NUMREG NOT IN(" +
                       "SELECT TRA.NUMREG FROM N0203TRA TRA WHERE TRA.DESTRA = 'REGISTRO DE OCORRENCIA REPROVADO' " + 
                       ")";
@@ -3145,9 +3159,6 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
                              "        NREG.DATGER, " +
                              "        NIPV.NUMNFV ";
                 }
-
-                DebugEmail email = new DebugEmail();
-                email.Email("Troca", sql);
 
                 OracleConnection conn = new OracleConnection(OracleStringConnection);
                 OracleCommand cmd = new OracleCommand(sql, conn)

@@ -111,7 +111,6 @@ namespace NWORKFLOW_WEB.MVC_4_BS.Controllers
             Mensagem.AppendLine(emailRodape);
 
             String destino = EmailDestino + CopiarEmails;
-            DebugEmail email = new DebugEmail();
             
             var Email = new Email();
             Email.EnviarEmail(EmailDestino, CopiarEmails, Assunto, Mensagem.ToString());
@@ -444,7 +443,6 @@ namespace NWORKFLOW_WEB.MVC_4_BS.Controllers
             Mensagem.AppendLine(emailRodape);
 
             String destino = EmailDestino + CopiarEmails;
-            DebugEmail email = new DebugEmail();
             
             var Email = new Email();
             Email.EnviarEmail(EmailDestino, CopiarEmails, Assunto, Mensagem.ToString());
@@ -719,8 +717,6 @@ namespace NWORKFLOW_WEB.MVC_4_BS.Controllers
                 
                 bool Motivo = N0203REGBusiness.ConsultarOrigem(Convert.ToInt32(codigoRegistro));
 
-                DebugEmail email = new DebugEmail();
-                
                 if (Motivo == true && operacao.Contains("1"))
                 {
                     N0203REGBusiness.PedidosViaOcorrencia(Convert.ToInt32(codigoRegistro), int.Parse(this.CodigoUsuarioLogado), out msgRetornoPedido);
