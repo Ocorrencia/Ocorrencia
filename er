@@ -1,0 +1,161 @@
+[33mcommit 15ebbaf3a60ce76a64e9b08c31b3d666670952da[m[33m ([m[1;36mHEAD -> [m[1;32mMain[m[33m)[m
+Author: Josimesio.pereira <sistema02@nutriplan.com.br>
+Date:   Wed Oct 13 17:30:26 2021 -0300
+
+    primiro comit
+
+[33mcommit dc1b029ce4459a0659f57004851f1fa1d478cff8[m[33m ([m[1;31morigin/master[m[33m, [m[1;31morigin/HEAD[m[33m)[m
+Author: Cleverson Bello <sistema02@nutriplan.com.br>
+Date:   Fri Oct 23 11:28:51 2020 -0300
+
+    alterar a data de reprovação de 24 para 72 horas
+
+[33mcommit 79fa119f0d9833b5ea6791eca490918dc380c73b[m
+Author: Cleverson Bello <sistema02@nutriplan.com.br>
+Date:   Wed Oct 21 10:59:13 2020 -0300
+
+    Alteração da data de validação de rascunho.
+
+[33mcommit 3379f5213f33c09ab18d49255a348ff96b67ed2a[m
+Author: Cleverson Bello <sistema02@nutriplan.com.br>
+Date:   Tue Oct 6 16:26:12 2020 -0300
+
+    Adicionar Email
+
+[33mcommit f75d137463bab7de15a08c7c4a42c649a0ca4114[m
+Author: Cleverson Bello <sistema02@nutriplan.com.br>
+Date:   Wed Sep 23 15:24:30 2020 -0300
+
+    tirar email
+
+[33mcommit b2ad7a4457d16d81c9f2b401f3ee8110dc725ad8[m
+Author: Cleverson Bello <sistema02@nutriplan.com.br>
+Date:   Wed Sep 23 14:29:11 2020 -0300
+
+    usuário aprovador
+
+[33mcommit 45040973be6fa01f5bfab8cb155d0ceec47b2a32[m
+Author: Cleverson Bello <sistema02@nutriplan.com.br>
+Date:   Fri Aug 7 14:45:37 2020 -0300
+
+    Adicionar placa dashboard
+
+[33mcommit 46bf1f0a919c77d4843748084c99f652c6c8371c[m
+Author: Cleverson Bello <sistema02@nutriplan.com.br>
+Date:   Tue Jul 7 11:42:39 2020 -0300
+
+    Relatório
+
+[33mcommit a78ce0991866fa1ae37de06713014ea7673d17fe[m
+Author: Cleverson Bello <sistema02@nutriplan.com.br>
+Date:   Tue Jul 7 11:28:53 2020 -0300
+
+    novo servidor
+
+[33mcommit f8aba0670478a8b7880606c52f00d06e85f45764[m
+Author: Cleverson Bello <sistema02@nutriplan.com.br>
+Date:   Tue Feb 4 14:15:12 2020 -0300
+
+    alterar repositorio de codigo fonte
+
+[33mcommit 9e0303e37baf2db4211e4757c993d2d468e13027[m
+Author: Cleverson Bello <sistema02@nutriplan.com.br>
+Date:   Tue Feb 4 13:50:17 2020 -0300
+
+    novo
+
+[33mcommit 94e6858939df16ccc9a38b9b0deb00123b93d4b1[m
+Author: Cleverson Bello <sistema02@nutriplan.com.br>
+Date:   Tue Feb 4 10:43:32 2020 -0300
+
+    teste
+
+[33mcommit cb08e70b0d0ce428cde949128e3caefc001db981[m
+Author: Cleverson Bello <sistema02@nutriplan.com.br>
+Date:   Tue Feb 4 09:39:46 2020 -0300
+
+    alteração de repositorio
+
+[33mcommit 72d67ed0766175df6aaa8a453da52dbe21b263ef[m
+Author: Cleverson Bello <sistema02@nutriplan.com.br>
+Date:   Fri Nov 8 13:26:11 2019 -0300
+
+    Transporte Indenizado
+
+[33mcommit 791f63335694d9e33e56b851142b591a355ab348[m
+Author: Cleverson Bello <sistema02@nutriplan.com.br>
+Date:   Thu Oct 24 09:36:55 2019 -0300
+
+    Transportadora Indenizado
+
+[33mcommit 6e81b820d0bbf94d031f7f2e8f64efbf062744f0[m
+Author: Cleverson Bello <sistema02@nutriplan.com.br>
+Date:   Wed Sep 11 13:20:31 2019 -0300
+
+    Indenização Transportadora
+
+[33mcommit b5701cb669c929ae6eef8f152037dfdbcc0dd572[m
+Author: Cleverson Bello <sistema02@nutriplan.com.br>
+Date:   Thu Sep 5 16:04:30 2019 -0300
+
+    Indenização Transportadora
+
+[33mcommit cef2d30fad994568b3f0460bd5ed7004c2f083be[m
+Author: Cleverson Bello <sistema02@nutriplan.com.br>
+Date:   Wed Sep 4 16:51:27 2019 -0300
+
+    alteração webservice
+
+[33mcommit 92ec8c84370f93df85a23d0aed38abe589a87968[m
+Author: Cleverson Bello <sistema02@nutriplan.com.br>
+Date:   Tue Aug 27 11:58:30 2019 -0300
+
+    Novo
+
+[33mcommit f1f4a2e249b9026aa9b3188dcbd9ff5c2ad2b989[m
+Author: Cleverson Bello <sistema02@nutriplan.com.br>
+Date:   Tue Aug 27 11:42:55 2019 -0300
+
+    Novo
+
+[33mcommit 25a47c8c1d64b7a53123dc593c2f9f7fbae3d177[m
+Author: Cleverson Bello <sistema02@nutriplan.com.br>
+Date:   Tue Aug 27 11:25:15 2019 -0300
+
+    bs
+
+[33mcommit 7491a288a3328292973a77fd34a6953a0fdcf8ea[m
+Author: Cleverson Bello <sistema02@nutriplan.com.br>
+Date:   Tue Aug 27 11:23:42 2019 -0300
+
+    Business
+
+[33mcommit 9b82be5c96f3940f73d38f26eeb1194494cefead[m
+Author: Cleverson Bello <sistema02@nutriplan.com.br>
+Date:   Tue Aug 27 11:22:00 2019 -0300
+
+    dataaccess
+
+[33mcommit aa8ca4bf12df19431aa131f60fc958ea0917f05f[m
+Author: Cleverson Bello <sistema02@nutriplan.com.br>
+Date:   Tue Aug 27 11:03:32 2019 -0300
+
+    Model
+
+[33mcommit b2bc049c9533899a4e390a87f73516032cef6233[m
+Author: Cleverson Bello <sistema02@nutriplan.com.br>
+Date:   Tue Aug 27 10:57:05 2019 -0300
+
+    arquivo
+
+[33mcommit 3644bf3fa44fe1662ebb7eb72a1348a1e927453c[m
+Author: Cleverson Bello <sistema02@nutriplan.com.br>
+Date:   Tue Aug 27 10:54:21 2019 -0300
+
+    arquivos
+
+[33mcommit f08f56f1c0b358f0080122f0b7f9ed5cae23eef1[m
+Author: Cleverson Bello <sistema02@nutriplan.com.br>
+Date:   Tue Aug 27 10:48:01 2019 -0300
+
+    teste
