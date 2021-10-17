@@ -27,6 +27,8 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
                     Console.WriteLine("32 Bits!");
                 }
 
+                new N0203REGDataAccess().OcorrenciasAtrasoFaturamento();
+
                 using (var contexto = new Context())
                 {
                     contexto.Database.ExecuteSqlCommand(@"
