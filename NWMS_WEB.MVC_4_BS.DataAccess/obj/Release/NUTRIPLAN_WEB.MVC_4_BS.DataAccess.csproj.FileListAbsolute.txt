@@ -35,4 +35,9 @@ C:\RepositórioOcorrencia\OcorrenciaOF\NWMS_WEB.MVC_4_BS.DataAccess\obj\Release\
 C:\RepositórioOcorrencia\OcorrenciaOF\NWMS_WEB.MVC_4_BS.DataAccess\obj\Release\NUTRIPLAN_WEB.MVC_4_BS.DataAccess.csproj.CoreCompileInputs.cache
 C:\RepositórioOcorrencia\OcorrenciaOF\NWMS_WEB.MVC_4_BS.DataAccess\obj\Release\NUTRIPLAN_WEB.MVC_4_BS.DataAccess.dll
 C:\RepositórioOcorrencia\OcorrenciaOF\NWMS_WEB.MVC_4_BS.DataAccess\obj\Release\NUTRIPLAN_WEB.MVC_4_BS.DataAccess.pdb
-C:\RepositórioOcorrencia\OcorrenciaOF\NWMS_WEB.MVC_4_BS.DataAccess\obj\Release\NUTRIPLAN_WEB.MVC_4_BS.DataAccess.csproj.CopyComplete
+C:\RepositórioOcorrencia\OcorrenciaOF\NWMS_WEB.MVC_4_BS.DataAccess\bin\Release\EntityFramework.SqlServer.dll
+C:\RepositórioOcorrencia\OcorrenciaOF\NWMS_WEB.MVC_4_BS.DataAccess\bin\Release\EntityFramework.SqlServer.xml
+C:\RepositórioOcorrencia\OcorrenciaOF\NWMS_WEB.MVC_4_BS.DataAccess\bin\Release\Oracle.ManagedDataAccess.dll
+C:\RepositórioOcorrencia\OcorrenciaOF\NWMS_WEB.MVC_4_BS.DataAccess\bin\Release\Oracle.ManagedDataAccess.EntityFramework.dll
+C:\RepositórioOcorrencia\OcorrenciaOF\NWMS_WEB.MVC_4_BS.DataAccess\bin\Release\Oracle.DataAccess.dll
+C:\RepositórioOcorrencia\OcorrenciaOF\NWMS_WEB.MVC_4_BS.DataAccess\bin\Release\Oracle.Web.dll

@@ -14,7 +14,7 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
     /// </summary>
     public class USU_T135LANDataAccess
     {
-        public string OracleStringConnection = Attributes.KeyValueAttribute.GetFirst("Descricao", Enums.OracleStringConnection.Sapiens).GetValue<string>();
+        public string OracleStringConnection = Enums.OracleCnn;
         /// <summary>
         /// Pesquisa relacionamento de embarque entre filiais
         /// </summary>

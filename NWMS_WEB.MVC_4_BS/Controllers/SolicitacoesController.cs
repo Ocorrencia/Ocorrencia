@@ -18,7 +18,7 @@ namespace NWORKFLOW_WEB.MVC_4_BS.Controllers
 {
     public class SolicitacoesController : BaseController
     {
-        public string OracleStringConnection = Attributes.KeyValueAttribute.GetFirst("Descricao", Enums.OracleStringConnection.Sapiens).GetValue<string>();
+        public string OracleStringConnection = Enums.OracleCnn;
         
         #region Rotina de Envio de Email
 

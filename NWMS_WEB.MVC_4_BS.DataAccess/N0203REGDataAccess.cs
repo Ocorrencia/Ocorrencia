@@ -15,7 +15,7 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
     /// </summary>
     public class N0203REGDataAccess
     {
-        public string OracleStringConnection = Attributes.KeyValueAttribute.GetFirst("Descricao", Enums.OracleStringConnection.Sapiens).GetValue<string>();
+        public string OracleStringConnection = Enums.OracleCnn;
 
         /// <summary>
         /// Exclui os itens que foram adicinados para devolução no cadastro do protocolo e na edição (Rascunho) foram excluídos da devolução (Fase 3 - Pesquisa)

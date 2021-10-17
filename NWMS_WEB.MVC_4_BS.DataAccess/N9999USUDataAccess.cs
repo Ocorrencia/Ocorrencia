@@ -18,8 +18,22 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
         {
             try
             {
-                using (Context contexto = new Context())
+                if (Environment.Is64BitProcess)
                 {
+                    Console.WriteLine("64 Bits!");
+                }
+                else
+                {
+                    Console.WriteLine("32 Bits!");
+                }
+
+                using (var contexto = new Context())
+                {
+                    contexto.Database.ExecuteSqlCommand(@"
+select * from N9999USU
+Where codusu >= 1
+  And codusu <= 10");
+
                     return contexto.N9999USU.Where(p => p.LOGIN == login).FirstOrDefault();
                 }
             }

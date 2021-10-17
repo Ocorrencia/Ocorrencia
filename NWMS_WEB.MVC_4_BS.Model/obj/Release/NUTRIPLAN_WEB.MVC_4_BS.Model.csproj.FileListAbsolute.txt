@@ -21,8 +21,7 @@ C:\RepositórioOcorrencia\OcorrenciaOF\NWMS_WEB.MVC_4_BS.Model\bin\Release\NUTRI
 C:\RepositórioOcorrencia\OcorrenciaOF\NWMS_WEB.MVC_4_BS.Model\bin\Release\DwgSmsServer.Net.dll
 C:\RepositórioOcorrencia\OcorrenciaOF\NWMS_WEB.MVC_4_BS.Model\bin\Release\Microsoft.SqlServer.Types.dll
 C:\RepositórioOcorrencia\OcorrenciaOF\NWMS_WEB.MVC_4_BS.Model\bin\Release\DwgSmsServer.Net.xml
-C:\RepositórioOcorrencia\OcorrenciaOF\NWMS_WEB.MVC_4_BS.Model\obj\Release\NUTRIPLAN_WEB.MVC_4_BS.Model.csproj.AssemblyReference.cache
 C:\RepositórioOcorrencia\OcorrenciaOF\NWMS_WEB.MVC_4_BS.Model\obj\Release\NUTRIPLAN_WEB.MVC_4_BS.Model.csproj.CoreCompileInputs.cache
 C:\RepositórioOcorrencia\OcorrenciaOF\NWMS_WEB.MVC_4_BS.Model\obj\Release\NUTRIPLAN_WEB.MVC_4_BS.Model.dll
 C:\RepositórioOcorrencia\OcorrenciaOF\NWMS_WEB.MVC_4_BS.Model\obj\Release\NUTRIPLAN_WEB.MVC_4_BS.Model.pdb
-C:\RepositórioOcorrencia\OcorrenciaOF\NWMS_WEB.MVC_4_BS.Model\obj\Release\NUTRIPLAN_WEB.MVC_4_BS.Model.csproj.CopyComplete
+C:\RepositórioOcorrencia\OcorrenciaOF\NWMS_WEB.MVC_4_BS.Model\obj\Release\NUTRIPLAN_WEB.MVC_4_BS.Model.csproj.AssemblyReference.cache

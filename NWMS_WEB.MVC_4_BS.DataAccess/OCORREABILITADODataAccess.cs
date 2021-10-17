@@ -7,7 +7,7 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
 {
     public class OCORREABILITADODataAccess
     {
-        public string OracleStringConnection = Attributes.KeyValueAttribute.GetFirst("Descricao", Enums.OracleStringConnection.Sapiens).GetValue<string>();
+        public string OracleStringConnection = Enums.OracleCnn;
 
         public List<RelatorioOcorrenciasReabilitadas> pesquisarOcorrenciasHabilitadas(long? Numreg, string dateInicial, string dateFinal, string operacao)
         {

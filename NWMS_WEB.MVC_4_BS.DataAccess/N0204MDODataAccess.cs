@@ -12,7 +12,7 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
     /// </summary>
     public class N0204MDODataAccess
     {
-        public string OracleStringConnection = Attributes.KeyValueAttribute.GetFirst("Descricao", Enums.OracleStringConnection.Sapiens).GetValue<string>();
+        public string OracleStringConnection = Enums.OracleCnn;
         /// <summary>
         /// Pesquisa as Origens por códigos de motivo
         /// </summary>

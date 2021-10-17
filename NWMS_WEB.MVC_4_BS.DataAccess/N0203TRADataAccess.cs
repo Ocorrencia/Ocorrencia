@@ -14,7 +14,7 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
     /// </summary>
     public class N0203TRADataAccess
     {
-        public string OracleStringConnection = Attributes.KeyValueAttribute.GetFirst("Descricao", Enums.OracleStringConnection.Sapiens).GetValue<string>();
+        public string OracleStringConnection = Enums.OracleCnn;
         /// <summary>
         /// Pesquisa os tramites das ocorrências por codigo de ocorrência
         /// </summary>

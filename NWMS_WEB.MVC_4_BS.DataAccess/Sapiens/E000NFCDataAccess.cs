@@ -14,7 +14,7 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
     /// </summary>
     public class E000NFCDataAccess
     {
-        public string OracleStringConnection = Attributes.KeyValueAttribute.GetFirst("Descricao", Enums.OracleStringConnection.Sapiens).GetValue<string>();
+        public string OracleStringConnection = Enums.OracleCnn;
 
         /// <summary>
         /// Recebe o número do CNPJ e retorna uma lista de números de notas fiscais

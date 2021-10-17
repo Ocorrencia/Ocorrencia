@@ -22,7 +22,7 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess.Mapping
                 .IsRequired()
                 .HasMaxLength(100);
 
-                        string connectionString = ConfigurationManager.ConnectionStrings["Context"].ConnectionString;
+                        string connectionString = ConfigurationManager.ConnectionStrings["OracleDbContext"].ConnectionString;
             connectionString = connectionString.Substring(connectionString.Length - 13, 13);
 // Table & Column Mappings
             this.ToTable("SYS_COMSQL", connectionString);

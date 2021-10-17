@@ -6,5 +6,5 @@
     cause the file to be unrecognizable by the program.
 -->
 <GenericObjectDataSource DisplayName="notafiscalIncluirObservacoesOut" Version="1.0" xmlns="urn:schemas-microsoft-com:xml-msdatasource">
-   <TypeInfo>NUTRIPLAN_WEB.MVC_4_BS.DataAccess.WS_NOTAS.notafiscalIncluirObservacoesOut, Service References.WS_NOTAS.Reference.cs, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null</TypeInfo>
+   <TypeInfo>NUTRIPLAN_WEB.MVC_4_BS.DataAccess.WS_NOTAS.notafiscalIncluirObservacoesOut, Service References.WS_NOTAS.Reference.cs.dll, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null</TypeInfo>
 </GenericObjectDataSource>

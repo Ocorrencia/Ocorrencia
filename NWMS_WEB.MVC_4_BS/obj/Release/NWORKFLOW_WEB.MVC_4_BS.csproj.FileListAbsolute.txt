@@ -149,7 +149,6 @@ C:\RepositórioOcorrencia\OcorrenciaOF\NWMS_WEB.MVC_4_BS\bin\Microsoft.Data.Edm.
 C:\RepositórioOcorrencia\OcorrenciaOF\NWMS_WEB.MVC_4_BS\bin\Microsoft.Data.OData.dll
 C:\RepositórioOcorrencia\OcorrenciaOF\NWMS_WEB.MVC_4_BS\bin\Microsoft.Data.Services.Client.dll
 C:\RepositórioOcorrencia\OcorrenciaOF\NWMS_WEB.MVC_4_BS\bin\Microsoft.Data.Services.dll
-C:\RepositórioOcorrencia\OcorrenciaOF\NWMS_WEB.MVC_4_BS\bin\Microsoft.ReportViewer.Common.dll
 C:\RepositórioOcorrencia\OcorrenciaOF\NWMS_WEB.MVC_4_BS\bin\Microsoft.ReportViewer.DataVisualization.dll
 C:\RepositórioOcorrencia\OcorrenciaOF\NWMS_WEB.MVC_4_BS\bin\Microsoft.ReportViewer.ProcessingObjectModel.dll
 C:\RepositórioOcorrencia\OcorrenciaOF\NWMS_WEB.MVC_4_BS\bin\Microsoft.ReportViewer.WebForms.dll
@@ -249,6 +248,9 @@ C:\RepositórioOcorrencia\OcorrenciaOF\NWMS_WEB.MVC_4_BS\bin\zh-Hans\System.Spat
 C:\RepositórioOcorrencia\OcorrenciaOF\NWMS_WEB.MVC_4_BS\bin\zh-Hant\System.Spatial.resources.dll
 C:\RepositórioOcorrencia\OcorrenciaOF\NWMS_WEB.MVC_4_BS\obj\Release\NWORKFLOW_WEB.MVC_4_BS.csproj.AssemblyReference.cache
 C:\RepositórioOcorrencia\OcorrenciaOF\NWMS_WEB.MVC_4_BS\obj\Release\NWORKFLOW_WEB.MVC_4_BS.csproj.CoreCompileInputs.cache
-C:\RepositórioOcorrencia\OcorrenciaOF\NWMS_WEB.MVC_4_BS\obj\Release\NWORKFLOW_WEB.MVC_4_BS.csproj.CopyComplete
 C:\RepositórioOcorrencia\OcorrenciaOF\NWMS_WEB.MVC_4_BS\obj\Release\NWORKFLOW_WEB.MVC_4_BS.dll
 C:\RepositórioOcorrencia\OcorrenciaOF\NWMS_WEB.MVC_4_BS\obj\Release\NWORKFLOW_WEB.MVC_4_BS.pdb
+C:\RepositórioOcorrencia\OcorrenciaOF\NWMS_WEB.MVC_4_BS\bin\NUTRIPLAN_WEB.MVC_4_BS.Business.dll.config
+C:\RepositórioOcorrencia\OcorrenciaOF\NWMS_WEB.MVC_4_BS\bin\EntityFramework.SqlServer.dll
+C:\RepositórioOcorrencia\OcorrenciaOF\NWMS_WEB.MVC_4_BS\bin\EntityFramework.SqlServer.xml
+C:\RepositórioOcorrencia\OcorrenciaOF\NWMS_WEB.MVC_4_BS\obj\Release\NWORKFLOW_WEB.MVC_4_BS.csproj.CopyComplete

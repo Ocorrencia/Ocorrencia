@@ -11,7 +11,7 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
     /// </summary>
     public class N0204DORIDataAcess
     {
-        public string OracleStringConnection = Attributes.KeyValueAttribute.GetFirst("Descricao", Enums.OracleStringConnection.Sapiens).GetValue<string>();
+        public string OracleStringConnection = Enums.OracleCnn;
         /// <summary>
         /// Verifica se o usuário logado tem permissão para o Dashboard
         /// </summary>

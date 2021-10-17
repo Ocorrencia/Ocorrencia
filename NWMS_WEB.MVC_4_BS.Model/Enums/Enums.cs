@@ -3,6 +3,21 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.Model
 {
     public class Enums
     {
+        public static string OracleCnn = System.Configuration.ConfigurationManager.ConnectionStrings["OracleDbContext"].ConnectionString;
+
+        public enum OracleStringConnection
+        {
+            /// <summary>
+            /// String de Conexão Banco Sapiens Produção
+            /// </summary>
+#if DEBUG
+            [Attributes.KeyValue("Descricao", "DATA SOURCE=ORCL1; PASSWORD=nplii4600;USER ID=NWMS_PRODUCAO")]
+#else
+            [Attributes.KeyValue("Descricao", "DATA SOURCE=ORCL1; PASSWORD=nplii4600;USER ID=NWMS_PRODUCAO")]
+#endif
+            Sapiens = 'S'
+        }
+
         public enum Sistema
         {
             /// <summary>
@@ -63,21 +78,7 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.Model
             Inativo = 'I'
         }
 
-        public enum OracleStringConnection
-        {
-            /// <summary>
-            /// String de Conexão Banco Sapiens Produção
-            /// </summary>
-
-#if DEBUG
-            [Attributes.KeyValue("Descricao", "DATA SOURCE=ORA11GT; PASSWORD=nwms4651teste;USER ID=NWMS_PRODUCAO")]
-#else
-            [Attributes.KeyValue("Descricao", "DATA SOURCE=ORA11G; PASSWORD=nplii4600;USER ID=NWMS_PRODUCAO")]
-#endif
-            Sapiens = 'S'
-        }
-
-        //string connectionString = ConfigurationManager.ConnectionStrings["Context"].ConnectionString;
+        //string connectionString = ConfigurationManager.ConnectionStrings["OracleDbContext"].ConnectionString;
         //connectionString = connectionString.Substring(connectionString.Length - 13, 13);
 
         public enum DataSourceOracle

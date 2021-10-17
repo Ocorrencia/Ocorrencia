@@ -7,7 +7,7 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
 {
     public class PERMISSAODataAccess
     {
-        public string OracleStringConnection = Attributes.KeyValueAttribute.GetFirst("Descricao", Enums.OracleStringConnection.Sapiens).GetValue<string>();
+        public string OracleStringConnection = Enums.OracleCnn;
 
         // PERMISSOES EM TELA
         public List<RelPermissaoTela> relPermissaoTelas(string usuario, char status) {

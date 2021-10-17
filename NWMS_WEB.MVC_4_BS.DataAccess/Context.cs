@@ -12,8 +12,9 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
             Database.SetInitializer<Context>(null);
         }
 
+
         public Context()
-            : base("Name=Context")
+            : base("Name=OracleDbContext")
         {
         }
 
