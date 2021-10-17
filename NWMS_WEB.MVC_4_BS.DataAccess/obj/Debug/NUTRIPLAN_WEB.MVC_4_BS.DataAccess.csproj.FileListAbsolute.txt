@@ -37,6 +37,8 @@ C:\RepositórioOcorrencia\OcorrenciaOF\NWMS_WEB.MVC_4_BS.DataAccess\bin\Debug\Mi
 C:\RepositórioOcorrencia\OcorrenciaOF\NWMS_WEB.MVC_4_BS.DataAccess\bin\Debug\NCommand.Console.dll
 C:\RepositórioOcorrencia\OcorrenciaOF\NWMS_WEB.MVC_4_BS.DataAccess\bin\Debug\NUTRIPLAN_WEB.MVC_4_BS.Model.dll
 C:\RepositórioOcorrencia\OcorrenciaOF\NWMS_WEB.MVC_4_BS.DataAccess\bin\Debug\Oracle.DataAccess.dll
+C:\RepositórioOcorrencia\OcorrenciaOF\NWMS_WEB.MVC_4_BS.DataAccess\bin\Debug\Oracle.ManagedDataAccess.dll
+C:\RepositórioOcorrencia\OcorrenciaOF\NWMS_WEB.MVC_4_BS.DataAccess\bin\Debug\Oracle.ManagedDataAccess.EntityFramework.dll
 C:\RepositórioOcorrencia\OcorrenciaOF\NWMS_WEB.MVC_4_BS.DataAccess\bin\Debug\System.Buffers.dll
 C:\RepositórioOcorrencia\OcorrenciaOF\NWMS_WEB.MVC_4_BS.DataAccess\bin\Debug\System.Memory.dll
 C:\RepositórioOcorrencia\OcorrenciaOF\NWMS_WEB.MVC_4_BS.DataAccess\bin\Debug\System.Numerics.Vectors.dll
