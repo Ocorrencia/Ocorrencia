@@ -136,7 +136,6 @@ C:\RepositórioOcorrencia\OcorrenciaOF\NWMS_WEB.MVC_4_BS\bin\NWORKFLOW_WEB.MVC_4
 C:\RepositórioOcorrencia\OcorrenciaOF\NWMS_WEB.MVC_4_BS\bin\Antlr3.Runtime.dll
 C:\RepositórioOcorrencia\OcorrenciaOF\NWMS_WEB.MVC_4_BS\bin\Common.Logging.Core.dll
 C:\RepositórioOcorrencia\OcorrenciaOF\NWMS_WEB.MVC_4_BS\bin\Common.Logging.dll
-C:\RepositórioOcorrencia\OcorrenciaOF\NWMS_WEB.MVC_4_BS\bin\EntityFramework.dll
 C:\RepositórioOcorrencia\OcorrenciaOF\NWMS_WEB.MVC_4_BS\bin\Microsoft.AI.Agent.Intercept.dll
 C:\RepositórioOcorrencia\OcorrenciaOF\NWMS_WEB.MVC_4_BS\bin\Microsoft.AI.DependencyCollector.dll
 C:\RepositórioOcorrencia\OcorrenciaOF\NWMS_WEB.MVC_4_BS\bin\Microsoft.AI.PerfCounterCollector.dll
@@ -185,6 +184,7 @@ C:\RepositórioOcorrencia\OcorrenciaOF\NWMS_WEB.MVC_4_BS\bin\EnvDTE.dll
 C:\RepositórioOcorrencia\OcorrenciaOF\NWMS_WEB.MVC_4_BS\bin\Microsoft.VisualStudio.Shell.Interop.dll
 C:\RepositórioOcorrencia\OcorrenciaOF\NWMS_WEB.MVC_4_BS\bin\Microsoft.ReportViewer.WinForms.dll
 C:\RepositórioOcorrencia\OcorrenciaOF\NWMS_WEB.MVC_4_BS\bin\Microsoft.VisualStudio.Shell.Interop.8.0.dll
+C:\RepositórioOcorrencia\OcorrenciaOF\NWMS_WEB.MVC_4_BS\bin\EntityFramework.dll
 C:\RepositórioOcorrencia\OcorrenciaOF\NWMS_WEB.MVC_4_BS\bin\stdole.dll
 C:\RepositórioOcorrencia\OcorrenciaOF\NWMS_WEB.MVC_4_BS\bin\Microsoft.VisualStudio.OLE.Interop.dll
 C:\RepositórioOcorrencia\OcorrenciaOF\NWMS_WEB.MVC_4_BS\bin\Microsoft.VisualStudio.TextManager.Interop.dll
@@ -199,7 +199,6 @@ C:\RepositórioOcorrencia\OcorrenciaOF\NWMS_WEB.MVC_4_BS\bin\Common.Logging.pdb
 C:\RepositórioOcorrencia\OcorrenciaOF\NWMS_WEB.MVC_4_BS\bin\Common.Logging.xml
 C:\RepositórioOcorrencia\OcorrenciaOF\NWMS_WEB.MVC_4_BS\bin\Common.Logging.Core.pdb
 C:\RepositórioOcorrencia\OcorrenciaOF\NWMS_WEB.MVC_4_BS\bin\Common.Logging.Core.xml
-C:\RepositórioOcorrencia\OcorrenciaOF\NWMS_WEB.MVC_4_BS\bin\EntityFramework.xml
 C:\RepositórioOcorrencia\OcorrenciaOF\NWMS_WEB.MVC_4_BS\bin\Microsoft.AI.DependencyCollector.xml
 C:\RepositórioOcorrencia\OcorrenciaOF\NWMS_WEB.MVC_4_BS\bin\Microsoft.AI.PerfCounterCollector.xml
 C:\RepositórioOcorrencia\OcorrenciaOF\NWMS_WEB.MVC_4_BS\bin\Microsoft.AI.ServerTelemetryChannel.xml
@@ -231,6 +230,7 @@ C:\RepositórioOcorrencia\OcorrenciaOF\NWMS_WEB.MVC_4_BS\bin\System.Web.WebPages
 C:\RepositórioOcorrencia\OcorrenciaOF\NWMS_WEB.MVC_4_BS\bin\System.Web.WebPages.Razor.xml
 C:\RepositórioOcorrencia\OcorrenciaOF\NWMS_WEB.MVC_4_BS\bin\NUTRIPLAN_WEB.MVC_4_BS.DataAccess.pdb
 C:\RepositórioOcorrencia\OcorrenciaOF\NWMS_WEB.MVC_4_BS\bin\NUTRIPLAN_WEB.MVC_4_BS.DataAccess.dll.config
+C:\RepositórioOcorrencia\OcorrenciaOF\NWMS_WEB.MVC_4_BS\bin\EntityFramework.xml
 C:\RepositórioOcorrencia\OcorrenciaOF\NWMS_WEB.MVC_4_BS\bin\de\Microsoft.Data.Edm.resources.dll
 C:\RepositórioOcorrencia\OcorrenciaOF\NWMS_WEB.MVC_4_BS\bin\es\Microsoft.Data.Edm.resources.dll
 C:\RepositórioOcorrencia\OcorrenciaOF\NWMS_WEB.MVC_4_BS\bin\fr\Microsoft.Data.Edm.resources.dll
@@ -308,5 +308,6 @@ C:\RepositórioOcorrencia\OcorrenciaOF\NWMS_WEB.MVC_4_BS\bin\zh-CHS\Microsoft.Re
 C:\RepositórioOcorrencia\OcorrenciaOF\NWMS_WEB.MVC_4_BS\bin\zh-CHT\Microsoft.ReportViewer.WinForms.resources.dll
 C:\RepositórioOcorrencia\OcorrenciaOF\NWMS_WEB.MVC_4_BS\obj\Debug\NWORKFLOW_WEB.MVC_4_BS.csproj.AssemblyReference.cache
 C:\RepositórioOcorrencia\OcorrenciaOF\NWMS_WEB.MVC_4_BS\obj\Debug\NWORKFLOW_WEB.MVC_4_BS.csproj.CoreCompileInputs.cache
+C:\RepositórioOcorrencia\OcorrenciaOF\NWMS_WEB.MVC_4_BS\obj\Debug\NWORKFLOW_WEB.MVC_4_BS.csproj.CopyComplete
 C:\RepositórioOcorrencia\OcorrenciaOF\NWMS_WEB.MVC_4_BS\obj\Debug\NWORKFLOW_WEB.MVC_4_BS.dll
 C:\RepositórioOcorrencia\OcorrenciaOF\NWMS_WEB.MVC_4_BS\obj\Debug\NWORKFLOW_WEB.MVC_4_BS.pdb
