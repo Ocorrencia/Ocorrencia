@@ -55,11 +55,11 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess.Mapping
                 .IsRequired()
                 .HasMaxLength(10);
 
-            string connectionString = ConfigurationManager.ConnectionStrings["OracleDbContext"].ConnectionString;
-            connectionString = connectionString.Substring(connectionString.Length - 13, 13);
+            
+            
 
             // Table & Column Mappings
-            this.ToTable("N0203IPV", connectionString);
+            this.ToTable("N0203IPV", Enums.OracleBDName);
             this.Property(t => t.NUMREG).HasColumnName("NUMREG");
             this.Property(t => t.CODEMP).HasColumnName("CODEMP");
             this.Property(t => t.CODFIL).HasColumnName("CODFIL");

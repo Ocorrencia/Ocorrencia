@@ -33,10 +33,10 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess.Mapping
                 .IsFixedLength()
                 .HasMaxLength(1);
 
-                        string connectionString = ConfigurationManager.ConnectionStrings["OracleDbContext"].ConnectionString;
-            connectionString = connectionString.Substring(connectionString.Length - 13, 13);
+                        
+            
 // Table & Column Mappings
-            this.ToTable("SYS_LOGMSG", connectionString);
+            this.ToTable("SYS_LOGMSG", Enums.OracleBDName);
             this.Property(t => t.CODMSG).HasColumnName("CODMSG");
             this.Property(t => t.MENSAGEM).HasColumnName("MENSAGEM");
             this.Property(t => t.CODUSU_REMETENTE).HasColumnName("CODUSU_REMETENTE");

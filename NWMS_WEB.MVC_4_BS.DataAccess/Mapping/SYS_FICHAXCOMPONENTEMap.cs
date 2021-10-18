@@ -21,10 +21,10 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess.Mapping
             this.Property(t => t.CODCOMPONENTE)
                 .HasDatabaseGeneratedOption(DatabaseGeneratedOption.None);
 
-                        string connectionString = ConfigurationManager.ConnectionStrings["OracleDbContext"].ConnectionString;
-            connectionString = connectionString.Substring(connectionString.Length - 13, 13);
+                        
+            
 // Table & Column Mappings
-            this.ToTable("SYS_FICHAXCOMPONENTE", connectionString);
+            this.ToTable("SYS_FICHAXCOMPONENTE", Enums.OracleBDName);
             this.Property(t => t.CODCATEGORIA).HasColumnName("CODCATEGORIA");
             this.Property(t => t.CODCOMPONENTE).HasColumnName("CODCOMPONENTE");
         }

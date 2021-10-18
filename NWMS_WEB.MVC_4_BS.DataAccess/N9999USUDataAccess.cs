@@ -18,23 +18,23 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
         {
             try
             {
-                if (Environment.Is64BitProcess)
-                {
-                    Console.WriteLine("64 Bits!");
-                }
-                else
-                {
-                    Console.WriteLine("32 Bits!");
-                }
+                //if (Environment.Is64BitProcess)
+                //{
+                //    Console.WriteLine("64 Bits!");
+                //}
+                //else
+                //{
+                //    Console.WriteLine("32 Bits!");
+                //}
 
-                new N0203REGDataAccess().OcorrenciasAtrasoFaturamento();
+                //new N0203REGDataAccess().OcorrenciasAtrasoFaturamento();
 
                 using (var contexto = new Context())
                 {
-                    contexto.Database.ExecuteSqlCommand(@"
-select * from N9999USU
-Where codusu >= 1
-  And codusu <= 10");
+//                    contexto.Database.ExecuteSqlCommand(@"
+//select * from N9999USU
+//Where codusu >= 1
+//  And codusu <= 10");
 
                     return contexto.N9999USU.Where(p => p.LOGIN == login).FirstOrDefault();
                 }

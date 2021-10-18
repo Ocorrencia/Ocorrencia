@@ -28,10 +28,10 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess.Mapping
             this.Property(t => t.ULTIMOACESSO)
                 .HasMaxLength(255);
 
-                        string connectionString = ConfigurationManager.ConnectionStrings["OracleDbContext"].ConnectionString;
-            connectionString = connectionString.Substring(connectionString.Length - 13, 13);
+                        
+            
 // Table & Column Mappings
-            this.ToTable("SYS_CFGGER", connectionString);
+            this.ToTable("SYS_CFGGER", Enums.OracleBDName);
             this.Property(t => t.CHAVE).HasColumnName("CHAVE");
             this.Property(t => t.DATALT).HasColumnName("DATALT");
             this.Property(t => t.BRADLL).HasColumnName("BRADLL");

@@ -42,11 +42,11 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess.Mapping
                 .IsFixedLength()
                 .HasMaxLength(1);
 
-            string connectionString = ConfigurationManager.ConnectionStrings["OracleDbContext"].ConnectionString;
-            connectionString = connectionString.Substring(connectionString.Length - 13, 13);
+            
+            
 
             // Table & Column Mappings
-            this.ToTable("V_SALDONWMS", connectionString);
+            this.ToTable("V_SALDONWMS", Enums.OracleBDName);
             this.Property(t => t.Cód_Produto).HasColumnName("Cód.Produto");
             this.Property(t => t.Cód_Derivação).HasColumnName("Cód.Derivação");
             this.Property(t => t.Cód_Integrado).HasColumnName("Cód.Integrado");

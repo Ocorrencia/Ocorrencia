@@ -117,6 +117,5 @@ C:\RepositórioOcorrencia\OcorrenciaOF\NWMS_WEB.MVC_4_BS.Model\bin\Debug\zh-CHS\
 C:\RepositórioOcorrencia\OcorrenciaOF\NWMS_WEB.MVC_4_BS.Model\bin\Debug\zh-CHT\Microsoft.ReportViewer.WinForms.resources.dll
 C:\RepositórioOcorrencia\OcorrenciaOF\NWMS_WEB.MVC_4_BS.Model\obj\Debug\NUTRIPLAN_WEB.MVC_4_BS.Model.csproj.AssemblyReference.cache
 C:\RepositórioOcorrencia\OcorrenciaOF\NWMS_WEB.MVC_4_BS.Model\obj\Debug\NUTRIPLAN_WEB.MVC_4_BS.Model.csproj.CoreCompileInputs.cache
-C:\RepositórioOcorrencia\OcorrenciaOF\NWMS_WEB.MVC_4_BS.Model\obj\Debug\NUTRIPLAN_WEB.MVC_4_BS.Model.csproj.CopyComplete
 C:\RepositórioOcorrencia\OcorrenciaOF\NWMS_WEB.MVC_4_BS.Model\obj\Debug\NUTRIPLAN_WEB.MVC_4_BS.Model.dll
 C:\RepositórioOcorrencia\OcorrenciaOF\NWMS_WEB.MVC_4_BS.Model\obj\Debug\NUTRIPLAN_WEB.MVC_4_BS.Model.pdb

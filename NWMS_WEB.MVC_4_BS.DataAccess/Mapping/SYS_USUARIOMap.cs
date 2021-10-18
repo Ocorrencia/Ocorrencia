@@ -133,10 +133,10 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess.Mapping
             this.Property(t => t.SENWEB)
                 .HasMaxLength(50);
 
-                        string connectionString = ConfigurationManager.ConnectionStrings["OracleDbContext"].ConnectionString;
-            connectionString = connectionString.Substring(connectionString.Length - 13, 13);
+                        
+            
 // Table & Column Mappings
-            this.ToTable("SYS_USUARIO", connectionString);
+            this.ToTable("SYS_USUARIO", Enums.OracleBDName);
             this.Property(t => t.CODUSU).HasColumnName("CODUSU");
             this.Property(t => t.NOME).HasColumnName("NOME");
             this.Property(t => t.LOGIN).HasColumnName("LOGIN");

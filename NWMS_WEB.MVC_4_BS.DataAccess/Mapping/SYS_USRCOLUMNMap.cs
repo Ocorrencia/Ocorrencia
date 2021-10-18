@@ -39,10 +39,10 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess.Mapping
                 .IsRequired()
                 .HasMaxLength(300);
 
-                        string connectionString = ConfigurationManager.ConnectionStrings["OracleDbContext"].ConnectionString;
-            connectionString = connectionString.Substring(connectionString.Length - 13, 13);
+                        
+            
 // Table & Column Mappings
-            this.ToTable("SYS_USRCOLUMN", connectionString);
+            this.ToTable("SYS_USRCOLUMN", Enums.OracleBDName);
             this.Property(t => t.CHAVE_PK).HasColumnName("CHAVE_PK");
             this.Property(t => t.CODUSRCOLUMN).HasColumnName("CODUSRCOLUMN");
             this.Property(t => t.CODUSRTABLE).HasColumnName("CODUSRTABLE");
@@ -61,7 +61,7 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess.Mapping
                 .WithMany(t => t.SYS_USRCOLUMN)
                 .Map(m =>
                     {
-                        m.ToTable("SYS_USRCOLUMNXSYS_USUARIO", connectionString);
+                        m.ToTable("SYS_USRCOLUMNXSYS_USUARIO", Enums.OracleBDName);
                         m.MapLeftKey("CODUSRCOLUMN");
                         m.MapRightKey("CODUSU");
                     });

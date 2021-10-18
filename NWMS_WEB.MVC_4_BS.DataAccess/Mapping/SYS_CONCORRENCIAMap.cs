@@ -21,10 +21,10 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess.Mapping
             this.Property(t => t.CHAVEREG)
                 .HasMaxLength(1000);
 
-                        string connectionString = ConfigurationManager.ConnectionStrings["OracleDbContext"].ConnectionString;
-            connectionString = connectionString.Substring(connectionString.Length - 13, 13);
+                        
+            
 // Table & Column Mappings
-            this.ToTable("SYS_CONCORRENCIA", connectionString);
+            this.ToTable("SYS_CONCORRENCIA", Enums.OracleBDName);
             this.Property(t => t.CODCONC).HasColumnName("CODCONC");
             this.Property(t => t.CODUSU).HasColumnName("CODUSU");
             this.Property(t => t.CHAVEREG).HasColumnName("CHAVEREG");

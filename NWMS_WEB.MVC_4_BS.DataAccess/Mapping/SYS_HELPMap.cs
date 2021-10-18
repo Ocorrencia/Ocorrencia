@@ -37,10 +37,10 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess.Mapping
             this.Property(t => t.TOPICO_PAI)
                 .HasMaxLength(50);
 
-                        string connectionString = ConfigurationManager.ConnectionStrings["OracleDbContext"].ConnectionString;
-            connectionString = connectionString.Substring(connectionString.Length - 13, 13);
+                        
+            
 // Table & Column Mappings
-            this.ToTable("SYS_HELP", connectionString);
+            this.ToTable("SYS_HELP", Enums.OracleBDName);
             this.Property(t => t.ALTERADO).HasColumnName("ALTERADO");
             this.Property(t => t.CODHELP).HasColumnName("CODHELP");
             this.Property(t => t.CONTEXTO).HasColumnName("CONTEXTO");

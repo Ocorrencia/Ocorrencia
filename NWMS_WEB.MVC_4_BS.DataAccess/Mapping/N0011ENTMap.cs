@@ -49,10 +49,10 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess.Mapping
                 .IsFixedLength()
                 .HasMaxLength(1);
 
-                        string connectionString = ConfigurationManager.ConnectionStrings["OracleDbContext"].ConnectionString;
-            connectionString = connectionString.Substring(connectionString.Length - 13, 13);
+                        
+            
 // Table & Column Mappings
-            this.ToTable("N0011ENT", connectionString);
+            this.ToTable("N0011ENT", Enums.OracleBDName);
             this.Property(t => t.CODCLI).HasColumnName("CODCLI");
             this.Property(t => t.SEQENT).HasColumnName("SEQENT");
             this.Property(t => t.ENDENT).HasColumnName("ENDENT");

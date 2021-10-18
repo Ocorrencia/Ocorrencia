@@ -30,10 +30,10 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess.Mapping
             this.Property(t => t.SEQITR)
                 .HasDatabaseGeneratedOption(DatabaseGeneratedOption.None);
 
-                        string connectionString = ConfigurationManager.ConnectionStrings["OracleDbContext"].ConnectionString;
-            connectionString = connectionString.Substring(connectionString.Length - 13, 13);
+                        
+            
 // Table & Column Mappings
-            this.ToTable("N0203ITR", connectionString);
+            this.ToTable("N0203ITR", Enums.OracleBDName);
             this.Property(t => t.NUMREG).HasColumnName("NUMREG");
             this.Property(t => t.CODTPR).HasColumnName("CODTPR");
             this.Property(t => t.CODPRO).HasColumnName("CODPRO");

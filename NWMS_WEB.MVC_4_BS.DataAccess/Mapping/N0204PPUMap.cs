@@ -19,11 +19,11 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess.Mapping
             this.Property(t => t.IDROW)
                 .HasDatabaseGeneratedOption(DatabaseGeneratedOption.None);
 
-            string connectionString = ConfigurationManager.ConnectionStrings["OracleDbContext"].ConnectionString;
-            connectionString = connectionString.Substring(connectionString.Length - 13, 13);
+            
+            
 
             // Table & Column Mappings
-            this.ToTable("N0204PPU", connectionString);
+            this.ToTable("N0204PPU", Enums.OracleBDName);
             this.Property(t => t.QTDDEV).HasColumnName("QTDDEV");
             this.Property(t => t.QTDTRC).HasColumnName("QTDTRC");
             this.Property(t => t.IDROW).HasColumnName("IDROW");

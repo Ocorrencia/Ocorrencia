@@ -23,10 +23,10 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess.Mapping
                 .IsRequired()
                 .HasMaxLength(500);
 
-                        string connectionString = ConfigurationManager.ConnectionStrings["OracleDbContext"].ConnectionString;
-            connectionString = connectionString.Substring(connectionString.Length - 13, 13);
+                        
+            
 // Table & Column Mappings
-            this.ToTable("N0000REL", connectionString);
+            this.ToTable("N0000REL", Enums.OracleBDName);
             this.Property(t => t.MENU).HasColumnName("MENU");
             this.Property(t => t.ABRREL).HasColumnName("ABRREL");
         }

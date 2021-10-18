@@ -4,6 +4,7 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.Model
     public class Enums
     {
         public static string OracleCnn = System.Configuration.ConfigurationManager.ConnectionStrings["OracleDbContext"].ConnectionString;
+        public static string OracleBDName = "NWMS_PRODUCAO";
 
         public enum OracleStringConnection
         {
@@ -78,8 +79,8 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.Model
             Inativo = 'I'
         }
 
-        //string connectionString = ConfigurationManager.ConnectionStrings["OracleDbContext"].ConnectionString;
-        //connectionString = connectionString.Substring(connectionString.Length - 13, 13);
+        //
+        //
 
         public enum DataSourceOracle
         {

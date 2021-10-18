@@ -18,10 +18,10 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess.Mapping
             this.Property(t => t.CODHELP)
                 .HasDatabaseGeneratedOption(DatabaseGeneratedOption.None);
 
-                        string connectionString = ConfigurationManager.ConnectionStrings["OracleDbContext"].ConnectionString;
-            connectionString = connectionString.Substring(connectionString.Length - 13, 13);
+                        
+            
 // Table & Column Mappings
-            this.ToTable("SYS_HELPBODY", connectionString);
+            this.ToTable("SYS_HELPBODY", Enums.OracleBDName);
             this.Property(t => t.CODHELP).HasColumnName("CODHELP");
             this.Property(t => t.CONTEUDOHTML_ENG).HasColumnName("CONTEUDOHTML_ENG");
             this.Property(t => t.CONTEUDOHTML_ESP).HasColumnName("CONTEUDOHTML_ESP");
