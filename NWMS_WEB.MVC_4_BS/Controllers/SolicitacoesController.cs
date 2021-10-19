@@ -1051,7 +1051,7 @@ namespace NWORKFLOW_WEB.MVC_4_BS.Controllers
 
                 if (listaNotasSaida.Count > 0)
                 {
-                    PesquisaSucesso = true;
+                    PesquisaSucesso = true; 
                 }
 
                 return this.Json(new { listaNotasSaida, PesquisaSucesso }, JsonRequestBehavior.AllowGet);
