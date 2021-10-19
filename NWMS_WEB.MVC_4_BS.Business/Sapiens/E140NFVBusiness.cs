@@ -24,6 +24,9 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.Business
         {
             try
             {
+                System.Diagnostics.Debug.WriteLine("Alert message");
+              
+                ///MessageBox.Show("teste");
                 E140NFVDataAccess E140NFVDataAccess = new E140NFVDataAccess();
                 return E140NFVDataAccess.PesquisarNotasFiscaisSaida(codigoCliente, codigoMotorista, codPlaca, tipoAtendimento, codUsuarioLogado);
             }

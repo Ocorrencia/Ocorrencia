@@ -33,9 +33,16 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
                 {
                     // Prazo padrão
                     var padrao = contexto.N0204PPU.Where(c => !c.CODUSU.HasValue).FirstOrDefault();
-
-                    qtdeDiasDev = padrao.QTDDEV;
-                    qtdeDiasTroca = padrao.QTDTRC;
+                    if (padrao != null)
+                    {
+                        qtdeDiasDev = padrao.QTDDEV;
+                        qtdeDiasTroca = padrao.QTDTRC;
+                    } else
+                    {
+                       
+                        qtdeDiasDev   = 90;
+                        qtdeDiasTroca = 180;
+                    }
 
                     var exclusivo = contexto.N0204PPU.Where(c => c.CODUSU == codUsuarioLogado).FirstOrDefault();
                     if (exclusivo != null)
