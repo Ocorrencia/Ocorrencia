@@ -8,8 +8,14 @@ using System.Collections;
 using System.Globalization;
 using NWORKFLOW_WEB.MVC_4_BS.Model;
 
+
+
+
+
 namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
 {
+
+
     /// <summary>
     /// Classe de acesso ao banco de dados
     /// </summary>
@@ -34,7 +40,7 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
 
                     //var padrao = contexto.N0204PPU.Where(c => !c.CODUSU.HasValue).FirstOrDefault();
 
-                   //  var exclusivo = contexto.N0204PPU.Where(c => c.CODUSU == N0203REG.USUGER).FirstOrDefault();
+                    //  var exclusivo = contexto.N0204PPU.Where(c => c.CODUSU == N0203REG.USUGER).FirstOrDefault();
 
                     var itensDev = contexto.N0203IPV.Where(c => c.NUMREG == N0203REG.NUMREG).ToList();
                     foreach (N0203IPV item in itensDev)
@@ -95,24 +101,24 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
                             N0203REG.N0203IPV.Where(c => c.CODFIL == item.CODFIL && c.NUMNFV == item.NUMNFV).ToList().ForEach(c => c.DATEMI = datTime);
                         }
 
-                         DateTime dataatual = DateTime.Now;
+                        DateTime dataatual = DateTime.Now;
 
                         int totalDias = (dataatual.Subtract(DateTime.Parse(DataAmissao))).Days;
 
                         var usuariopadrao = contexto.N0204PPU.Where(c => !c.CODUSU.HasValue).FirstOrDefault();
                         var usuarioExclusivo = contexto.N0204PPU.Where(c => c.CODUSU == original.USUGER).FirstOrDefault();
 
-                        if((original.TIPATE == 1 && totalDias > usuariopadrao.QTDDEV) || (original.TIPATE == 2 && totalDias > usuariopadrao.QTDTRC))
+                        if ((original.TIPATE == 1 && totalDias > usuariopadrao.QTDDEV) || (original.TIPATE == 2 && totalDias > usuariopadrao.QTDTRC))
                         {
-                            if(((usuariopadrao.QTDDEV < usuarioExclusivo.QTDDEV) || (usuariopadrao.QTDTRC < usuarioExclusivo.QTDTRC)) && usuarioExclusivo.USUDEP != 0)
+                            if (((usuariopadrao.QTDDEV < usuarioExclusivo.QTDDEV) || (usuariopadrao.QTDTRC < usuarioExclusivo.QTDTRC)) && usuarioExclusivo.USUDEP != 0)
                             {
-                                if(original.SITREG == (int)Enums.SituacaoRegistroOcorrencia.Fechado)
+                                if (original.SITREG == (int)Enums.SituacaoRegistroOcorrencia.Fechado)
                                 {
                                     original.SITREG = (int)Enums.SituacaoRegistroOcorrencia.Aprovar;
                                 }
                             }
                         }
-                        
+
 
                         bool valida = false;
                         foreach (N0203ANX item in N0203REG.N0203ANX)
@@ -295,7 +301,7 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
                 }
                 return usuario;
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 throw ex;
             }
@@ -340,8 +346,9 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
 
             if (dr.Read())
             {
-                if (Convert.ToInt32(dr["QUANTIDADE"]) > 0){
-                    return  true;
+                if (Convert.ToInt32(dr["QUANTIDADE"]) > 0)
+                {
+                    return true;
                 }
             }
             return false;
@@ -384,7 +391,7 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
             };
             conn.Open();
             //OracleDataReader dr = cmd.ExecuteReader();
-            
+
             conn.Close();
 
             return true;
@@ -394,7 +401,8 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
         public ListaTransportadora ConsultaTransportadora(int NotaOcorrencia, string Tipo)
         {
             string sql;
-            if (Tipo == "O") { 
+            if (Tipo == "O")
+            {
                 sql = "SELECT DISTINCT(NFV.CODTRA) AS CODTRA, TRA.NOMTRA AS NOMTRA, TRA.APETRA AS APETRA, NFV.CODRED AS CODRED FROM  " +
                     "SAPIENS.E140NFV NFV, N0203IPV IPV, SAPIENs.E073TRA TRA" +
                     " WHERE NFV.CODEMP = IPV.CODEMP AND NFV.CODFIL = IPV.CODFIL AND " +
@@ -442,16 +450,16 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
                     CommandType = CommandType.Text
                 };
                 con2.Open();
-                
+
                 OracleDataReader dr2 = cmd2.ExecuteReader();
                 if (dr2.Read())
                 {
                     lista.NOMETRAREDES = dr2["NOMETRAREDES"].ToString();
                     lista.CODREDAPETRA = dr2["CODREDAPETRA"].ToString();
                 }
-                con2.Close(); 
+                con2.Close();
             }
-            
+
 
             return lista;
         }
@@ -988,9 +996,9 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
                     N0203TRA itemTramites = new N0203TRA();
                     sequenciaTrammite = original.N0203TRA.OrderBy(c => c.SEQTRA).Last().SEQTRA + 1;
                 }
-                
+
                 var sql = "INSERT INTO NWMS_PRODUCAO.N0204POC (NUMREG, USUGER, DATVIN, SITPOC, PLACA, OBSREG, SITREG ) VALUES ('" + numeroRegistro + "', '" + usuGer + "', '" + datVin + "', '1', '" + codPlaca.ToUpper() + "', '" + observacao + "', '" + sitReg + "')";
-                
+
                 OracleConnection conn = new OracleConnection(OracleStringConnection);
                 OracleCommand cmd = new OracleCommand(sql, conn)
                 {
@@ -1397,7 +1405,7 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
                             N0203TRA itemTramites = new N0203TRA();
                             sequenciaTrammite = original.N0203TRA.OrderBy(c => c.SEQTRA).Last().SEQTRA + 1;
                         }
-                        
+
                         AtualizarRecebimentoPOC(NUMREG);
                         string sql = "UPDATE NWMS_PRODUCAO.N0203REG " +
                             "SET SITREG = '9'" +
@@ -1438,7 +1446,7 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
 
                     string sql = "UPDATE NWMS_PRODUCAO.N0203REG SET SITREG = '9'  " +
                                " WHERE NUMREG = " + NUMREG + " ";
-                    
+
                     OracleConnection conn = new OracleConnection(OracleStringConnection);
                     OracleCommand cmd = new OracleCommand(sql, conn)
                     {
@@ -1538,7 +1546,7 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
                 };
                 conn.Open();
                 OracleDataReader dr = cmd.ExecuteReader();
-                
+
                 ArrayList lista = new ArrayList();
                 if (dr.Read())
                 {
@@ -1674,7 +1682,7 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
                     }
 
                     codProtocolo = N0203REG.NUMREG;
-                                        
+
                     N0203TRA itemTramites = new N0203TRA
                     {
                         DATTRA = N0203REG.DATGER,
@@ -1706,7 +1714,9 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
                                      select new { grupo.Key.CODFIL, grupo.Key.NUMNFV }).ToList();
 
                     E140NFVDataAccess E140NFVDataAccess = new E140NFVDataAccess();
-                    String DataAmissao = "";
+
+                    var DataAmissao = string.Empty;
+
 
                     foreach (var item in listNotas)
                     {
@@ -1716,31 +1726,37 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
                         var datTime = DateTime.Parse(dataEmi);
 
                         N0203REG.N0203IPV.Where(c => c.CODFIL == item.CODFIL && c.NUMNFV == item.NUMNFV).ToList().ForEach(c => c.DATEMI = datTime);
+
                     }
 
-                    DateTime dataatual = DateTime.Now;
+                    var dataatual = DateTime.Now;
+                    Console.WriteLine(dataatual);
+
 
                     int totalDias = (dataatual.Subtract(DateTime.Parse(DataAmissao))).Days;
 
                     var padrao = contexto.N0204PPU.Where(c => !c.CODUSU.HasValue).FirstOrDefault();
-                    var exclusivo = contexto.N0204PPU.Where(c => c.CODUSU == N0203REG.USUGER).FirstOrDefault();
-
-                    if ((N0203REG.TIPATE == 1 && totalDias > padrao.QTDDEV) || (N0203REG.TIPATE == 2 && totalDias > padrao.QTDTRC))
+                    if (padrao != null)
                     {
-                        if (((padrao.QTDDEV < exclusivo.QTDDEV) || (padrao.QTDTRC < exclusivo.QTDTRC)) && exclusivo.USUDEP != 0)
+                        var exclusivo = contexto.N0204PPU.Where(c => c.CODUSU == N0203REG.USUGER).FirstOrDefault();
+
+                        if ((N0203REG.TIPATE == 1 && totalDias > padrao.QTDDEV) || (N0203REG.TIPATE == 2 && totalDias > padrao.QTDTRC))
                         {
-                            if(N0203REG.SITREG == (int)Enums.SituacaoRegistroOcorrencia.Pendente)
+                            if (((padrao.QTDDEV < exclusivo.QTDDEV) || (padrao.QTDTRC < exclusivo.QTDTRC)) && exclusivo.USUDEP != 0)
                             {
-                                N0203REG.USUDEP = exclusivo.USUDEP;
-                            }
-                            else
-                            {
-                                N0203REG.USUDEP = exclusivo.USUDEP;
-                                N0203REG.SITREG = (int)Enums.SituacaoRegistroOcorrencia.Aprovar;
+                                if (N0203REG.SITREG == (int)Enums.SituacaoRegistroOcorrencia.Pendente)
+                                {
+                                    N0203REG.USUDEP = exclusivo.USUDEP;
+                                }
+                                else
+                                {
+                                    N0203REG.USUDEP = exclusivo.USUDEP;
+                                    N0203REG.SITREG = (int)Enums.SituacaoRegistroOcorrencia.Aprovar;
+                                }
                             }
                         }
                     }
-                    
+
                     foreach (N0203IPV item in N0203REG.N0203IPV)
                     {
                         item.NUMREG = N0203REG.NUMREG;
@@ -2038,12 +2054,12 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
                 throw ex;
             }
         }
-        
+
         public bool VerificaProtocoloReprovado(long codigoUsuario, out string protocolosAbertos)
         {
             try
             {
-                
+
                 protocolosAbertos = string.Empty;
 
                 TimeSpan hora1 = new TimeSpan(24, 0, 0);
@@ -2077,10 +2093,10 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
                 };
                 conn.Open();
                 OracleDataReader dr = cmd.ExecuteReader();
-                                
+
                 while (dr.Read())
                 {
-                    protocolosAbertos += dr["REGISTRO"].ToString() +",";
+                    protocolosAbertos += dr["REGISTRO"].ToString() + ",";
                 }
 
                 dr.Close();
@@ -2089,9 +2105,9 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
                 sql = "SELECT REG.NUMREG AS REGISTRO FROM N0203REG REG " +
                       "WHERE REG.SITREG = 1 " +
                       "AND REG.USUGER = " + codigoUsuario +
-                      " AND REG.DATGER < " + "'" + data1.ToString() + "' " + 
+                      " AND REG.DATGER < " + "'" + data1.ToString() + "' " +
                       " AND REG.NUMREG NOT IN(" +
-                      "SELECT TRA.NUMREG FROM N0203TRA TRA WHERE TRA.DESTRA = 'REGISTRO DE OCORRENCIA REPROVADO' " + 
+                      "SELECT TRA.NUMREG FROM N0203TRA TRA WHERE TRA.DESTRA = 'REGISTRO DE OCORRENCIA REPROVADO' " +
                       ")";
 
                 OracleConnection conn1 = new OracleConnection(OracleStringConnection);
@@ -2407,7 +2423,7 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
                                 itemLista.ValorStS = itemLista.ValorSt.ToString("###,###,##0.00");
                                 itemLista.ValorLiquido = (itemDev.QTDDEV * decimal.Parse(itemDev.PREUNI.ToString())) + itemLista.ValorIpi + itemLista.ValorSt;
                                 itemLista.ValorLiquidoS = itemLista.ValorLiquido.ToString("###,###,##0.00");
-                                SomaTotalValorLiquido +=  itemLista.ValorLiquido;
+                                SomaTotalValorLiquido += itemLista.ValorLiquido;
 
                                 countTotal += 1;
 
@@ -2470,7 +2486,7 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
         /// <param name="codPlaca">Placa</param>
         /// <param name="transportadora">Transportador</param>
         /// <returns></returns>
-        public List<RelatorioTempoCarga> RelatorioTempoCarga( string filial, string embarque, string codCliente, string dataInicial, string dataFinal, string motivo, string situacao, string origem, string tipo, string dataInicialOCR, string dataFinalOCR, string codPlaca, string transportadora)
+        public List<RelatorioTempoCarga> RelatorioTempoCarga(string filial, string embarque, string codCliente, string dataInicial, string dataFinal, string motivo, string situacao, string origem, string tipo, string dataInicialOCR, string dataFinalOCR, string codPlaca, string transportadora)
         {
             try
             {
@@ -2577,7 +2593,7 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
                                           NOTA_FATURADA
                                    ORDER BY NUMREG DESC";
 
-                
+
                 OracleConnection conn = new OracleConnection(OracleStringConnection);
                 OracleCommand cmd = new OracleCommand(sql, conn)
                 {
@@ -2585,7 +2601,7 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
                 };
                 conn.Open();
                 //Gravar Arquivo
-                
+
                 OracleDataReader dr = cmd.ExecuteReader();
                 List<RelatorioTempoCarga> listaProtocolosPendentes = new List<RelatorioTempoCarga>();
                 RelatorioTempoCarga itemProtocolo = new RelatorioTempoCarga();
@@ -2606,7 +2622,7 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
                         dr["SITREG"].ToString() == "3" ? "Integrado" :
                         dr["SITREG"].ToString() == "4" ? "Aprovado" :
                         dr["SITREG"].ToString() == "5" ? "Reprovado" :
-                        dr["SITREG"].ToString() == "6" ? "Reabilitado":
+                        dr["SITREG"].ToString() == "6" ? "Reabilitado" :
                         dr["SITREG"].ToString() == "8" ? "Coleta" :
                         dr["SITREG"].ToString() == "9" ? "Conferido" :
                         dr["SITREG"].ToString() == "10" ? "Faturado" :
@@ -2794,7 +2810,7 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
                         dr["SITREG"].ToString() == "3" ? "Integrado" :
                         dr["SITREG"].ToString() == "4" ? "Aprovado" :
                         dr["SITREG"].ToString() == "5" ? "Reprovado" :
-                        dr["SITREG"].ToString() == "6" ? "Reabilitado":
+                        dr["SITREG"].ToString() == "6" ? "Reabilitado" :
                         dr["SITREG"].ToString() == "8" ? "Coleta" :
                         dr["SITREG"].ToString() == "9" ? "Conferido" :
                         dr["SITREG"].ToString() == "10" ? "Faturado" :
@@ -2832,7 +2848,8 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
             try
             {
                 string sql = "";
-                if(codPlaca == "AAA2222") {
+                if (codPlaca == "AAA2222")
+                {
                     sql = "SELECT DISTINCT REGEXP_SUBSTR(OCORRENCIA, SEPARADOR, 1, LEVEL) OCORRENCIA " +
                              "FROM(SELECT PED.USU_ALFREG AS OCORRENCIA, '[^,]+' SEPARADOR " +
                              "FROM SAPIENS.E140NFV NFV " +
@@ -2925,7 +2942,7 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
                     dr2.Close();
                     conn1.Close();
                 }
-                
+
                 return listaItensTroca;
             }
             catch (Exception ex)
@@ -3000,11 +3017,13 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
             try
             {
                 String sql;
-                if (codCli == null) {
+                if (codCli == null)
+                {
                     codCli = 0;
                 }
 
-                if (codPlaca == "AAA2222") { 
+                if (codPlaca == "AAA2222")
+                {
                     sql = " SELECT " +
                              "    OCORRENCIA, " +
                              "    ANALISE, " +
@@ -3066,7 +3085,7 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
                              "    WHERE " +
                              "        NFV.DATEMI BETWEEN TO_DATE(TO_CHAR('" + datFaturamento + "')) AND TO_DATE(TO_CHAR('" + datFaturamento + "')) " +
                              "    AND NFV.PLAVEI = ' ' " +
-                             "    AND CLI.CODCLI = " + codCli + 
+                             "    AND CLI.CODCLI = " + codCli +
                              "    AND NFV.SITNFV = '2')CONNECT BY REGEXP_SUBSTR(OCORRENCIA, SEPARADOR, 1, LEVEL) IS NOT NULL) " +
                              "    INNER JOIN " +
                              "        NWMS_PRODUCAO.N0203REG NREG " +
@@ -3082,8 +3101,9 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
                              "        NREG.DATGER, " +
                              "        NIPV.NUMNFV ";
                 }
-                else { 
-                    sql = " SELECT " + 
+                else
+                {
+                    sql = " SELECT " +
                              "    OCORRENCIA, " +
                              "    ANALISE, " +
                              "    CLIENTE, " +
@@ -3093,65 +3113,65 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
                              "    TO_CHAR(ROUND(SUM((NIPV.VLRLIQ / NIPV.QTDFAT) * NIPV.QTDDEV), 2), " +
                              "    'FM999G999G999D90', " +
                              "    'nls_numeric_characters='',.''') VALORLIQUIDO" +
-                             " FROM " + 
+                             " FROM " +
                              "    NWMS_PRODUCAO.N0203IPV NIPV, " +
-                             "    (" + 
+                             "    (" +
                              "         SELECT DISTINCT " +
                              "    REGEXP_SUBSTR(OCORRENCIA, SEPARADOR, 1, LEVEL) OCORRENCIA, " +
                              "    ANALISE     AS ANALISE, " +
                              "    CLIENTE     AS CLIENTE " +
-                             " FROM " + 
+                             " FROM " +
                              "    (" +
                              "     SELECT " +
                              "         PED.USU_ALFREG AS OCORRENCIA, " +
                              "         PFA.NUMANE     AS ANALISE, " +
                              "         CLI.NOMCLI     AS CLIENTE, " +
-                             "         '[^,]+'       SEPARADOR " + 
-                             "     FROM " + 
+                             "         '[^,]+'       SEPARADOR " +
+                             "     FROM " +
                              "         SAPIENS.E140NFV NFV " +
-                             "     INNER JOIN " + 
+                             "     INNER JOIN " +
                              "         SAPIENS.E140IPV IPV " +
-                             "     ON " + 
+                             "     ON " +
                              "         IPV.CODEMP = NFV.CODEMP " +
                              "     AND IPV.CODFIL = NFV.CODFIL " +
                              "     AND IPV.CODSNF = NFV.CODSNF " +
                              "     AND IPV.NUMNFV = NFV.NUMNFV " +
-                             "     INNER JOIN " + 
+                             "     INNER JOIN " +
                              "         SAPIENS.E085CLI CLI " +
-                             "     ON " + 
+                             "     ON " +
                              "         CLI.CODCLI = NFV.CODCLI " +
-                             "     INNER JOIN " + 
+                             "     INNER JOIN " +
                              "         SAPIENS.E120IPD IPD " +
-                             "     ON " + 
+                             "     ON " +
                              "         IPD.CODEMP = IPV.CODEMP " +
                              "     AND IPD.CODFIL = IPV.FILPED " +
                              "     AND IPD.NUMPED = IPV.NUMPED " +
                              "     AND IPD.SEQIPD = IPV.SEQIPD " +
-                             "     INNER JOIN " + 
+                             "     INNER JOIN " +
                              "         SAPIENS.E120PED PED " +
-                             "     ON " + 
+                             "     ON " +
                              "         PED.CODEMP = IPD.CODEMP " +
                              "     AND PED.CODFIL = IPD.CODFIL " +
                              "     AND PED.NUMPED = IPD.NUMPED " +
                              "     AND PED.TNSPRO IN ('90126', '90111') " +
-                             "     LEFT JOIN " + 
+                             "     LEFT JOIN " +
                              "         SAPIENS.E135PFA PFA " +
-                             "     ON " + 
+                             "     ON " +
                              "         IPV.CODEMP = PFA.CODEMP " +
                              "    AND IPV.CODFIL = PFA.FILNFV " +
                              "    AND IPV.CODSNF = PFA.SNFNFV " +
                              "    AND IPV.NUMNFV = PFA.NUMNFV     " +
-                             "    WHERE " + 
+                             "    WHERE " +
                              "        NFV.DATEMI BETWEEN TO_DATE(TO_CHAR('" + datFaturamento + "')) AND TO_DATE(TO_CHAR('" + datFaturamento + "')) " +
                              "    AND NFV.PLAVEI = '" + codPlaca + "' " +
                              "    AND NFV.SITNFV = '2')CONNECT BY REGEXP_SUBSTR(OCORRENCIA, SEPARADOR, 1, LEVEL) IS NOT NULL) " +
-                             "    INNER JOIN " + 
+                             "    INNER JOIN " +
                              "        NWMS_PRODUCAO.N0203REG NREG " +
-                             "    ON " + 
+                             "    ON " +
                              "        NREG.NUMREG = OCORRENCIA " +
-                             "    WHERE " + 
+                             "    WHERE " +
                              "        NIPV.NUMREG = OCORRENCIA " +
-                             "    GROUP BY " + 
+                             "    GROUP BY " +
                              "        OCORRENCIA, " +
                              "        ANALISE, " +
                              "        CLIENTE, " +
@@ -3249,7 +3269,7 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
         /// <param name="codPlaca">Placa</param>
         /// <param name="datFaturamento">Data de Faturamento</param>
         /// <returns>listaItensCarga</returns>
-        public List<ItensSinteticoCarga> ItensCargaConferencia(string codPlaca, string datFaturamento, long ? codigoCliente)
+        public List<ItensSinteticoCarga> ItensCargaConferencia(string codPlaca, string datFaturamento, long? codigoCliente)
         {
             try
             {
@@ -3272,10 +3292,10 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
                         "          AND IPV.CODFIL = NFV.CODFIL" +
                         "          AND IPV.CODSNF = NFV.CODSNF" +
                         "          AND IPV.NUMNFV = NFV.NUMNFV" +
-                        "   WHERE (NFV.PLAVEI = '" + codPlaca.ToUpper() + "'" + "OR NFV.PLAVEI =' ')" + 
+                        "   WHERE (NFV.PLAVEI = '" + codPlaca.ToUpper() + "'" + "OR NFV.PLAVEI =' ')" +
                         "         AND IPV.DATEMI >= TO_DATE('" + datFaturamento + "', 'DD/MM/YYYY')" +
                         "         AND IPV.DATEMI <= TO_DATE('" + datFaturamento + "','DD/MM/YYYY')" +
-                        "         AND REG.CODCLI = " + codigoCliente +  
+                        "         AND REG.CODCLI = " + codigoCliente +
                         "         AND REG.TIPATE = 1" +
                         "        GROUP BY REG.NUMREG," +
                         "                 IPV.NUMNFV," +
@@ -3284,7 +3304,8 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
                         "                 REG.DATGER," +
                         "                 PFA.NUMANE";
                 }
-                else { 
+                else
+                {
 
                     sql = "  SELECT DISTINCT REG.NUMREG, IPV.NUMNFV, CLI.NOMCLI, REG.SITREG,  TO_CHAR(REG.DATGER,'DD/MM/RRRR') DATGER, PFA.NUMANE,TO_CHAR(ROUND(SUM((IPV.VLRLIQ / IPV.QTDFAT) * IPV.QTDDEV), 2), 'FM999G999G999D90', 'nls_numeric_characters='',.''') VALORLIQUIDO" +
                         "    FROM NWMS_PRODUCAO.N0203REG REG" +
@@ -3327,7 +3348,7 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
                 List<ItensSinteticoCarga> listaItensCarga = new List<ItensSinteticoCarga>();
                 ItensSinteticoCarga itensCarga = new ItensSinteticoCarga();
                 decimal somaValorTotal = 0;
-                
+
                 while (dr.Read())
                 {
                     itensCarga = new ItensSinteticoCarga
@@ -3560,7 +3581,7 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
                                                join b in contexto.N0203IPV on new { a.NUMREG } equals new { b.NUMREG }
                                                where a.NUMREG == 0
                                                select new { a.NUMREG, a.SITREG }).ToList();
-                        
+
                         if (tipoPesquisa == (int)Enums.TipoPesquisaRegistroOcorrencia.AnaliseEmbarque)
                         {
                             // Recupera os protocolos da filial e analise de embarque informados
@@ -3611,8 +3632,9 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
                                                    orderby grupo.Key.NUMREG
                                                    select new { grupo.Key.NUMREG, grupo.Key.SITREG }).ToList();
                             }
-                            else {
-                                
+                            else
+                            {
+
                                 listaProtocolos = (from a in contexto.N0203REG
                                                    join b in contexto.N0203IPV on new { a.NUMREG } equals new { b.NUMREG }
                                                    where a.PLACA == codPlaca && b.DATEMI >= dataFatIni && b.DATEMI <= dataFatFim && (a.SITREG == situacaoFechado || a.SITREG == situacaoAprovado || a.SITREG == situacaoPreAprovado)
@@ -3655,27 +3677,28 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
                                                         QtdeDevolucao = grupo.Sum(d => d.m.QTDDEV),
 
                                                     }).ToList();
-                                if (codigoCliente != null) { 
-                                     listaItemReg = (from a in contexto.N0203REG
-                                         join b in contexto.N0203IPV on a.NUMREG equals b.NUMREG
-                                         join c in contexto.N0204MDV on b.CODMOT equals c.CODMDV
-                                       where b.CODFIL == itemAnalise.CODFIL && b.NUMANE == itemAnalise.NUMANE && a.CODCLI == codigoCliente  && //c.CODMDV == b.CODMOT &&
-                                         (a.SITREG == situacaoFechado || a.SITREG == situacaoAprovado || a.SITREG == situacaoPreAprovado)
-                                         group new { m = b } by new { b.CODPRO, b.CODDER, b.CPLIPV, b.CODMOT, b.QTDFAT, c.DESCMDV } into grupo
-                                        select new RelatorioSintetico
-                                         {
-                                             NumAnaliseEmb = string.Empty,
-                                             CodPro = grupo.Key.CODPRO,
-                                             CodDer = grupo.Key.CODDER,
-                                            DescPro = grupo.Key.CPLIPV,
-                                             CodMotivoDevolucao = grupo.Key.CODMOT,
-                                             DescMotivoDevolucao = grupo.Key.DESCMDV,
-                                             quantidade = grupo.Key.QTDFAT,
-                                             QtdeDevolucao = grupo.Sum(d => d.m.QTDDEV),
- 
-                                         }).ToList();
+                                if (codigoCliente != null)
+                                {
+                                    listaItemReg = (from a in contexto.N0203REG
+                                                    join b in contexto.N0203IPV on a.NUMREG equals b.NUMREG
+                                                    join c in contexto.N0204MDV on b.CODMOT equals c.CODMDV
+                                                    where b.CODFIL == itemAnalise.CODFIL && b.NUMANE == itemAnalise.NUMANE && a.CODCLI == codigoCliente && //c.CODMDV == b.CODMOT &&
+                                                      (a.SITREG == situacaoFechado || a.SITREG == situacaoAprovado || a.SITREG == situacaoPreAprovado)
+                                                    group new { m = b } by new { b.CODPRO, b.CODDER, b.CPLIPV, b.CODMOT, b.QTDFAT, c.DESCMDV } into grupo
+                                                    select new RelatorioSintetico
+                                                    {
+                                                        NumAnaliseEmb = string.Empty,
+                                                        CodPro = grupo.Key.CODPRO,
+                                                        CodDer = grupo.Key.CODDER,
+                                                        DescPro = grupo.Key.CPLIPV,
+                                                        CodMotivoDevolucao = grupo.Key.CODMOT,
+                                                        DescMotivoDevolucao = grupo.Key.DESCMDV,
+                                                        quantidade = grupo.Key.QTDFAT,
+                                                        QtdeDevolucao = grupo.Sum(d => d.m.QTDDEV),
+
+                                                    }).ToList();
                                 }
-                                
+
                                 if (listaItemReg.Count > 0)
                                 {
                                     analiseEmbarqueTexto = analiseEmbarqueTexto + itemAnalise.CODFIL.ToString() + " - ( " + itemAnalise.NUMANE.ToString() + " ) ";
@@ -3866,8 +3889,8 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
                 conn.Open();
                 bool Motivo = false;
                 OracleDataReader dr2 = cmd.ExecuteReader();
-                
-                while(dr2.Read())
+
+                while (dr2.Read())
                 {
                     //Motivo = (Convert.ToInt32(dr2["ORIOCO"]));
                     if (Convert.ToInt32(dr2["ORIOCO"]) == 8)
@@ -3973,7 +3996,7 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
                         contexto.SaveChanges();
                     }
                 }
-            } 
+            }
             AlterarStatusAgrupamento(codigoRegistro);
             return "Registros de ocorrências agrupadas foram integradas com sucesso!";
         }
@@ -4127,7 +4150,7 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
                     bool tem = false;
                     var desc = "REGISTRO DE OCORRENCIA PRÉ APROVADO";
 
-                    if(original.SITREG == (int)Enums.SituacaoRegistroOcorrencia.Aprovar)
+                    if (original.SITREG == (int)Enums.SituacaoRegistroOcorrencia.Aprovar)
                     {
                         desc = "REGISTRO DE OCORRENCIA APROVAR USUÁRIO APROVADOR";
                     }
@@ -4153,13 +4176,13 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
                                     };
                                     original.N0203TRA.Add(itemTramites);
                                     contexto.SaveChanges();
-                                    if(original.SITREG == (int)Enums.SituacaoRegistroOcorrencia.Aprovar)
+                                    if (original.SITREG == (int)Enums.SituacaoRegistroOcorrencia.Aprovar)
                                     {
                                         original.SITREG = (long)Enums.SituacaoRegistroOcorrencia.Fechado;
                                         tem = true;
                                     }
-                                    else 
-                                    { 
+                                    else
+                                    {
                                         if (verificarAreasAprovadas.Count == verificarAreasParaAprovacao.Count)
                                         {
                                             original.SITREG = (long)Enums.SituacaoRegistroOcorrencia.PreAprovado;
@@ -4180,14 +4203,14 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
                     }
                     List<N0203IPV> verificarAreasParaAprovacaoAtualizada = contexto.N0203IPV.Where(c => c.NUMREG == codigoRegistro).ToList();
                     List<N0203TRA> verificarAreasAprovadasAtualizada = contexto.N0203TRA.Where(c => c.NUMREG == codigoRegistro && c.CODORI != null).ToList();
-                    
+
 
                     if (tem == true)
                     {
                         original.SITREG = (long)Enums.SituacaoRegistroOcorrencia.Fechado;
                     }
-                    else 
-                    { 
+                    else
+                    {
                         if (verificarAreasParaAprovacaoAtualizada.Count <= verificarAreasAprovadasAtualizada.Count)
                         {
                             original.SITREG = (long)Enums.SituacaoRegistroOcorrencia.PreAprovado;
@@ -4313,7 +4336,7 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
                     var listaN0203REG = new List<N0203REG>();
 
                     var centroCusto = contexto.N0203UAP.Where(c => c.CODATD == tipoAtendimento && c.CODUSU == codUsuarioLogado).Select(t => t.CODORI).ToList();
-                    
+
                     if (NumReg != 0 && NumReg != null)
                     {
                         var listaRegistros = (from c in contexto.N0203REG
@@ -4340,7 +4363,7 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
                             }
                         }
                     }
-                    else 
+                    else
                     {
                         var listaRegistros = (from c in contexto.N0203REG
                                               join m in contexto.N0203IPV on new { c.NUMREG } equals new { m.NUMREG }
@@ -4368,7 +4391,7 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
                     }
 
 
-                    
+
                     return listaN0203REG;
                 }
             }
@@ -4705,7 +4728,7 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
         {
             List<string> itensOrigens = PesquisaLiberacoesDashBoard(codUsuarioLogado);
             string itensOrigensConcat = String.Join(",", itensOrigens);
-            
+
 
             try
             {
@@ -5213,7 +5236,7 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
                     msgRetorno = string.Empty;
                     var listaSituacao = new List<long>();
                     var tipoAtendimento = Convert.ToInt16(tipAtend);
-                    
+
                     listaSituacao.Add((long)Enums.SituacaoRegistroOcorrencia.Pendente);
                     listaSituacao.Add((long)Enums.SituacaoRegistroOcorrencia.Fechado);
                     listaSituacao.Add((long)Enums.SituacaoRegistroOcorrencia.PreAprovado);
@@ -5245,7 +5268,7 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
                                              select new { b.NUMREG, b.CODFIL, b.NUMNFV, b.CODPRO, b.CODDER }).FirstOrDefault();
                         }
 
-                        if (listaItemNota != null && usuarioLogado != "luciana.vieira") 
+                        if (listaItemNota != null && usuarioLogado != "luciana.vieira")
                         {
                             //16/01/2017 - Rafael Baccin
                             //msgRetorno = msgRetorno + "O Registro de Ocorrência Nº " + listaItemNota.NUMREG.ToString() + " contém a nota ( " + item.Item1.ToString() + " ) " + item.Item2.ToString() + ".<br/>";
@@ -5785,7 +5808,7 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
                     itens.NomeUsuarioGeracao = dr["NOMCOM"].ToString();
                     itens.UsuarioGeracao = dr["CODUSUGER"].ToString();
                     itens.CodSituacaoRegistro = dr["SITREG"].ToString();
-                    
+
                     switch (itens.CodSituacaoRegistro)
                     {
                         case "1":
@@ -5825,7 +5848,7 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
                             itens.DescSituacaoRegistro = "Aprovar";
                             break;
                     }
-                    
+
                     itens.UltimaAlteracao = dr["DATULT"].ToString(); ;
                     itens.NomeUsuarioUltimaAlteracao = dr["NOMCOM"].ToString();
                     itens.UsuarioUltimaAlteracao = dr["CODUSUULT"].ToString();
@@ -5880,7 +5903,7 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
                     contado++;
                     lista.Add(itens);
                 }
-                
+
                 dr.Close();
                 conn.Close();
                 return lista;
@@ -5993,7 +6016,7 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
 
             List<Ocorrencia> lista = new List<Ocorrencia>();
             Ocorrencia itens = new Ocorrencia();
-            
+
             DateTime dateForButton = DateTime.Now.AddDays(-30);
 
             while (dr.Read())
@@ -6064,7 +6087,7 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
                         itens.DescSituacaoRegistro = "Aprovar";
                         break;
                 }
-                
+
                 SomaTotalValorLiquido += Convert.ToDouble(dr["VALORLIQUIDO"].ToString());
                 itens.TotalValorLiquidoD = SomaTotalValorLiquido.ToString("###,###,##0.00"); ;
                 lista.Add(itens);
@@ -6303,7 +6326,7 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
         /// <param name="indicador">Indicador</param>
         /// <param name="ano">Ano</param>
         /// <returns></returns>
-        public List<Ocorrencia> OcorrenciaDrill( string mes, string indicador, string ano)
+        public List<Ocorrencia> OcorrenciaDrill(string mes, string indicador, string ano)
         {
             string origem = TratarOrigem(indicador);
             try
@@ -6567,7 +6590,7 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
         /// <param name="indicador">Indicador</param>
         /// <param name="ano">Ano</param>
         /// <returns></returns>
-        public List<Ocorrencia> CarregarIndicadorIndustria( string mes, string filtroAgrup, string indicador, string ano)
+        public List<Ocorrencia> CarregarIndicadorIndustria(string mes, string filtroAgrup, string indicador, string ano)
         {
             double SomaTotalValorLiquido = 0;
             double SomaTotalValorLiquido1 = 0;
@@ -6610,7 +6633,7 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
                                       DER.DESDER,
                                       MDV.DESCMDV ORDER BY NUMREG";
 
-            
+
             OracleConnection conn = new OracleConnection(OracleStringConnection);
             OracleCommand cmd = new OracleCommand(sql, conn)
             {
@@ -6650,7 +6673,7 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
             return lista;
         }
 
-        public List<RelatorioGraficoItens> RelatorioGraficoItens( string mes, string filtroAgrup, string indicador, string ano)
+        public List<RelatorioGraficoItens> RelatorioGraficoItens(string mes, string filtroAgrup, string indicador, string ano)
         {
             double SomaTotalValorLiquido = 0;
             double SomaTotalValorLiquido1 = 0;
@@ -6692,7 +6715,7 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
                                       ORI.DESCORI,
                                       DER.DESDER,
                                       MDV.DESCMDV ORDER BY NUMREG";
-            
+
             OracleConnection conn = new OracleConnection(OracleStringConnection);
             OracleCommand cmd = new OracleCommand(sql, conn)
             {

@@ -21,7 +21,7 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.Business
         /// <param name="dadosProtocolo">Tabela de ocorrência</param>
         /// <param name="mensagemRetorno">Mensagem de retorno</param>
         /// <returns></returns>
-        public bool EmitirLancamentoNfe( N0203REG dadosProtocolo, out string mensagemRetorno)
+        public bool EmitirLancamentoNfe(N0203REG dadosProtocolo, out string mensagemRetorno)
         {
             try
             {
@@ -47,7 +47,7 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.Business
             var N0203REGDataAccess = new N0203REGDataAccess();
             bool Motivo = N0203REGDataAccess.ConsultarOrigem(Ocorrencia);
             return Motivo;
- 
+
         }
 
         public bool InserirTransporteIndenizado(long Numreg, int Codtra)
@@ -277,6 +277,7 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.Business
             try
             {
                 N0203REGDataAccess N0203REGDataAccess = new N0203REGDataAccess();
+
                 return N0203REGDataAccess.InserirRegistroOcorrencia(N0203REG, out codProtocolo);
             }
             catch (Exception ex)
@@ -526,7 +527,7 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.Business
         /// <param name="codPlaca">Placa</param>
         /// <param name="dataFaturamento">Data de Faturamento</param>
         /// <returns></returns>
-        public List<ItensSinteticoCarga> RelatorioSinteticoConferencia(string codPlaca, string dataFaturamento, long ? codigoCliente)
+        public List<ItensSinteticoCarga> RelatorioSinteticoConferencia(string codPlaca, string dataFaturamento, long? codigoCliente)
         {
             try
             {
@@ -740,7 +741,7 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.Business
                 var listaRegistros = new List<N0203REG>();
 
                 listaRegistros = N0203REGDataAccess.PesquisaProtocolosPendentesAprovacao(codUsuarioLogado, NumReg);
-                
+
                 if (listaRegistros.Count > 0)
                 {
                     var N0204ATDDataAccess = new N0204ATDDataAccess();
@@ -829,7 +830,7 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.Business
                 var N0203REGDataAccess = new N0203REGDataAccess();
                 return N0203REGDataAccess.PedidosFaturarIndenizacao();
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 throw ex;
             }
@@ -837,7 +838,8 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.Business
 
         public List<RelatorioGraficoOcorrencia> RelatorioGraficoOcorrencias(string mes, string ano, string indicador)
         {
-            try { 
+            try
+            {
                 var N0203REGDataAccess = new N0203REGDataAccess();
                 var listaRegistros = new List<RelatorioGraficoOcorrencia>();
                 listaRegistros = N0203REGDataAccess.RelatorioGraficoOcorrencias(mes, ano, indicador);
@@ -857,7 +859,7 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.Business
         /// <param name="indicador">Indicador</param>
         /// <param name="ano">Ano</param>
         /// <returns></returns>
-        public List<Ocorrencia> CarregarIndicadoresTabela( string mes, string filtroAgrup, string indicador, string ano)
+        public List<Ocorrencia> CarregarIndicadoresTabela(string mes, string filtroAgrup, string indicador, string ano)
         {
             try
             {
@@ -879,7 +881,7 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.Business
             {
                 var N0203REGDataAccess = new N0203REGDataAccess();
                 var listaRegristros = new List<RelatorioGraficoItens>();
-                listaRegristros = N0203REGDataAccess.RelatorioGraficoItens( mes, filtroAgrup, indicador, ano);
+                listaRegristros = N0203REGDataAccess.RelatorioGraficoItens(mes, filtroAgrup, indicador, ano);
 
                 return listaRegristros;
             }
@@ -1016,13 +1018,13 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.Business
         /// <param name="indicador">Indicador</param>
         /// <param name="ano">Ano</param>
         /// <returns></returns>
-        public List<Ocorrencia> OcorrenciaDrill( string mes, string indicador, string ano)
+        public List<Ocorrencia> OcorrenciaDrill(string mes, string indicador, string ano)
         {
             try
             {
                 var N0203REGDataAccess = new N0203REGDataAccess();
                 var listaRegistros = new List<Ocorrencia>();
-                listaRegistros = N0203REGDataAccess.OcorrenciaDrill( mes, indicador, ano);
+                listaRegistros = N0203REGDataAccess.OcorrenciaDrill(mes, indicador, ano);
 
                 return listaRegistros;
             }
@@ -1243,7 +1245,7 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.Business
                             var cCRegistro = item.N0203IPV.GroupBy(c => c.CODDEP).ToList().OrderBy(c => c.Key);
                             foreach (var itemCentroCusto in cCRegistro)
                             {
-                               itemAprovacao.CentrosCustos = itemAprovacao.CentrosCustos + itemCentroCusto.Key + " - ";
+                                itemAprovacao.CentrosCustos = itemAprovacao.CentrosCustos + itemCentroCusto.Key + " - ";
                             }
                             itemAprovacao.CentrosCustos = itemAprovacao.CentrosCustos.Substring(0, itemAprovacao.CentrosCustos.Length - 3);
                         }
@@ -1259,7 +1261,7 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.Business
                                         }).FirstOrDefault();
                         itemAprovacao.ValorDevolucao = Convert.ToDouble(totalDev.ValorDev).ToString("###,###,##0.00");
                         listaAprovacao.Add(itemAprovacao);
-                     }
+                    }
                 }
                 return listaAprovacao;
             }
@@ -1267,7 +1269,7 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.Business
             {
                 throw ex;
             }
-            
+
         }
         /// <summary>
         /// Chama a classe para fazer a aprovação de registros de ocorrências

@@ -235,5 +235,6 @@ C:\RepositórioOcorrencia\Ocorrencia.main\NWMS_WEB.MVC_4_BS.Business\bin\Release
 C:\RepositórioOcorrencia\Ocorrencia.main\NWMS_WEB.MVC_4_BS.Business\bin\Release\zh-CHT\Microsoft.ReportViewer.WinForms.resources.dll
 C:\RepositórioOcorrencia\Ocorrencia.main\NWMS_WEB.MVC_4_BS.Business\obj\Release\NUTRIPLAN_WEB.MVC_4_BS.Business.csproj.AssemblyReference.cache
 C:\RepositórioOcorrencia\Ocorrencia.main\NWMS_WEB.MVC_4_BS.Business\obj\Release\NUTRIPLAN_WEB.MVC_4_BS.Business.csproj.CoreCompileInputs.cache
+C:\RepositórioOcorrencia\Ocorrencia.main\NWMS_WEB.MVC_4_BS.Business\obj\Release\NUTRIPLAN_WEB.MVC_4_BS.Business.csproj.CopyComplete
 C:\RepositórioOcorrencia\Ocorrencia.main\NWMS_WEB.MVC_4_BS.Business\obj\Release\NUTRIPLAN_WEB.MVC_4_BS.Business.dll
 C:\RepositórioOcorrencia\Ocorrencia.main\NWMS_WEB.MVC_4_BS.Business\obj\Release\NUTRIPLAN_WEB.MVC_4_BS.Business.pdb

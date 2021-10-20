@@ -630,6 +630,7 @@ namespace NWORKFLOW_WEB.MVC_4_BS.Controllers
                 modelo.MensagemRetorno = string.Empty;
                 var dataAtual = DateTime.Now;
 
+
                 N0203REG.CODCLI = long.Parse(modelo.CodCliente);
                 N0203REG.CODMOT = long.Parse(modelo.CodMotorista);
 
