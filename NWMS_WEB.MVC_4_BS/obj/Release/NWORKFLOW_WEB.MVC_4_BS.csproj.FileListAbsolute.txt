@@ -501,6 +501,5 @@ C:\RepositórioOcorrencia\Ocorrencia.main\NWMS_WEB.MVC_4_BS\bin\zh-CHS\Microsoft
 C:\RepositórioOcorrencia\Ocorrencia.main\NWMS_WEB.MVC_4_BS\bin\zh-CHT\Microsoft.ReportViewer.WinForms.resources.dll
 C:\RepositórioOcorrencia\Ocorrencia.main\NWMS_WEB.MVC_4_BS\obj\Release\NWORKFLOW_WEB.MVC_4_BS.csproj.AssemblyReference.cache
 C:\RepositórioOcorrencia\Ocorrencia.main\NWMS_WEB.MVC_4_BS\obj\Release\NWORKFLOW_WEB.MVC_4_BS.csproj.CoreCompileInputs.cache
-C:\RepositórioOcorrencia\Ocorrencia.main\NWMS_WEB.MVC_4_BS\obj\Release\NWORKFLOW_WEB.MVC_4_BS.csproj.CopyComplete
 C:\RepositórioOcorrencia\Ocorrencia.main\NWMS_WEB.MVC_4_BS\obj\Release\NWORKFLOW_WEB.MVC_4_BS.dll
 C:\RepositórioOcorrencia\Ocorrencia.main\NWMS_WEB.MVC_4_BS\obj\Release\NWORKFLOW_WEB.MVC_4_BS.pdb
