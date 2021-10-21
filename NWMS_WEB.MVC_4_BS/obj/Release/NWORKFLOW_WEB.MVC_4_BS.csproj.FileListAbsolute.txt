@@ -503,3 +503,4 @@ C:\RepositórioOcorrencia\Ocorrencia.main\NWMS_WEB.MVC_4_BS\obj\Release\NWORKFLO
 C:\RepositórioOcorrencia\Ocorrencia.main\NWMS_WEB.MVC_4_BS\obj\Release\NWORKFLOW_WEB.MVC_4_BS.csproj.CoreCompileInputs.cache
 C:\RepositórioOcorrencia\Ocorrencia.main\NWMS_WEB.MVC_4_BS\obj\Release\NWORKFLOW_WEB.MVC_4_BS.dll
 C:\RepositórioOcorrencia\Ocorrencia.main\NWMS_WEB.MVC_4_BS\obj\Release\NWORKFLOW_WEB.MVC_4_BS.pdb
+C:\RepositórioOcorrencia\Ocorrencia.main\NWMS_WEB.MVC_4_BS\obj\Release\NWORKFLOW_WEB.MVC_4_BS.csproj.CopyComplete
