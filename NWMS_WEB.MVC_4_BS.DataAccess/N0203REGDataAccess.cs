@@ -662,7 +662,7 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
             try
             {
                 string sql = @"SELECT DISTINCT  REG.NUMREG,
-                                                (SELECT WM_CONCAT(WIPV.NUMNFV)
+                                                (SELECT LISTAGG(WIPV.NUMNFV, ',')
                                                 FROM NWMS_PRODUCAO.N0203IPV WIPV
                                                 WHERE WIPV.NUMREG = REG.NUMREG) NUMNFV,
                                                 ROUND(SUM((IPV.VLRLIQ / IPV.QTDFAT) * IPV.QTDDEV),
@@ -3766,7 +3766,7 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
         {
             try
             {
-                string sql = "SELECT WM_CONCAT(NUMREG) NUMREG" +
+                string sql = "SELECT LISTAGG(NUMREG, ',') NUMREG" +
                              "  FROM NWMS_PRODUCAO.N0203REG REG1" +
                              " WHERE REG1.PLACA IN (SELECT REG.PLACA" +
                              "  FROM NWMS_PRODUCAO.N0203REG REG" +
