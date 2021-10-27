@@ -2083,7 +2083,7 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
                              "AND REG.NUMREG IN(" +
                              "SELECT TRA.NUMREG FROM N0203TRA TRA " +
                             "WHERE TRA.DESTRA = 'REGISTRO DE OCORRENCIA REPROVADO' " +
-                            " AND TRA.DATTRA < " + "'" + data.ToString() + "'" +
+                            " AND TO_CHAR(TO_DATE(TRA.DATTRA)) < " + "'" + data.ToString() + "'" +
                             ")";
 
                 OracleConnection conn = new OracleConnection(OracleStringConnection);
@@ -2105,7 +2105,7 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
                 sql = "SELECT REG.NUMREG AS REGISTRO FROM N0203REG REG " +
                       "WHERE REG.SITREG = 1 " +
                       "AND REG.USUGER = " + codigoUsuario +
-                      " AND REG.DATGER < " + "'" + data1.ToString() + "' " +
+                      " AND TO_CHAR(TO_DATE(REG.DATGER)) < " + "'" + data1.ToString() + "' " +
                       " AND REG.NUMREG NOT IN(" +
                       "SELECT TRA.NUMREG FROM N0203TRA TRA WHERE TRA.DESTRA = 'REGISTRO DE OCORRENCIA REPROVADO' " +
                       ")";
