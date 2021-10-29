@@ -3,7 +3,7 @@
   <PropertyGroup>
     <ProjectView>ProjectFiles</ProjectView>
     <NameOfLastUsedPublishProfile>C:\RepositórioOcorrencia\Ocorrencia.Novo\NWMS_WEB.MVC_4_BS\Properties\PublishProfiles\FolderProfile.pubxml</NameOfLastUsedPublishProfile>
-    <LastActiveSolutionConfig>Debug|Any CPU</LastActiveSolutionConfig>
+    <LastActiveSolutionConfig>Release|Any CPU</LastActiveSolutionConfig>
     <UseIISExpress>true</UseIISExpress>
     <Use64BitIISExpress />
     <IISExpressSSLPort />
