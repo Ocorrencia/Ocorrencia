@@ -15,19 +15,33 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.Model
             EmailDestino = EmailDestino.Replace("diogo.melo@nutriplan.com.br", "sistema02@nutriplan.com.br");
             CopiarEmails = CopiarEmails.Replace("nei.junior@nutriplan.com.br", "sistema02@nutriplan.com.br");
             EmailDestino = EmailDestino.Replace("nei.junior@nutriplan.com.br", "sistema02@nutriplan.com.br");
+
             
             
             if (!string.IsNullOrEmpty(CopiarEmails))
             {
                 var emails = CopiarEmails.Split('&');
+                
+                
                 for (int i = 0; i < emails.Length - 1; i++)
                 {
-                    MailAddress copy = new MailAddress(emails[i]);
-                    objEmail.CC.Add(emails[i]);
+                    if (emails[i] != null && emails[i] !="")
+                    {
+                        MailAddress copy = new MailAddress(emails[i]);
+                        objEmail.CC.Add(emails[i]);
+                    }
+                    else
+                    {
+                        MailAddress copy = new MailAddress("sistema01@nutriplan.com.br");
+                        objEmail.CC.Add("sistema01@nutriplan.com.br");
+
+                    }
                 }
             }
             else
             {
+                MailAddress copy = new MailAddress("sistema01@nutriplan.com.br");
+                objEmail.CC.Add("sistema01@nutriplan.com.br");
 
             }
 
