@@ -38,7 +38,7 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
                     E140IPVDataAccess E140IPVDataAccess = new E140IPVDataAccess();
                     USU_T135LANDataAccess USU_T135LANDataAccess = new USU_T135LANDataAccess();
 
-                    //var padrao = contexto.N0204PPU.Where(c => !c.CODUSU.HasValue).FirstOrDefault();
+                   //var padrao = contexto.N0204PPU.Where(c => !c.CODUSU.HasValue).FirstOrDefault();
 
                     //  var exclusivo = contexto.N0204PPU.Where(c => c.CODUSU == N0203REG.USUGER).FirstOrDefault();
 
@@ -101,24 +101,31 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
                             N0203REG.N0203IPV.Where(c => c.CODFIL == item.CODFIL && c.NUMNFV == item.NUMNFV).ToList().ForEach(c => c.DATEMI = datTime);
                         }
 
+                        
                         DateTime dataatual = DateTime.Now;
 
                         int totalDias = (dataatual.Subtract(DateTime.Parse(DataAmissao))).Days;
+                        
+                        //ar padrao = contexto.N0204PPU.Where(c => !c.CODUSU.HasValue).FirstOrDefault();
+
 
                         var usuariopadrao = contexto.N0204PPU.Where(c => !c.CODUSU.HasValue).FirstOrDefault();
-                        var usuarioExclusivo = contexto.N0204PPU.Where(c => c.CODUSU == original.USUGER).FirstOrDefault();
 
-                        if ((original.TIPATE == 1 && totalDias > usuariopadrao.QTDDEV) || (original.TIPATE == 2 && totalDias > usuariopadrao.QTDTRC))
+                        if ( usuariopadrao != null)
                         {
-                            if (((usuariopadrao.QTDDEV < usuarioExclusivo.QTDDEV) || (usuariopadrao.QTDTRC < usuarioExclusivo.QTDTRC)) && usuarioExclusivo.USUDEP != 0)
+                            var usuarioExclusivo = contexto.N0204PPU.Where(c => c.CODUSU == original.USUGER).FirstOrDefault();
+                            if (usuarioExclusivo != null) 
                             {
-                                if (original.SITREG == (int)Enums.SituacaoRegistroOcorrencia.Fechado)
-                                {
-                                    original.SITREG = (int)Enums.SituacaoRegistroOcorrencia.Aprovar;
+                                if ((original.TIPATE == 1 && totalDias > usuariopadrao.QTDDEV) || (original.TIPATE == 2 && totalDias > usuariopadrao.QTDTRC)) {
+                                    if (((usuariopadrao.QTDDEV < usuarioExclusivo.QTDDEV) || (usuariopadrao.QTDTRC < usuarioExclusivo.QTDTRC)) && usuarioExclusivo.USUDEP != 0) {
+                                        if (original.SITREG == (int)Enums.SituacaoRegistroOcorrencia.Fechado) {
+                                            original.SITREG = (int)Enums.SituacaoRegistroOcorrencia.Aprovar;
+                                        }
+                                    }
                                 }
+                            
                             }
                         }
-
 
                         bool valida = false;
                         foreach (N0203ANX item in N0203REG.N0203ANX)
@@ -2080,7 +2087,7 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
                 string sql = "SELECT REG.NUMREG AS REGISTRO FROM N0203REG REG " +
                              "WHERE REG.SITREG = 1 " +
                              "AND REG.USUGER = " + codigoUsuario +
-                             "AND REG.NUMREG IN(" +
+                             " AND REG.NUMREG IN(" +
                              "SELECT TRA.NUMREG FROM N0203TRA TRA " +
                             "WHERE TRA.DESTRA = 'REGISTRO DE OCORRENCIA REPROVADO' " +
                             " AND TO_CHAR(TO_DATE(TRA.DATTRA)) < " + "'" + data.ToString() + "'" +
@@ -2092,14 +2099,22 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
                     CommandType = CommandType.Text
                 };
                 conn.Open();
+
+                //OracleDataReader dr = new OracleCommand(sql, conn);
                 OracleDataReader dr = cmd.ExecuteReader();
 
-                while (dr.Read())
-                {
-                    protocolosAbertos += dr["REGISTRO"].ToString() + ",";
-                }
+                
 
-                dr.Close();
+                if (dr != null) 
+                {
+                    
+                    
+                    while (dr.Read()) {
+                        protocolosAbertos += dr["REGISTRO"].ToString() + ",";
+                    }
+
+                    dr.Close();
+                }
                 conn.Close();
 
                 sql = "SELECT REG.NUMREG AS REGISTRO FROM N0203REG REG " +

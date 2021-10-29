@@ -369,3 +369,4 @@ C:\RepositórioOcorrencia\Ocorrencia.Novo\NWMS_WEB.MVC_4_BS.DataAccess\obj\Relea
 C:\RepositórioOcorrencia\Ocorrencia.Novo\NWMS_WEB.MVC_4_BS.DataAccess\obj\Release\NUTRIPLAN_WEB.MVC_4_BS.DataAccess.csproj.CoreCompileInputs.cache
 C:\RepositórioOcorrencia\Ocorrencia.Novo\NWMS_WEB.MVC_4_BS.DataAccess\obj\Release\NUTRIPLAN_WEB.MVC_4_BS.DataAccess.dll
 C:\RepositórioOcorrencia\Ocorrencia.Novo\NWMS_WEB.MVC_4_BS.DataAccess\obj\Release\NUTRIPLAN_WEB.MVC_4_BS.DataAccess.pdb
+C:\RepositórioOcorrencia\Ocorrencia.Novo\NWMS_WEB.MVC_4_BS.DataAccess\obj\Release\NUTRIPLAN_WEB.MVC_4_BS.DataAccess.csproj.CopyComplete
