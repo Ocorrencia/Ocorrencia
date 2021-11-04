@@ -215,7 +215,7 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
                               "   INNER JOIN NWMS_PRODUCAO.N0203AGR AGR1" +
                               "      ON REG.NUMREG = AGR1.NUMREG" +
                               "  WHERE CLI.CODCLI = " + codigoCliente + "";
-                sql += filtro == 1 ? "GROUP BY AGR1.AGRREG, AGR1.STAGR" : "AND AGR1.STAGR = 'N' GROUP BY AGR1.AGRREG, AGR1.STAGR";
+                sql += filtro == 1 ? " GROUP BY AGR1.AGRREG, AGR1.STAGR" : " AND AGR1.STAGR = 'N' GROUP BY AGR1.AGRREG, AGR1.STAGR";
 
                 OracleConnection conn = new OracleConnection(OracleStringConnection);
                 OracleCommand cmd = new OracleCommand(sql, conn)
@@ -474,7 +474,7 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
         public string OrigemOcorrencia(long NumReg)
         {
             string origem = "";
-            string sql = "SELECT ORIOCO FROM N0203REG WHERE NUMREG = " + NumReg;
+            string sql = " SELECT ORIOCO FROM N0203REG WHERE NUMREG = " + NumReg;
             OracleConnection conn = new OracleConnection(OracleStringConnection);
             OracleCommand cmd = new OracleCommand(sql, conn)
             {
@@ -493,7 +493,7 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
 
         public int PegaTransportadoraOcorrencia(long NumReg)
         {
-            string sql = "SELECT TRACLI FROM N0203REG WHERE NUMREG = " + NumReg;
+            string sql = " SELECT TRACLI FROM N0203REG WHERE NUMREG = " + NumReg;
 
             OracleConnection conn = new OracleConnection(OracleStringConnection);
             OracleCommand cmd = new OracleCommand(sql, conn)
@@ -512,7 +512,7 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
 
         public string GravarTransacaoIndenizado(long NumReg, long Usuario)
         {
-            string sql = "SELECT MAX(SEQTRA) AS SEQTRA FROM N0203TRA WHERE NUMREG = " + NumReg;
+            string sql = " SELECT MAX(SEQTRA) AS SEQTRA FROM N0203TRA WHERE NUMREG = " + NumReg;
 
             OracleConnection conn = new OracleConnection(OracleStringConnection);
             OracleCommand cmd = new OracleCommand(sql, conn)
@@ -532,6 +532,7 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
             sequencia += 1;
 
             DateTime DataAtual = DateTime.Now;
+             
 
             sql = "INSERT INTO N0203TRA VALUES(" + NumReg + "," + sequencia + ", 'REGISTO DE OCORRENCIA INDENIZADO', " + Usuario + ",'" + DataAtual + "', '', '')";
 

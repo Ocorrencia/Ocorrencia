@@ -95,6 +95,8 @@ namespace NWORKFLOW_WEB.MVC_4_BS.Controllers
                 Assunto = "REGISTRO DE TROCA - ERRO DE INTEGRAÇÃO SAPIENS";
                 tipoAtd = "Troca";
             }
+
+            
             var emailCabecalho = Attributes.KeyValueAttribute.GetFirst("Descricao", Enums.Email.Cabecalho).GetValue<string>();
             var emailCorpo = Attributes.KeyValueAttribute.GetFirst("Descricao", Enums.Email.Corpo).GetValue<string>();
             var emailRodape = Attributes.KeyValueAttribute.GetFirst("Descricao", Enums.Email.Rodape).GetValue<string>();

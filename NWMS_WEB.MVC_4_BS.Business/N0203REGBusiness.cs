@@ -834,7 +834,7 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.Business
             {
                 throw ex;
             }
-        }
+         }
 
         public List<RelatorioGraficoOcorrencia> RelatorioGraficoOcorrencias(string mes, string ano, string indicador)
         {
