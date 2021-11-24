@@ -349,7 +349,7 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.Model
 
         public enum ActiveDirectory
         {
-            [Attributes.KeyValue("Descricao", "LDAP://srvdc01.nutriplan.com.br/OU=nutriplan,DC=nutriplan,DC=com,DC=br")]
+            [Attributes.KeyValue("Descricao", "LDAP://srv-dc01.nutriplan.com.br/OU=nutriplan,DC=nutriplan,DC=com,DC=br")]
             Endereco = 1,
 
             [Attributes.KeyValue("Descricao", "WEB")]
