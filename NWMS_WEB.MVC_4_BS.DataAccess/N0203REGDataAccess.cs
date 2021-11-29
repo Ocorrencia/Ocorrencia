@@ -2642,6 +2642,7 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
                         dr["SITREG"].ToString() == "9" ? "Conferido" :
                         dr["SITREG"].ToString() == "10" ? "Faturado" :
                         dr["SITREG"].ToString() == "11" ? "Indenizado" :
+                        dr["SITREG"].ToString() == "12" ? "Auditoria Controladoria" :
                         dr["SITREG"].ToString() == "7" ? "Cancelado" : "";
                     itemProtocolo.valorTotal = dr["VALORLIQUIDO"].ToString();
                     valorTotal += Convert.ToDecimal(dr["VALORLIQUIDO"]); //aqui
@@ -2830,6 +2831,7 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
                         dr["SITREG"].ToString() == "9" ? "Conferido" :
                         dr["SITREG"].ToString() == "10" ? "Faturado" :
                         dr["SITREG"].ToString() == "11" ? "Indenizado" :
+                         dr["SITREG"].ToString() == "12" ? "Auditoria Controladoria" :
                         dr["SITREG"].ToString() == "7" ? "Cancelado" : "";
                     itemProtocolo.valorTotal = dr["VALORLIQUIDO"].ToString();
                     valorTotal += Convert.ToDecimal(dr["VALORLIQUIDO"]); //aqui
@@ -3225,6 +3227,7 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
                        dr["SITREG"].ToString() == "9" ? "Conferido" :
                        dr["SITREG"].ToString() == "10" ? "Faturado" :
                        dr["SITREG"].ToString() == "11" ? "Indenizado" :
+                        dr["SITREG"].ToString() == "12" ? "Auditoria Controladoria" :
                        dr["SITREG"].ToString() == "7" ? "Cancelado" : "",
                         dataGeracao = dr["DATGER"].ToString(),
                         embarque = dr["ANALISE"].ToString()
@@ -3381,6 +3384,7 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
                         dr["SITREG"].ToString() == "9" ? "Conferido" :
                         dr["SITREG"].ToString() == "10" ? "Faturado" :
                         dr["SITREG"].ToString() == "11" ? "Indenizado" :
+                        dr["SITREG"].ToString() == "12" ? "Auditoria Controladoria" :
                         dr["SITREG"].ToString() == "7" ? "Cancelado" : "",
                         dataGeracao = dr["DATGER"].ToString(),
                         embarque = dr["NUMANE"].ToString(),
@@ -5860,7 +5864,7 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
                             itens.DescSituacaoRegistro = "Indenizado";
                             break;
                         case "12":
-                            itens.DescSituacaoRegistro = "Aprovar";
+                            itens.DescSituacaoRegistro = "Auditoria Controladoria";
                             break;
                     }
 
@@ -6099,7 +6103,7 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
                         itens.DescSituacaoRegistro = "Indenizado";
                         break;
                     case "12":
-                        itens.DescSituacaoRegistro = "Aprovar";
+                        itens.DescSituacaoRegistro = "Auditoria Controladoria";
                         break;
                 }
 
@@ -6967,7 +6971,7 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
                             itens.DescSituacaoRegistro = "Indenizado";
                             break;
                         case "12":
-                            itens.DescSituacaoRegistro = "Aprovar";
+                            itens.DescSituacaoRegistro = "Auditoria Controladoria";
                             break;
                     }
 

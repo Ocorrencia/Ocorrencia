@@ -406,7 +406,8 @@
                                     new SelectListItem { Value = "10" , Text = "Faturado"},
                                     new SelectListItem { Value = "11" , Text = "Indenizado"},
                                     new SelectListItem { Value = "7" , Text = "Cancelado" },
-                                    new SelectListItem { Value = "12", Text = "Auditoria Controladoria" }}, new { @class = "form-control input-sm", @id = "campoSituacao" })
+                                    new SelectListItem { Value = "12", Text = "Auditoria Controladoria" }}, 
+                                    new { @class = "form-control input-sm", @id = "campoSituacao" })
                                 </div>
                                 @Html.ValidationMessageFor(m => m.campoSituacao)
                             </div>
