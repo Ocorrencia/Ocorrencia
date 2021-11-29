@@ -526,6 +526,7 @@
       <SubType>Designer</SubType>
     </None>
     <None Include="Properties\PublishProfiles\cleverson.pubxml" />
+    <None Include="Properties\PublishProfiles\IISProfile.pubxml" />
     <None Include="Properties\PublishProfiles\Profile.pubxml" />
     <Content Include="Scripts\dataTables.editor.js" />
     <Content Include="Scripts\dataTables.editor.min.js" />
