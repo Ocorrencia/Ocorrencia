@@ -479,7 +479,7 @@ namespace NWORKFLOW_WEB.MVC_4_BS.Controllers
                 int quantidadeEmAtraso = 0;
                 N0203REGBusiness N0203REGBusines = new N0203REGBusiness();
                 List<Ocorrencia> lista = new List<Ocorrencia>();
-                lista = N0203REGBusines.CarregarProtocolosForamAprovadosEsperandoFaturamento("", "", "", "", "", "", "", "4,6,8,9,11", "", Convert.ToInt64(this.CodigoUsuarioLogado));
+                lista = N0203REGBusines.CarregarProtocolosForamAprovadosEsperandoFaturamento("", "", "", "", "", "", "", "4,6,8,9,11,12", "", Convert.ToInt64(this.CodigoUsuarioLogado));
                 DateTime dateForButton = DateTime.Now.AddDays(-30);
                 foreach (var item in lista)
                 {
