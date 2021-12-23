@@ -42,6 +42,11 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
                     string msg = "Ocorrência: " + ocorrencia.ToString() + " Mensagem Retorno: " + retorno.mensagemRetorno; 
 
                     mensagemRetorno = retorno.mensagemRetorno;
+
+                    if (mensagemRetorno == "Cliente: 55046: Informe o código do representante.")
+                    {
+                        mensagemRetorno = "";
+                    }
                     if (mensagemRetorno == "OK") { 
                         reg.GravarTransacaoIndenizado(ocorrencia, Usuario);
                     }
