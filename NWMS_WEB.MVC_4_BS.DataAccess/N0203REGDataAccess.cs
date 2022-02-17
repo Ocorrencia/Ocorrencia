@@ -6801,8 +6801,6 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
                                        REG.OBSREG,
                                        ATD.CODATD,
                                        ATD.DESCATD,
-                                       ATDIPV.CODATD AS IPVCODATD,
-                                       ATDIPV.DESCATD AS IPVDESCATD,
                                        MOT.NOMMOT,
                                        MOT.CODMOT,
                                        NOMEULT.NOMCOM,
@@ -6856,14 +6854,11 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
                                  INNER JOIN NWMS_PRODUCAO.N0204ATD ATD
                                     ON (REG.TIPATE = ATD.CODATD)
 
-                                 INNER JOIN NWMS_PRODUCAO.N0204ATD ATDIPV
-                                    ON (IPV.CODMOT = ATDIPV.CODATD)
-
                                  INNER JOIN SAPIENS.E085CLI CLI
                                     ON (REG.CODCLI = CLI.CODCLI)
 
                                  INNER JOIN NWMS_PRODUCAO.N0012MOT MOT
-                                    ON (REG.CODMOT = MOT.CODMOT)
+                                    ON (IPV.CODMOT = MOT.CODMOT)
 
                                  INNER JOIN SAPIENS.E135PFA PFA
                                     ON IPV.CODEMP = PFA.CODEMP
