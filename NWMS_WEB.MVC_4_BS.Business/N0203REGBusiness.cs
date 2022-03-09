@@ -1254,7 +1254,7 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.Business
                                         select new
                                         {
                                             ValorBruto = grupo.Sum(v => v.QTDDEV * v.PREUNI),
-                                            //ValorIpi = grupo.Sum(v => (v.QTDDEV * v.PREUNI) * float.Parse(((v.PERIPI / 100).ToString()))),
+                                            //.ValorIpi = grupo.Sum(v => (v.QTDDEV * v.PREUNI) * float.Parse(((v.PERIPI / 100).ToString()))),
                                             ValorIpi = grupo.Sum(v => v.QTDDEV * (v.VLRIPI / v.QTDFAT)),
                                             //ValorDev = grupo.Sum(v => (v.QTDDEV * v.PREUNI) + (v.QTDDEV * v.PREUNI) * float.Parse(((v.PERIPI / 100).ToString())))
                                             ValorDev = grupo.Sum(v => decimal.Parse((v.QTDDEV * v.PREUNI).ToString()) + (v.QTDDEV * (v.VLRIPI / v.QTDFAT)) + (v.QTDDEV * (v.VLRST / v.QTDFAT)))

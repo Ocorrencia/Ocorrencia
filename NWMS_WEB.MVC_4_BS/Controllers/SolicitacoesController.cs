@@ -230,7 +230,7 @@ namespace NWORKFLOW_WEB.MVC_4_BS.Controllers
                                          CodFilial = grupo.Key.CODFIL,
                                          NumeroNota = grupo.Key.NUMNFV,
                                          ValorBruto = grupo.Sum(v => v.a.QTDDEV * v.a.PREUNI),
-                                         ValorIpi = grupo.Sum(v => v.a.QTDDEV * (v.a.VLRIPI / v.a.QTDFAT)),
+                                         ValorIpi = grupo.Sum(v =>v.a.QTDDEV * (v.a.VLRIPI / v.a.QTDFAT)),
                                          ValorDev = grupo.Sum(v => decimal.Parse((v.a.QTDDEV * v.a.PREUNI).ToString()) + (v.a.QTDDEV * (v.a.VLRIPI / v.a.QTDFAT)) + (v.a.QTDDEV * (v.a.VLRST / v.a.QTDFAT)))
                                          //ValorBruto = decimal.Round(decimal.Parse(grupo.Sum(v => v.a.QTDDEV * v.a.PREUNI).ToString()), 2, MidpointRounding.AwayFromZero),
                                          //ValorIpi = decimal.Round(decimal.Parse(grupo.Sum(v => (v.a.QTDDEV * v.a.PREUNI) * float.Parse(((v.a.PERIPI / 100).ToString()))).ToString()), 2, MidpointRounding.AwayFromZero),

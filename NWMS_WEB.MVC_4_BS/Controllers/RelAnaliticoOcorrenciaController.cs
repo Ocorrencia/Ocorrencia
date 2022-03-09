@@ -48,7 +48,7 @@ namespace NWORKFLOW_WEB.MVC_4_BS.Controllers
                 var N0203REGBusiness = new N0203REGBusiness();
                 var listaRegistros = N0203REGBusiness.ImprimirRelatorioAnaliticoRegistroOcorrencia(campoNumeroRegistro, campoFilial, campoEmbarque, campoPlaca, campoPeriodoInicial, campoPeriodoFinal, campoCliente, campoSituacao, campoDataFaturamento, campoNotaFiscal);
 
-
+                
                 if (listaRegistros.Count == 0)
                 {
                     return this.Json(new { msgRetorno = "Vazio", listaVazia = true }, JsonRequestBehavior.AllowGet);
@@ -57,7 +57,21 @@ namespace NWORKFLOW_WEB.MVC_4_BS.Controllers
                 DateTime dataEmissao = DateTime.Now;
                 listaRegistros[0].DATAEMISSAO = dataEmissao.ToString();
                 listaRegistros[0].USUIMPR = this.NomeUsuarioLogado;
+                
+                
+                
+                //Recalcula o valor do IPI na apresentação do relatorio.
+                var qtddevolvida = listaRegistros[0].QtdeDevolucao;
+                var perIpi = listaRegistros[0].PercIpi;
+                var precounitario = listaRegistros[0].PrecoUnitario;
+                var TotQtdDev = ((qtddevolvida * (decimal.Parse(precounitario))));
+                var TotPerIpi = (decimal.Parse(perIpi) / 100);
+                var ValorOriginalIpi = TotQtdDev * TotPerIpi;
 
+
+
+                listaRegistros[0].ValorIpi = decimal.Round(ValorOriginalIpi,2);
+                listaRegistros[0].ValorIpiS = ValorOriginalIpi.ToString("##.00");
                 LocalReport report = new LocalReport
                 {
                     ReportPath = Server.MapPath("~/Reports/RelatorioAnalitico.rdlc")
@@ -65,8 +79,7 @@ namespace NWORKFLOW_WEB.MVC_4_BS.Controllers
 
                 var reportRelatorio = new ReportDataSource("RelatorioAnaliticoDataSet", listaRegistros);
                 report.Refresh();
-                report.DataSources.Add(reportRelatorio);
-
+                report.DataSources.Add(reportRelatorio); 
                 string reportType = "PDF";
                 byte[] reportBytes;
 
@@ -91,7 +104,7 @@ namespace NWORKFLOW_WEB.MVC_4_BS.Controllers
                     out Warning[] warnings);
 
                 var base64EncodedPDF = System.Convert.ToBase64String(reportBytes);
-            //    return this.Json("data:application/pdf;base64, " + base64EncodedPDF);
+            // return this.Json("data:application/pdf;base64, " + base64EncodedPDF);
                 return this.Json("data:application/pdf;base64, " + base64EncodedPDF, JsonRequestBehavior.AllowGet);
             }
             catch (Exception ex)
