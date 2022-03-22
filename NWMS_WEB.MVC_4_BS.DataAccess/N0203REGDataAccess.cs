@@ -5895,8 +5895,12 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
                     itens.QtdeDevolucao = Convert.ToInt64(dr["QTDDEV"]);
                     itens.PercDesconto = dr["PEROFE"].ToString();
                     itens.PercIpi = dr["PERIPI"].ToString();
+                    /*Alterado a conversão em 23/03/2022
+                     decimal PercIpiDecimal = Convert.ToInt64(dr["PERIPI"]);
+                     Josimesio Rossini - Ticket#6910760 — Calculo incorreto IPI - Ocorrência nr. 21135
 
-                    decimal PercIpiDecimal = Convert.ToInt64(dr["PERIPI"]);
+                     */
+                    decimal PercIpiDecimal = Convert.ToDecimal(dr["PERIPI"]);
 
                     itens.ValorBruto = decimal.Parse((itens.QtdeDevolucao * Convert.ToDecimal(itens.PrecoUnitario)).ToString());
                     itens.ValorBrutoS = itens.ValorBruto.ToString("###,###,##0.00");
