@@ -603,6 +603,5 @@ C:\RepositórioOcorrencia\OcorrMAin\NWMS_WEB.MVC_4_BS.DataAccess\bin\Release\zh-
 C:\RepositórioOcorrencia\OcorrMAin\NWMS_WEB.MVC_4_BS.DataAccess\bin\Release\zh-CHT\Microsoft.ReportViewer.WinForms.resources.dll
 C:\RepositórioOcorrencia\OcorrMAin\NWMS_WEB.MVC_4_BS.DataAccess\obj\Release\NUTRIPLAN_WEB.MVC_4_BS.DataAccess.csproj.AssemblyReference.cache
 C:\RepositórioOcorrencia\OcorrMAin\NWMS_WEB.MVC_4_BS.DataAccess\obj\Release\NUTRIPLAN_WEB.MVC_4_BS.DataAccess.csproj.CoreCompileInputs.cache
-C:\RepositórioOcorrencia\OcorrMAin\NWMS_WEB.MVC_4_BS.DataAccess\obj\Release\NUTRIPLAN_WEB.MVC_4_BS.DataAccess.csproj.CopyComplete
 C:\RepositórioOcorrencia\OcorrMAin\NWMS_WEB.MVC_4_BS.DataAccess\obj\Release\NUTRIPLAN_WEB.MVC_4_BS.DataAccess.dll
 C:\RepositórioOcorrencia\OcorrMAin\NWMS_WEB.MVC_4_BS.DataAccess\obj\Release\NUTRIPLAN_WEB.MVC_4_BS.DataAccess.pdb
