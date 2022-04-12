@@ -5902,7 +5902,7 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
                      */
                     decimal PercIpiDecimal = Convert.ToDecimal(dr["PERIPI"]);
 
-                    itens.ValorBruto = decimal.Parse((itens.QtdeDevolucao * Convert.ToDecimal(itens.PrecoUnitario)).ToString());
+                    itens.ValorBruto = decimal.Parse((itens.QtdeDevolucao * Convert.ToDecimal(itens.PrecoUnitario)).ToString()) + Convert.ToDecimal(dr["VLRFRE"]);
                     itens.ValorBrutoS = itens.ValorBruto.ToString("###,###,##0.00");
                     itens.ValorIpi = Convert.ToDecimal(dr["VLRIPI"]);
                     itens.ValorSt = Convert.ToInt64(dr["VLRST"]);
@@ -5912,13 +5912,14 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
                     itens.Filial = 1;
                     itens.valorFrete = Convert.ToDecimal(dr["VLRFRE"]);
 
-                    itens.ValorIpi = (itens.ValorBruto * PercIpiDecimal) / 100; //itens.QtdeDevolucao * (itens.ValorIpi / itens.QtdeFat);
+                    itens.ValorIpi = (itens.ValorBruto * PercIpiDecimal) / 100; 
+                    //itens.QtdeDevolucao * (itens.ValorIpi / itens.QtdeFat);
                     itens.ValorIpiS = itens.ValorIpi.ToString("###,###,##0.00");
                     itens.ValorSt = itens.QtdeDevolucao * (itens.ValorSt / itens.QtdeFat);
                     itens.ValorStS = itens.ValorSt.ToString("###,###,##0.00");
                     itens.Suframa = itens.QtdeDevolucao * (itens.Suframa / itens.QtdeFat);
                     itens.SuframaS = itens.Suframa.ToString("###,###,##0.##");
-                    itens.ValorLiquido = (itens.QtdeDevolucao * decimal.Parse(itens.PrecoUnitario.ToString())) + itens.ValorIpi + itens.ValorSt + itens.valorFrete - itens.Suframa;
+                    itens.ValorLiquido = (itens.QtdeDevolucao * decimal.Parse(itens.PrecoUnitario.ToString())) + itens.ValorIpi + itens.ValorSt + itens.valorFrete - itens.Suframa ;
                     itens.ValorLiquidoS = itens.ValorLiquido.ToString("###,###,##0.00");
 
                     SomaTotalValorLiquido += itens.ValorLiquido;

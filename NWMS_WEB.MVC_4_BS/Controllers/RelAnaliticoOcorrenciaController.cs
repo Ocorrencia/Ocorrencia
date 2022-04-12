@@ -67,11 +67,17 @@ namespace NWORKFLOW_WEB.MVC_4_BS.Controllers
                 var TotQtdDev = ((qtddevolvida * (decimal.Parse(precounitario))));
                 var TotPerIpi = (decimal.Parse(perIpi) / 100);
                 var ValorOriginalIpi = TotQtdDev * TotPerIpi;
-
-
+                
+                
+                
+                
+                
 
                 listaRegistros[0].ValorIpi = decimal.Round(ValorOriginalIpi,2);
                 listaRegistros[0].ValorIpiS = ValorOriginalIpi.ToString("##.00");
+                
+                
+                
                 LocalReport report = new LocalReport
                 {
                     ReportPath = Server.MapPath("~/Reports/RelatorioAnalitico.rdlc")
