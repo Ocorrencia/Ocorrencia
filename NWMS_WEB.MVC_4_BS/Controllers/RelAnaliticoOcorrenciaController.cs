@@ -60,21 +60,21 @@ namespace NWORKFLOW_WEB.MVC_4_BS.Controllers
                 
                 
                 
-                //Recalcula o valor do IPI na apresentação do relatorio.
-                var qtddevolvida = listaRegistros[0].QtdeDevolucao;
-                var perIpi = listaRegistros[0].PercIpi;
-                var precounitario = listaRegistros[0].PrecoUnitario;
-                var TotQtdDev = ((qtddevolvida * (decimal.Parse(precounitario))));
-                var TotPerIpi = (decimal.Parse(perIpi) / 100);
-                var ValorOriginalIpi = TotQtdDev * TotPerIpi;
+               // Recalcula o valor do IPI na apresentação do relatorio.
+               // var qtddevolvida = listaRegistros[0].QtdeDevolucao;
+               // var perIpi = listaRegistros[0].PercIpi;
+               // var precounitario = listaRegistros[0].PrecoUnitario;
+               // var TotQtdDev = ((qtddevolvida * (decimal.Parse(precounitario))));
+               // var TotPerIpi = (decimal.Parse(perIpi) / 100);
+               // var ValorOriginalIpi = TotQtdDev * TotPerIpi;
                 
                 
                 
                 
                 
 
-                listaRegistros[0].ValorIpi = decimal.Round(ValorOriginalIpi,2);
-                listaRegistros[0].ValorIpiS = ValorOriginalIpi.ToString("##.00");
+               // listaRegistros[0].ValorIpi = decimal.Round(ValorOriginalIpi,2);
+               //  listaRegistros[0].ValorIpiS = ValorOriginalIpi.ToString("##.00");
                 
                 
                 
