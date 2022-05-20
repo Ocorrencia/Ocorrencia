@@ -656,6 +656,7 @@ namespace NWORKFLOW_WEB.MVC_4_BS.Controllers
                 N0203REG.DATGER = dataAtual;
                 N0203REG.DATULT = dataAtual;
                 N0203REG.OBSREG = " ";
+                N0203REG.TRACLI = modelo.CodTra;
 
                 if (!string.IsNullOrEmpty(modelo.Observacoes))
                 {
