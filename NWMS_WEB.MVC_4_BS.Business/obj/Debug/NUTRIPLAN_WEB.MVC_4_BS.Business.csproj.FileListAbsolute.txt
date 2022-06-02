@@ -570,6 +570,7 @@ C:\RepositórioOcorrencia\OcorrenciaOficial\NWMS_WEB.MVC_4_BS.Business\bin\Debug
 C:\RepositórioOcorrencia\OcorrenciaOficial\NWMS_WEB.MVC_4_BS.Business\bin\Debug\NUTRIPLAN_WEB.MVC_4_BS.Business.dll
 C:\RepositórioOcorrencia\OcorrenciaOficial\NWMS_WEB.MVC_4_BS.Business\bin\Debug\NUTRIPLAN_WEB.MVC_4_BS.Business.pdb
 C:\RepositórioOcorrencia\OcorrenciaOficial\NWMS_WEB.MVC_4_BS.Business\bin\Debug\Microsoft.Bcl.AsyncInterfaces.dll
+C:\RepositórioOcorrencia\OcorrenciaOficial\NWMS_WEB.MVC_4_BS.Business\bin\Debug\Microsoft.ReportViewer.Common.dll
 C:\RepositórioOcorrencia\OcorrenciaOficial\NWMS_WEB.MVC_4_BS.Business\bin\Debug\Microsoft.ReportViewer.DataVisualization.dll
 C:\RepositórioOcorrencia\OcorrenciaOficial\NWMS_WEB.MVC_4_BS.Business\bin\Debug\Microsoft.ReportViewer.Design.dll
 C:\RepositórioOcorrencia\OcorrenciaOficial\NWMS_WEB.MVC_4_BS.Business\bin\Debug\Microsoft.ReportViewer.ProcessingObjectModel.dll

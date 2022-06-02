@@ -2430,6 +2430,11 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
                                 itemLista.DataUltimaAlteracao = itemDev.DATULT.ToString();
                                 itemLista.PercDesconto = itemDev.PEROFE.ToString();
                                 itemLista.PercIpi = itemDev.PERIPI.ToString();
+                                
+                                /*Josimesio Rossini - 6911285 - 18/05/2022*/
+                                itemLista.ValorFrete = decimal.Parse(itemDev.VLRFRE.ToString());
+                                itemLista.ValorFreteS = itemLista.ValorFrete.ToString("###,##0.00");
+                                
                                 itemLista.ValorBruto = decimal.Parse((itemDev.QTDDEV * itemDev.PREUNI).ToString());
                                 itemLista.ValorBrutoS = itemLista.ValorBruto.ToString("###,###,##0.00");
                                 itemLista.ValorIpi = itemDev.QTDDEV * (itemDev.VLRIPI / itemDev.QTDFAT);
@@ -2438,6 +2443,8 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
                                 itemLista.ValorStS = itemLista.ValorSt.ToString("###,###,##0.00");
                                 itemLista.ValorLiquido = (itemDev.QTDDEV * decimal.Parse(itemDev.PREUNI.ToString())) + itemLista.ValorIpi + itemLista.ValorSt;
                                 itemLista.ValorLiquidoS = itemLista.ValorLiquido.ToString("###,###,##0.00");
+
+
                                 SomaTotalValorLiquido += itemLista.ValorLiquido;
 
                                 countTotal += 1;
@@ -5911,16 +5918,22 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
                     itens.AnaliseEmbarque = dr["NUMANE"].ToString();
                     itens.Suframa = Convert.ToDecimal(dr["SUFRAMA"]);
                     itens.Filial = 1;
-                    itens.valorFrete = Convert.ToDecimal(dr["VLRFRE"]);
-                    itens.ValorIpi = ((itens.ValorBruto + itens.valorFrete) * PercIpiDecimal) / 100;
+
+                    /*Josimesio Rossini Ticket 6911285 - 18/05/2022 */
+                    itens.ValorFrete = Convert.ToDecimal(dr["VLRFRE"]);
+                    itens.ValorFreteS = itens.ValorFrete.ToString("###,##0.00");
+
+
+
+                    itens.ValorIpi = ((itens.ValorBruto + itens.ValorFrete) * PercIpiDecimal) / 100;
                     //itens.QtdeDevolucao * (itens.ValorIpi / itens.QtdeFat);
-                    itens.ValorIpiS = itens.ValorIpi.ToString("###,###,##0.00");
+                   itens.ValorIpiS = itens.ValorIpi.ToString("###,###,##0.00");
 
                     itens.ValorSt = itens.QtdeDevolucao * (itens.ValorSt / itens.QtdeFat);
                     itens.ValorStS = itens.ValorSt.ToString("###,###,##0.00");
                     itens.Suframa = itens.QtdeDevolucao * (itens.Suframa / itens.QtdeFat);
                     itens.SuframaS = itens.Suframa.ToString("###,###,##0.##");
-                    itens.ValorLiquido = (itens.QtdeDevolucao * decimal.Parse(itens.PrecoUnitario.ToString())) + itens.ValorIpi + itens.ValorSt + itens.valorFrete - itens.Suframa ;
+                    itens.ValorLiquido = (itens.QtdeDevolucao * decimal.Parse(itens.PrecoUnitario.ToString())) + itens.ValorIpi + itens.ValorSt + itens.ValorFrete - itens.Suframa ;
                     itens.ValorLiquidoS = itens.ValorLiquido.ToString("###,###,##0.00");
                     
 
@@ -7005,6 +7018,10 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.DataAccess
                     itens.QtdeDevolucao = Convert.ToInt64(dr["QTDDEV"]);
                     itens.PercDesconto = dr["PEROFE"].ToString();
                     itens.PercIpi = dr["PERIPI"].ToString();
+
+                    /*josimesio Rossini - Ticket 6911285 - 18/05/2022 */
+                    itens.ValorFrete = Convert.ToDecimal(dr["VLRFRE"]);
+                    itens.ValorFreteS = itens.ValorFrete.ToString("###,##0.00");
 
                     itens.ValorBruto = decimal.Parse((itens.QtdeDevolucao * Convert.ToDecimal(itens.PrecoUnitario)).ToString());
                     itens.ValorBrutoS = itens.ValorBruto.ToString("###,###,##0.00");

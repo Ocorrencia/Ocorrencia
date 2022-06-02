@@ -609,10 +609,10 @@
                         var valorLiquido = "R$ " + data.listaItens[i].ValorLiquido.toString().replace(".", ",");
                         var valorSt = "R$ " + data.listaItens[i].ValorSt.toString().replace(".", ",");
                         var dep = data.listaItens[i].Departamento;
-                        var valorFrete = "R$ " + data.listaItens[i].ValorFrete.toString().replace(".", ",");
+                        var ValorFrete = "R$ " + data.listaItens[i].ValorFrete.toString().replace(".", ",");
                         var saldo = data.listaItens[i].SaldoDevolucao;
                         var idLinha = i.toString();
-                        arrayRow[i] = new Array(selecionar, seq, tNS, codigo, descricao, qtdeFaturada, qtdeDevolucao, precoUnitario, motivoDevolucao, origemOcorrencia, perDescUni, percDescIpi, valorIpi, valorLiquido, valorSt, dep, valorFrete, idLinha, saldo);
+                        arrayRow[i] = new Array(selecionar, seq, tNS, codigo, descricao, qtdeFaturada, qtdeDevolucao, precoUnitario, motivoDevolucao, origemOcorrencia, perDescUni, percDescIpi, valorIpi, valorLiquido, valorSt, dep, ValorFrete, idLinha, saldo);
                     }
                     $('#TableItensNotasFiscaisSaida').dataTable().fnAddData(arrayRow);
                     $('#TableItensNotasFiscaisSaida').dataTable().fnPageChange('first');

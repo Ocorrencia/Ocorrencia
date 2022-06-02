@@ -27,8 +27,13 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.Model
         public decimal PERIPI { get; set; }
         public decimal VLRIPI { get; set; }
         public long NUMANE { get; set; }
-        public long? NUMANE_REL { get; set; }
+        public long NUMANE_REL { get; set; }
         public System.DateTime DATEMI { get; set; }
+        
+        /*Josimesio Rossini Ticket#6911285 - 18/05/2022
+          inserido o campo VLRFRE da tabela N0203IPV*/
+        public decimal VLRFRE { get; set;}
+
         public virtual N0005TNS N0005TNS { get; set; }
         public virtual N0006DER N0006DER { get; set; }
         public virtual N0203REG N0203REG { get; set; }

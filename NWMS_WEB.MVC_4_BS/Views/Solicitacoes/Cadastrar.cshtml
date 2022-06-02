@@ -7,7 +7,7 @@
     @Scripts.Render("~/bundles/maskMoney")
     <script type="text/javascript">
         var tipAtend = "";
-        valorFreteGlobal = 0.00;
+        ValorFreteGlobal = 0.00;
         $('#liFase2').click(function () {
             $("#NumNotaSugTextBox").rules("add", { required: false });
             var classe = document.getElementById('liFase1').className;
@@ -785,10 +785,10 @@
                         var valorSt = "R$ " + data.listaItens[i].ValorSt.toString().replace(".", ",");
                         var descontoSuframa = "R$ " + data.listaItens[i].DescontoSuframa.toString().replace(".", ",");
                         var dep = data.listaItens[i].Departamento;
-                        var valorFrete = "R$ " + data.listaItens[i].ValorFrete.toString().replace(".", ",");
+                        var ValorFrete = "R$ " + data.listaItens[i].ValorFrete.toString().replace(".", ",");
                         var saldo = data.listaItens[i].SaldoDevolucao;
                         var idLinha = i.toString();
-                        arrayRow[i] = new Array(selecionar, seq, tNS, codigo, descricao, qtdeFaturada, qtdeDevolucao, precoUnitario, motivoDevolucao, origemOcorrencia, perDescUni, percDescIpi, valorIpi, valorLiquido, valorSt, dep, valorFrete, descontoSuframa, idLinha, saldo);
+                        arrayRow[i] = new Array(selecionar, seq, tNS, codigo, descricao, qtdeFaturada, qtdeDevolucao, precoUnitario, motivoDevolucao, origemOcorrencia, perDescUni, percDescIpi, valorIpi, valorLiquido, valorSt, dep, ValorFrete, descontoSuframa, idLinha, saldo);
                     }
                     $('#TableItensNotasFiscaisSaida').dataTable().fnAddData(arrayRow);
                     $('#TableItensNotasFiscaisSaida').dataTable().fnPageChange('first');
@@ -916,13 +916,13 @@
             var valorLiquido = 0.00;
             var valorSt = 0.00;
             var descontoSuframa = 0.00;
-            var valorFrete = 0.00;
-            var valorFreteTotal = 0.00;
+            var ValorFrete = 0.00;
+            var ValorFreteTotal = 0.00;
 
             for (var i = 0; i < data.length; i++) {
                 qtdeFaturada = data[i][5];
                 qtdeDevolucao = data[i][6];
-                valorFrete = parseFloat(data[i][16].toString().replace("R$ ", "").replace(",", "."));
+                ValorFrete = parseFloat(data[i][16].toString().replace("R$ ", "").replace(",", "."));
                 qtdeDevolucao = parseInt(qtdeDevolucao);
                 qtdeTotal = qtdeTotal + qtdeDevolucao;
                 var precoUnitario = data[i][7].toString().replace("R$ ", "").replace(",", ".");
@@ -941,14 +941,14 @@
 
                 valorSt = valorSt + vlrStUnidade;
                 if (data.length == 1) {
-                    valorFreteTotal = (valorFrete / data[i][5]) * parseFloat(data[i][6].toString().replace("R$ ", "").replace(",", "."))
+                    ValorFreteTotal = (ValorFrete / data[i][5]) * parseFloat(data[i][6].toString().replace("R$ ", "").replace(",", "."))
                 } else {
-                    valorFreteTotal = valorFrete + valorFreteTotal;
+                    ValorFreteTotal = ValorFrete + ValorFreteTotal;
                 }
             }
 
-            valorLiquido = (parseFloat(valorBruto.toString()) + parseFloat(valorIpi.toString()) + parseFloat(valorSt.toString()) + parseFloat(valorFreteTotal.toString()) - parseFloat(descontoSuframa)).toFixed(2);
-            valorFreteGlobal = valorFreteTotal;
+            valorLiquido = (parseFloat(valorBruto.toString()) + parseFloat(valorIpi.toString()) + parseFloat(valorSt.toString()) + parseFloat(ValorFreteTotal.toString()) - parseFloat(descontoSuframa)).toFixed(2);
+            ValorFreteGlobal = ValorFreteTotal;
             valorIpi = parseFloat(valorIpi.toString()).toFixed(2);
             valorSt = parseFloat(valorSt.toString()).toFixed(2);
             descontoSuframa = parseFloat(descontoSuframa.toString()).toFixed(2);
@@ -1284,7 +1284,7 @@
                 valorSuframa = valorSuframa + suframa;
             }
 
-            valorLiquido = (parseFloat(valorBruto.toString()) + parseFloat(valorIpi.toString()) + parseFloat(valorSt.toString()) + parseFloat(valorFreteGlobal.toString()) - parseFloat(valorSuframa.toString())).toFixed(2);
+            valorLiquido = (parseFloat(valorBruto.toString()) + parseFloat(valorIpi.toString()) + parseFloat(valorSt.toString()) + parseFloat(ValorFreteGlobal.toString()) - parseFloat(valorSuframa.toString())).toFixed(2);
             valorIpi = parseFloat(valorIpi.toString()).toFixed(2);
             valorSt = parseFloat(valorSt.toString()).toFixed(2);
             $("#QtdeTotalDevolucaoTextBox").val(qtdeTotal);

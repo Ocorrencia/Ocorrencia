@@ -139,6 +139,12 @@ namespace NWORKFLOW_WEB.MVC_4_BS.Models
         [Display(Name ="Transportadora")]
         public int CodTra { get; set;  }
 
+        /*josimesio Rossini Ticket 6911285 - 18/05/2022*/
+        [Display(Name ="Valor Frete")]
+        public string ValorFrete { get; set; }
+
+
+
         public string NomeTra { get; set; }
 
         public int Aprovado { get; set; }

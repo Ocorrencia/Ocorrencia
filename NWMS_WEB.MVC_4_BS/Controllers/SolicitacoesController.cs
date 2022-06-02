@@ -633,6 +633,7 @@ namespace NWORKFLOW_WEB.MVC_4_BS.Controllers
 
                 N0203REG.CODCLI = long.Parse(modelo.CodCliente);
                 N0203REG.CODMOT = long.Parse(modelo.CodMotorista);
+               
 
                 if (!string.IsNullOrEmpty(modelo.CodPlaca))
                 {
@@ -657,6 +658,7 @@ namespace NWORKFLOW_WEB.MVC_4_BS.Controllers
                 N0203REG.DATULT = dataAtual;
                 N0203REG.OBSREG = " ";
                 N0203REG.TRACLI = modelo.CodTra;
+                
 
                 if (!string.IsNullOrEmpty(modelo.Observacoes))
                 {
@@ -831,6 +833,7 @@ namespace NWORKFLOW_WEB.MVC_4_BS.Controllers
                         itemLista.DATULT = dataAtual;
                         string[] usuario = lista[i + 21].Split('-');
                         itemLista.USUULT = long.Parse(usuario[0].Replace(" ", ""));
+                        itemLista.VLRFRE = decimal.Parse(lista[i + 22]); 
                         listaN0203IPV.Add(itemLista);
                         i += 21;
                     }

@@ -59,6 +59,7 @@ namespace NUTRIPLAN_WEB.MVC_4_BS.Model
         public string USUIMPR { get; set; }
         public decimal TotalValorLiquido { get; set; }
         public string TotalValorLiquidoS { get; set; }
-        public decimal valorFrete;
+        public decimal ValorFrete { get; set; }
+        public string ValorFreteS { get; set; }
     }
 }
