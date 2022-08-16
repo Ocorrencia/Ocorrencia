@@ -1950,23 +1950,14 @@
                 </TablixCell>
                 <TablixCell>
                   <CellContents>
-                    <Textbox Name="ValorFreteS">
+                    <Textbox Name="ValorFrete1">
                       <CanGrow>true</CanGrow>
                       <KeepTogether>true</KeepTogether>
                       <Paragraphs>
                         <Paragraph>
                           <TextRuns>
                             <TextRun>
-                              <Value>R$</Value>
-                              <Style>
-                                <FontStyle>Normal</FontStyle>
-                                <FontSize>7pt</FontSize>
-                                <TextDecoration>None</TextDecoration>
-                                <Color>#000000</Color>
-                              </Style>
-                            </TextRun>
-                            <TextRun>
-                              <Value>=Fields!ValorFreteS.Value</Value>
+                              <Value>=Fields!ValorFrete.Value</Value>
                               <Style>
                                 <FontStyle>Normal</FontStyle>
                                 <FontSize>7pt</FontSize>
@@ -1978,7 +1969,7 @@
                           <Style />
                         </Paragraph>
                       </Paragraphs>
-                      <rd:DefaultName>ValorFreteS</rd:DefaultName>
+                      <rd:DefaultName>ValorFrete1</rd:DefaultName>
                       <Style>
                         <Border>
                           <Color>LightGrey</Color>
@@ -2793,15 +2784,6 @@
                         <Paragraph>
                           <TextRuns>
                             <TextRun>
-                              <Value>R$ </Value>
-                              <Style>
-                                <FontStyle>Normal</FontStyle>
-                                <FontSize>7pt</FontSize>
-                                <TextDecoration>None</TextDecoration>
-                                <Color>#000000</Color>
-                              </Style>
-                            </TextRun>
-                            <TextRun>
                               <Value>=Sum(Fields!ValorFrete.Value)</Value>
                               <Style>
                                 <FontStyle>Normal</FontStyle>
@@ -2827,6 +2809,7 @@
                         <PaddingBottom>2pt</PaddingBottom>
                       </Style>
                     </Textbox>
+                    <rd:Selected>true</rd:Selected>
                   </CellContents>
                 </TablixCell>
                 <TablixCell>
